@@ -239,6 +239,10 @@ tr.sel td{background:var(--gold-soft)}
 .sum{background:var(--gold-soft);border:1px solid var(--line)}
 .empty{background:var(--bg);border:1px dashed var(--line)}
 .toast{background:var(--primary);color:var(--primary-ink)}
+.fc{display:flex;align-items:flex-end;gap:4px}
+.fc.hidden{display:none}
+.fc label.f{flex:1;min-width:0}
+.fc .btn.del{margin-bottom:2px}
 /* purchase approval: pickable options */
 .sug.pick{cursor:pointer;position:relative;padding-inline-end:56px;min-height:52px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .sug.pick::after{content:"";position:absolute;inset-inline-end:16px;top:50%;width:24px;height:24px;margin-top:-12px;border-radius:50%;border:2px solid var(--muted);background:var(--card)}
@@ -306,12 +310,13 @@ tr.sel td{background:var(--gold-soft)}
       <h2>تكاليف موحّدة لكل شوال</h2>
       <p class="sub">تُضاف على كل شوال من كل الأصناف. الطحن يُضاف فقط للأصناف التي تُطحن. الترحيل هنا هو الافتراضي، ويمكن تغييره لأي صنف يأتي من منطقة أخرى.</p>
       <div class="grid">
-        <label class="f">الطحن<input type="text" inputmode="decimal" class="num" data-cost="mill"></label>
-        <label class="f">الترحيل (افتراضي)<input type="text" inputmode="decimal" class="num" data-cost="transport"></label>
-        <label class="f">التحميل<input type="text" inputmode="decimal" class="num" data-cost="load"></label>
-        <label class="f">السعي<input type="text" inputmode="decimal" class="num" data-cost="sai"></label>
-        <label class="f">أكياس التوزيع<input type="text" inputmode="decimal" class="num" data-cost="bags"></label>
+        <div class="fc" data-fc="mill"><label class="f">الطحن<input type="text" inputmode="decimal" class="num" data-cost="mill"></label><button class="btn del" data-fdel="mill" title="حذف هذه التكلفة">×</button></div>
+        <div class="fc" data-fc="transport"><label class="f">الترحيل (افتراضي)<input type="text" inputmode="decimal" class="num" data-cost="transport"></label><button class="btn del" data-fdel="transport" title="حذف هذه التكلفة">×</button></div>
+        <div class="fc" data-fc="load"><label class="f">التحميل<input type="text" inputmode="decimal" class="num" data-cost="load"></label><button class="btn del" data-fdel="load" title="حذف هذه التكلفة">×</button></div>
+        <div class="fc" data-fc="sai"><label class="f">السعي<input type="text" inputmode="decimal" class="num" data-cost="sai"></label><button class="btn del" data-fdel="sai" title="حذف هذه التكلفة">×</button></div>
+        <div class="fc" data-fc="bags"><label class="f">أكياس التوزيع<input type="text" inputmode="decimal" class="num" data-cost="bags"></label><button class="btn del" data-fdel="bags" title="حذف هذه التكلفة">×</button></div>
       </div>
+      <div class="row-actions" id="restoreWrap"><button class="btn" id="restoreCosts"></button></div>
       <h3 class="xh">تكاليف إضافية</h3>
       <p class="sub">أضف أي تكلفة أخرى تُدفع على كل شوال (مثل ترحيل إضافي، أو تعبئة، أو حراسة). تُضاف تلقائيا إلى التكلفة الكاملة لكل صنف.</p>
       <div id="extraCosts"></div>
@@ -411,11 +416,11 @@ const DEFAULT={
   selFlour:'auto',
   salaryAmount:'',
   people:[
-    {id:nid(),name:'الأمين',pct:25},
-    {id:nid(),name:'مؤيد',pct:25},
-    {id:nid(),name:'هالة',pct:25},
-    {id:nid(),name:'الطاف',pct:12.5},
-    {id:nid(),name:'وردة',pct:12.5}
+    {id:nid(),name:'المعلم 1',pct:25},
+    {id:nid(),name:'المعلم 2',pct:25},
+    {id:nid(),name:'المعلم 3',pct:25},
+    {id:nid(),name:'المعلم 4',pct:12.5},
+    {id:nid(),name:'المعلم 5',pct:12.5}
   ],
   theme:''
 };
@@ -452,12 +457,14 @@ function showTab(t){
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
 /* ---------- cost model ---------- */
+/* تكلفة موحّدة محذوفة = لا تُحسب */
+const cv=k=>(S.off&&S.off[k])?0:num(S.costs[k]);
+const trOf=it=>(S.off&&S.off.transport)?0:((it.tr!==''&&it.tr!=null)?num(it.tr):num(S.costs.transport));
 function itemCost(it){
   const p=num(it.price); if(p<=0) return 0;
-  const c=S.costs;
-  const tr=(it.tr!==''&&it.tr!=null)?num(it.tr):num(c.transport);
+  const tr=trOf(it);
   const extra=(S.extra||[]).reduce((a,x)=>a+((x.millOnly&&!it.mill)?0:num(x.amt)),0);
-  return p+(it.mill?num(c.mill):0)+tr+num(c.load)+num(c.sai)+num(c.bags)+extra;
+  return p+(it.mill?cv('mill'):0)+tr+cv('load')+cv('sai')+cv('bags')+extra;
 }
 const catName={flour:'طحين',onion:'بصل',other:'أخرى'};
 
@@ -465,6 +472,22 @@ const catName={flour:'طحين',onion:'بصل',other:'أخرى'};
 document.querySelectorAll('[data-cost]').forEach(inp=>{
   inp.value=S.costs[inp.dataset.cost]??'';
   inp.addEventListener('input',()=>{S.costs[inp.dataset.cost]=inp.value;save();updateAll();});
+});
+const FCN={mill:'الطحن',transport:'الترحيل',load:'التحميل',sai:'السعي',bags:'أكياس التوزيع'};
+function renderFixed(){
+  if(!S.off) S.off={};
+  document.querySelectorAll('[data-fc]').forEach(d=>d.classList.toggle('hidden',!!S.off[d.dataset.fc]));
+  const off=Object.keys(S.off).filter(k=>S.off[k]);
+  $('#restoreWrap').classList.toggle('hidden',!off.length);
+  $('#restoreCosts').textContent='↩ إرجاع التكاليف المحذوفة ('+off.map(k=>FCN[k]).join('، ')+')';
+}
+document.querySelectorAll('[data-fdel]').forEach(b=>b.onclick=()=>{
+  const k=b.dataset.fdel;if(!confirm('حذف تكلفة «'+FCN[k]+'»؟ لن تُحسب بعد الآن، ويمكنك إرجاعها لاحقا.'))return;
+  S.off[k]=true;save();renderFixed();updateAll();
+});
+$('#restoreCosts').onclick=()=>{S.off={};save();renderFixed();updateAll();};
+renderFixed();
+(function(){
 });
 
 /* ---------- extra per-sack costs ---------- */
@@ -621,9 +644,9 @@ function renderBalance(A){
 }
 let lastOpt=null,lastApproveText='',lastDetailsText='';
 function costParts(it){
-  const c=S.costs,P=[['سعر الشوال',num(it.price)]];
-  if(it.mill) P.push(['الطحن',num(c.mill)]);
-  P.push(['الترحيل',(it.tr!==''&&it.tr!=null)?num(it.tr):num(c.transport)],['التحميل',num(c.load)],['السعي',num(c.sai)],['أكياس التوزيع',num(c.bags)]);
+  const P=[['سعر الشوال',num(it.price)]];
+  if(it.mill) P.push(['الطحن',cv('mill')]);
+  P.push(['الترحيل',trOf(it)],['التحميل',cv('load')],['السعي',cv('sai')],['أكياس التوزيع',cv('bags')]);
   (S.extra||[]).forEach(x=>{if(!(x.millOnly&&!it.mill)) P.push([x.name||'تكلفة إضافية',num(x.amt)]);});
   return P.filter(p=>p[1]>0);
 }

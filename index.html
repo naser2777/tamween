@@ -239,6 +239,14 @@ tr.sel td{background:var(--gold-soft)}
 .sum{background:var(--gold-soft);border:1px solid var(--line)}
 .empty{background:var(--bg);border:1px dashed var(--line)}
 .toast{background:var(--primary);color:var(--primary-ink)}
+/* purchase approval: pickable options */
+.sug.pick{cursor:pointer;position:relative;padding-inline-end:56px;min-height:52px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.sug.pick::after{content:"";position:absolute;inset-inline-end:16px;top:50%;width:24px;height:24px;margin-top:-12px;border-radius:50%;border:2px solid var(--muted);background:var(--card)}
+.sug.pick:hover{box-shadow:0 0 0 2px var(--gold) inset}
+.sug.pick[data-chosen]{box-shadow:0 0 0 3px var(--primary) inset}
+.sug.pick[data-chosen]::after{background:var(--primary);border-color:var(--primary);box-shadow:inset 0 0 0 4px var(--card)}
+.sug.mainpick{background:var(--card);border:1.5px solid var(--line);border-inline-start:4px solid var(--primary);margin-top:12px;font-weight:600}
+.msgbox{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-inline-start:4px solid var(--gold);border-radius:12px;padding:14px 18px;font-size:1.08rem;line-height:1.9}
 /* salary: result separate from settings */
 .reshead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
 .reshead h2{margin:0}
@@ -343,6 +351,23 @@ tr.sel td{background:var(--gold-soft)}
         <button class="btn sm" id="copyBalance">نسخ النتيجة</button>
       </div>
       <div id="balance"></div>
+    </div>
+
+    <div class="card" id="approveCard">
+      <h2>رسالة اعتماد الشراء</h2>
+      <p class="sub">اختر ما تريد اعتماده بالضغط عليه في الأعلى: النتيجة المذكورة، أو أحد مقترحات استغلال الباقي، أو أحد مقترحات الخلط. ثم انسخ الرسالة وأرسلها.</p>
+      <h3 class="xh">الرسالة الأولى: اعتماد الشراء</h3>
+      <div id="approve"></div>
+      <div class="row-actions">
+        <button class="btn pri" id="copyApprove">نسخ الرسالة الأولى</button>
+        <button class="btn" id="shareApprove">إرسال</button>
+      </div>
+      <h3 class="xh">الرسالة الثانية: تفاصيل قيمة كل شوال</h3>
+      <div id="details"></div>
+      <div class="row-actions">
+        <button class="btn pri" id="copyDetails">نسخ الرسالة الثانية</button>
+        <button class="btn" id="shareDetails">إرسال</button>
+      </div>
     </div>
   </section>
 
@@ -526,7 +551,8 @@ function renderSimple(A){
 
 let lastBalanceText='';
 function renderBalance(A){
-  lastBalanceText='';
+  lastBalanceText='';lastOpt=null;
+  const O=[],FN=(x,d)=>(x&&x.name)||d;
   const flours=S.items.filter(it=>it.cat==='flour'&&itemCost(it)>0);
   const onions=S.items.filter(it=>it.cat==='onion'&&itemCost(it)>0);
   if(!A) return '<div class="empty">أدخل المبلغ أعلاه لتظهر النتائج.</div>';
@@ -553,17 +579,20 @@ function renderBalance(A){
   </div>`;
   if(sel!==best) h+=`<div class="note">اخترت «${fname}» يدوياً. الأفضل عدداً هو «${esc(best.f.name)}» (${fmt(best.N)} شوال). <a href="#" data-auto>رجوع للاختيار التلقائي</a></div>`;
   if(onions.length>1) h+=`<div class="note">تم احتساب البصل الأرخص: «${oname}».</div>`;
+  const fn=FN(f,'طحين'),onn=FN(on,'بصل');
+  O.push({key:'main',lines:[[N,fn,f],[N,onn,on]],rem});
+  h+=`<div class="sug pick mainpick" data-opt="main">اعتماد النتيجة المذكورة: <b>${fmt(N)}</b> ${fname} و <b>${fmt(N)}</b> ${oname} <small>· يبقى ${fmt(rem)}${J}</small></div>`;
   lastBalanceText=`نتيجة التموين (المبلغ ${fmt(A)} جنيه):\n${fmt(N)} شوال ${f.name}\n${fmt(N)} شوال ${on.name}\nالمصروف: ${fmt(N*(cf+co))} جنيه\nالباقي: ${fmt(rem)} جنيه`;
 
   // استغلال الباقي
   const sugs=[];
   const kf=Math.min(2,Math.floor(rem/cf)), ko=Math.min(2,Math.floor(rem/co));
-  for(let k=kf;k>=1;k--) sugs.push(`<div class="sug">أضف <b>${k}</b> شوال ${fname} ← ${fmt(N+k)} طحين و ${fmt(N)} بصل <small>· يبقى ${fmt(rem-k*cf)}${J}</small></div>`);
-  for(let k=ko;k>=1;k--) sugs.push(`<div class="sug">أضف <b>${k}</b> شوال ${oname} ← ${fmt(N)} طحين و ${fmt(N+k)} بصل <small>· يبقى ${fmt(rem-k*co)}${J}</small></div>`);
+  for(let k=kf;k>=1;k--) O.push({key:'f'+k,lines:[[N+k,fn,f],[N,onn,on]],rem:rem-k*cf}),sugs.push(`<div class="sug pick" data-opt="f${k}">أضف <b>${k}</b> شوال ${fname} ← ${fmt(N+k)} طحين و ${fmt(N)} بصل <small>· يبقى ${fmt(rem-k*cf)}${J}</small></div>`);
+  for(let k=ko;k>=1;k--) O.push({key:'o'+k,lines:[[N,fn,f],[N+k,onn,on]],rem:rem-k*co}),sugs.push(`<div class="sug pick" data-opt="o${k}">أضف <b>${k}</b> شوال ${oname} ← ${fmt(N)} طحين و ${fmt(N+k)} بصل <small>· يبقى ${fmt(rem-k*co)}${J}</small></div>`);
   // أنواع أخرى أرخص من النوع المختار
   rows.filter(r=>r.f.id!==f.id&&r.cf<cf).forEach(r=>{
     const k=Math.min(2,Math.floor(rem/r.cf));
-    if(k>0) sugs.push(`<div class="sug">أضف <b>${k}</b> شوال ${esc(r.f.name)} ← ${fmt(N+k)} طحين و ${fmt(N)} بصل <small>· يبقى ${fmt(rem-k*r.cf)}${J}</small></div>`);
+    if(k>0) O.push({key:'x'+r.f.id+'_'+k,lines:[[N,fn,f],[k,FN(r.f,'طحين'),r.f],[N,onn,on]],rem:rem-k*r.cf}),sugs.push(`<div class="sug pick" data-opt="x${r.f.id}_${k}">أضف <b>${k}</b> شوال ${esc(r.f.name)} ← ${fmt(N+k)} طحين و ${fmt(N)} بصل <small>· يبقى ${fmt(rem-k*r.cf)}${J}</small></div>`);
   });
   h+='<div class="sec-title">استغلال الباقي <small class="note" style="margin:0">(فرق شوال أو شوالين)</small></div>';
   h+=sugs.length?sugs.join(''):'<div class="empty">الباقي لا يكفي لشوال إضافي.</div>';
@@ -578,18 +607,57 @@ function renderBalance(A){
   }
   mixes.sort((x,y)=>y.Nm-x.Nm||y.nb-x.nb);
   h+='<div class="sec-title">مقترح خلط نوعين من الطحين</div>';
-  h+=mixes.length?mixes.slice(0,6).map(m=>`<div class="sug mix">لو خلطنا <b>${fmt(m.na)}</b> ${esc(m.a.f.name)} + <b>${fmt(m.nb)}</b> ${esc(m.b.f.name)} = <b>${fmt(m.Nm)}</b> طحين مع <b>${fmt(m.Nm)}</b> ${oname} <small>· يبقى ${fmt(m.rem)}${J}</small></div>`).join('')
+  mixes.slice(0,6).forEach(m=>O.push({key:'m'+m.a.f.id+'_'+m.b.f.id,lines:[[m.na,FN(m.a.f,'طحين'),m.a.f],[m.nb,FN(m.b.f,'طحين'),m.b.f],[m.Nm,onn,on]],rem:m.rem}));
+  h+=mixes.length?mixes.slice(0,6).map(m=>`<div class="sug mix pick" data-opt="m${m.a.f.id}_${m.b.f.id}">`+`لو خلطنا <b>${fmt(m.na)}</b> ${esc(m.a.f.name)} + <b>${fmt(m.nb)}</b> ${esc(m.b.f.name)} = <b>${fmt(m.Nm)}</b> طحين مع <b>${fmt(m.Nm)}</b> ${oname} <small>· يبقى ${fmt(m.rem)}${J}</small></div>`).join('')
     :'<div class="empty">لا يوجد خلط يحسّن النتيجة بالأسعار الحالية.</div>';
 
   // جدول المقارنة
   h+='<div class="sec-title">مقارنة كل الأنواع <small class="note" style="margin:0">(اضغط على صف لاختياره)</small></div><div class="tbl"><table><thead><tr><th>النوع</th><th>تكلفة الشوال</th><th>طحين = بصل</th><th>الباقي</th></tr></thead><tbody>';
   h+=rows.map((r,i)=>`<tr class="click ${r===sel?'sel':''}" data-pick="${r.f.id}"><td>${esc(r.f.name)} ${i===0?'<span class="tag best">الأفضل</span>':''}</td><td>${fmt(r.cf)}</td><td><b>${fmt(r.N)}</b> + ${fmt(r.N)}</td><td>${fmt(r.rem)}</td></tr>`).join('');
   h+='</tbody></table></div>';
+  lastOpt=O.find(o=>o.key===S.selOpt)||O[0];
+  h=h.split('data-opt="'+lastOpt.key+'"').join('data-opt="'+lastOpt.key+'" data-chosen');
   return h;
 }
+let lastOpt=null,lastApproveText='',lastDetailsText='';
+function costParts(it){
+  const c=S.costs,P=[['سعر الشوال',num(it.price)]];
+  if(it.mill) P.push(['الطحن',num(c.mill)]);
+  P.push(['الترحيل',(it.tr!==''&&it.tr!=null)?num(it.tr):num(c.transport)],['التحميل',num(c.load)],['السعي',num(c.sai)],['أكياس التوزيع',num(c.bags)]);
+  (S.extra||[]).forEach(x=>{if(!(x.millOnly&&!it.mill)) P.push([x.name||'تكلفة إضافية',num(x.amt)]);});
+  return P.filter(p=>p[1]>0);
+}
+function renderApprove(A){
+  lastApproveText='';lastDetailsText='';
+  if(!A||!lastOpt){$('#approve').innerHTML=$('#details').innerHTML='<div class="empty">أدخل المبلغ لتظهر النتيجة، ثم اختر ما تعتمده.</div>';return;}
+  const o=lastOpt;
+  lastApproveText='السلام عليكم ورحمة الله وبركاته\n\nاعتمد شراء:\n'+o.lines.map(([q,nm])=>'- '+fmt(q)+' شوال '+nm).join('\n')
+    +'\n\nالمبلغ المتاح: '+fmt(A)+' جنيه\nالمصروف: '+fmt(A-o.rem)+' جنيه\nالباقي: '+fmt(o.rem)+' جنيه';
+  $('#approve').innerHTML='<div class="msgbox">'+esc(lastApproveText)+'</div>';
+  let t='السلام عليكم ورحمة الله وبركاته\n\nتفاصيل قيمة الشراء:\n',tot=0;
+  o.lines.forEach(([q,nm,it])=>{
+    const c=itemCost(it),sub=q*c;tot+=sub;
+    t+='\n▪ '+nm+': '+fmt(q)+' شوال\n'+costParts(it).map(([l,v])=>'   - '+l+': '+fmt(v)+' جنيه').join('\n')
+      +'\n   = تكلفة الشوال: '+fmt(c)+' جنيه\n   = الإجمالي: '+fmt(q)+' × '+fmt(c)+' = '+fmt(sub)+' جنيه\n';
+  });
+  t+='\nالمبلغ المتاح: '+fmt(A)+' جنيه\nإجمالي المصروف: '+fmt(tot)+' جنيه\nالباقي: '+fmt(A-tot)+' جنيه';
+  lastDetailsText=t;
+  $('#details').innerHTML='<div class="msgbox">'+esc(t)+'</div>';
+}
+$('#copyApprove').onclick=()=>copy(lastApproveText);
+function shareText(t){
+  if(!t){toast('لا توجد رسالة بعد');return;}
+  if(navigator.share) navigator.share({text:t}).catch(()=>{});
+  else window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');
+}
+$('#shareApprove').onclick=()=>shareText(lastApproveText);
+$('#copyDetails').onclick=()=>copy(lastDetailsText);
+$('#shareDetails').onclick=()=>shareText(lastDetailsText);
 $('#balance').addEventListener('click',e=>{
   const tr=e.target.closest('[data-pick]');
   if(tr){S.selFlour=tr.dataset.pick;save();updateCalc();return;}
+  const op=e.target.closest('[data-opt]');
+  if(op){S.selOpt=op.dataset.opt;save();updateCalc();toast('تم اختياره لرسالة الاعتماد');return;}
   if(e.target.closest('[data-auto]')){e.preventDefault();S.selFlour='auto';save();updateCalc();}
 });
 
@@ -598,6 +666,7 @@ function updateCalc(){
   $('#amountWords').textContent=A?('المبلغ: '+fmt(A)+J):'';
   $('#simple').innerHTML=renderSimple(A);
   $('#balance').innerHTML=renderBalance(A);
+  renderApprove(A);
 }
 
 /* ---------- salary tab ---------- */

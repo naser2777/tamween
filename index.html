@@ -6,29 +6,35 @@
 <title>حاسبة التموين والرواتب</title>
 <style>
 :root{
-  --bg:#f3f0e8; --card:#ffffff; --ink:#111814; --muted:#3d4741; --line:#c8c0b0;
-  --primary:#1d5a3c; --primary-soft:#dcebe2; --primary-ink:#ffffff;
-  --flour:#7d5310; --flour-soft:#f5e6c8;
-  --onion:#73285c; --onion-soft:#f2dcea;
-  --warn:#9c2f16; --warn-soft:#fbe1d8;
+  --bg:#f6f2e9; --card:#fffdf9; --ink:#17212f; --muted:#495466; --line:#e2d8c6;
+  --primary:#1d3a5f; --primary-soft:#e6edf6; --primary-ink:#ffffff;
+  --gold:#b8862b; --gold-soft:#f8eed8; --field:#ffffff;
+  --flour:#94600f; --flour-soft:#fbf0d8;
+  --onion:#8c2a3f; --onion-soft:#f9e6e9;
+  --warn:#a8381c; --warn-soft:#fce8e1;
+  --hero1:#1d3a5f; --hero2:#2d5687;
   --shadow:0 1px 2px rgba(0,0,0,.05),0 6px 20px rgba(40,50,40,.06);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#121614; --card:#1c2320; --ink:#f4f7f5; --muted:#c3ccc6; --line:#4a5550;
-    --primary:#7cd0a4; --primary-soft:#22392d; --primary-ink:#0c120f;
-    --flour:#f0c070; --flour-soft:#3d311d;
-    --onion:#eaa6d4; --onion-soft:#3a2532;
+    --bg:#0e1520; --card:#162131; --ink:#f2f4f8; --muted:#c2cad7; --line:#2c3a50;
+    --primary:#9cc0f0; --primary-soft:#1d2c42; --primary-ink:#0e1520;
+    --gold:#e6bb62; --gold-soft:#3a3020; --field:#101a28;
+    --flour:#f2c46e; --flour-soft:#3a2f1c;
+    --onion:#f3a0b2; --onion-soft:#3d2229;
     --warn:#ff9f80; --warn-soft:#3d241c;
+    --hero1:#172a45; --hero2:#22406a;
     --shadow:0 1px 2px rgba(0,0,0,.3);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#121614; --card:#1c2320; --ink:#f4f7f5; --muted:#c3ccc6; --line:#4a5550;
-  --primary:#7cd0a4; --primary-soft:#22392d; --primary-ink:#0c120f;
-  --flour:#f0c070; --flour-soft:#3d311d;
-  --onion:#eaa6d4; --onion-soft:#3a2532;
+  --bg:#0e1520; --card:#162131; --ink:#f2f4f8; --muted:#c2cad7; --line:#2c3a50;
+  --primary:#9cc0f0; --primary-soft:#1d2c42; --primary-ink:#0e1520;
+  --gold:#e6bb62; --gold-soft:#3a3020; --field:#101a28;
+  --flour:#f2c46e; --flour-soft:#3a2f1c;
+  --onion:#f3a0b2; --onion-soft:#3d2229;
   --warn:#ff9f80; --warn-soft:#3d241c;
+  --hero1:#172a45; --hero2:#22406a;
   --shadow:0 1px 2px rgba(0,0,0,.3);
 }
 *{box-sizing:border-box}
@@ -186,6 +192,56 @@ th,td{padding:12px 10px}
   .card{padding:16px}
 }
 @media (max-width:640px){.xc{grid-template-columns:1fr;padding-top:52px;gap:12px}.xc .btn.del{top:4px;left:4px}}
+
+/* ===== لمسة جمالية: كحلي وذهبي ===== */
+body{background:var(--bg) radial-gradient(circle at 100% 0,var(--gold-soft),transparent 45%) no-repeat}
+header{background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;border-radius:20px;padding:20px 22px;
+  box-shadow:0 10px 30px rgba(29,58,95,.25);border-bottom:4px solid var(--gold)}
+header h1{color:#fff;letter-spacing:.2px}
+header p{color:rgba(255,255,255,.85)}
+header .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff}
+.tabs{background:var(--card);border:1px solid var(--line);box-shadow:0 4px 14px rgba(23,33,47,.06)}
+.tabs button{color:var(--muted)}
+.tabs button:not(.on):hover{background:var(--gold-soft);color:var(--ink)}
+.tabs button.on{background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;box-shadow:inset 0 -3px 0 var(--gold)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 2px 4px rgba(23,33,47,.04),0 10px 26px rgba(23,33,47,.06)}
+.card h2{color:var(--primary);display:flex;align-items:center;gap:10px}
+.card h2::before{content:"";width:6px;height:1.1em;border-radius:3px;background:var(--gold);flex:none}
+.xh{color:var(--primary)}
+label.f{color:var(--ink)}
+input[type=text],select{background:var(--field);border:1.5px solid var(--line)}
+input[type=text]:hover,select:hover{border-color:var(--gold)}
+input[type=text]:focus,select:focus{outline:3px solid var(--primary-soft);border-color:var(--primary)}
+.big input{border-color:var(--gold);background:var(--field)}
+.btn{background:var(--card);border:1.5px solid var(--line);transition:background .15s,border-color .15s}
+.btn:hover{border-color:var(--gold)}
+.btn.pri{background:linear-gradient(135deg,var(--hero1),var(--hero2));border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(29,58,95,.25)}
+:root[data-theme="dark"] .btn.pri{box-shadow:none}
+.btn.del{border-color:transparent;background:transparent}
+.chk input{accent-color:var(--primary)}
+.item,.xc,.person{border-bottom-color:var(--line)}
+.tile{background:var(--card);border:1.5px solid var(--line)}
+.tile.flour{border-color:#e9d3a6;background:linear-gradient(var(--flour-soft),var(--card) 75%)}
+.tile.onion{border-color:#efc6ce;background:linear-gradient(var(--onion-soft),var(--card) 75%)}
+.tile.flour .n{color:var(--flour)}
+.tile.onion .n{color:var(--onion)}
+.hero .side{border:1.5px solid var(--line)}
+.hero .eq{color:var(--gold)}
+.fact{background:var(--bg);border:1px solid var(--line)}
+.fact.rem b{color:var(--primary)}
+.sug{background:var(--primary-soft);border-inline-start-color:var(--primary)}
+.sug.mix{background:var(--gold-soft);border-color:var(--gold)}
+.tag.other{background:var(--primary-soft);color:var(--primary)}
+.tag.best{background:var(--gold);color:#fff}
+th{background:var(--primary-soft);color:var(--primary)}
+tr.sel td{background:var(--gold-soft)}
+.pay{color:var(--primary)}
+.sum{background:var(--gold-soft);border:1px solid var(--line)}
+.empty{background:var(--bg);border:1px dashed var(--line)}
+.toast{background:var(--primary);color:var(--primary-ink)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tile.flour,:root:not([data-theme="light"]) .tile.onion{border-color:var(--line)}}
+:root[data-theme="dark"] .tile.flour,:root[data-theme="dark"] .tile.onion{border-color:var(--line)}
+@media (max-width:560px){header{padding:16px;border-radius:16px}}
 @media print{
   .tabs,.btn,header button{display:none!important}
   body{background:#fff}
@@ -193,7 +249,7 @@ th,td{padding:12px 10px}
 }
 </style>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#1d5a3c">
+<meta name="theme-color" content="#1d3a5f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon-192.png">

@@ -6,29 +6,29 @@
 <title>حاسبة التموين والرواتب</title>
 <style>
 :root{
-  --bg:#f4f1ea; --card:#ffffff; --ink:#1f2a24; --muted:#6b756f; --line:#e4dfd4;
-  --primary:#2f6f4f; --primary-soft:#e3efe8; --primary-ink:#ffffff;
-  --flour:#b9822b; --flour-soft:#f7ecd9;
-  --onion:#8a3f73; --onion-soft:#f4e3ef;
-  --warn:#b54a2a; --warn-soft:#fbe7e0;
+  --bg:#f3f0e8; --card:#ffffff; --ink:#111814; --muted:#3d4741; --line:#c8c0b0;
+  --primary:#1d5a3c; --primary-soft:#dcebe2; --primary-ink:#ffffff;
+  --flour:#7d5310; --flour-soft:#f5e6c8;
+  --onion:#73285c; --onion-soft:#f2dcea;
+  --warn:#9c2f16; --warn-soft:#fbe1d8;
   --shadow:0 1px 2px rgba(0,0,0,.05),0 6px 20px rgba(40,50,40,.06);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#141816; --card:#1d2320; --ink:#e8ece9; --muted:#9aa49e; --line:#2e3632;
-    --primary:#5fb48a; --primary-soft:#21352b; --primary-ink:#0f1512;
-    --flour:#e0aa55; --flour-soft:#3a2f1e;
-    --onion:#d68bbf; --onion-soft:#38242f;
-    --warn:#ef8a6a; --warn-soft:#3a231c;
+    --bg:#121614; --card:#1c2320; --ink:#f4f7f5; --muted:#c3ccc6; --line:#4a5550;
+    --primary:#7cd0a4; --primary-soft:#22392d; --primary-ink:#0c120f;
+    --flour:#f0c070; --flour-soft:#3d311d;
+    --onion:#eaa6d4; --onion-soft:#3a2532;
+    --warn:#ff9f80; --warn-soft:#3d241c;
     --shadow:0 1px 2px rgba(0,0,0,.3);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#141816; --card:#1d2320; --ink:#e8ece9; --muted:#9aa49e; --line:#2e3632;
-  --primary:#5fb48a; --primary-soft:#21352b; --primary-ink:#0f1512;
-  --flour:#e0aa55; --flour-soft:#3a2f1e;
-  --onion:#d68bbf; --onion-soft:#38242f;
-  --warn:#ef8a6a; --warn-soft:#3a231c;
+  --bg:#121614; --card:#1c2320; --ink:#f4f7f5; --muted:#c3ccc6; --line:#4a5550;
+  --primary:#7cd0a4; --primary-soft:#22392d; --primary-ink:#0c120f;
+  --flour:#f0c070; --flour-soft:#3d311d;
+  --onion:#eaa6d4; --onion-soft:#3a2532;
+  --warn:#ff9f80; --warn-soft:#3d241c;
   --shadow:0 1px 2px rgba(0,0,0,.3);
 }
 *{box-sizing:border-box}
@@ -55,6 +55,11 @@ select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(-
 .btn.sm{padding:5px 10px;font-size:.85rem}
 .btn.del{color:var(--warn);border-color:transparent;background:transparent;font-size:1.2rem;padding:4px 8px}
 .row-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.xh{margin:18px 0 2px;font-size:1rem}
+.xc{display:grid;grid-template-columns:1.6fr 1fr auto auto;gap:10px;align-items:end;padding:10px 0;border-bottom:1px dashed var(--line)}
+.xc .chk{white-space:nowrap}
+@media (max-width:640px){.xc{grid-template-columns:1fr 1fr;background:var(--bg);border:0;border-radius:12px;padding:12px;margin-bottom:8px;position:relative}.xc .btn.del{position:absolute;top:6px;left:6px}}
+.xempty{color:var(--muted);font-size:.9rem;padding:6px 0}
 
 /* items */
 .item{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr auto 1fr auto;gap:10px;align-items:end;padding:12px 0;border-bottom:1px dashed var(--line)}
@@ -129,6 +134,58 @@ tr.click{cursor:pointer}
 .hidden{display:none}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:99px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.show{opacity:1}
+
+/* ===== قراءة مريحة: خط أكبر وأزرار أوسع ===== */
+html{font-size:19px}
+body{font-size:1rem;line-height:1.7}
+.wrap{max-width:1040px}
+header h1{font-size:1.7rem}
+header p{font-size:1rem;color:var(--muted)}
+.tabs{gap:8px;padding:8px;border:1px solid var(--line)}
+.tabs button{font-size:1.08rem;font-weight:700;padding:14px 8px;min-height:54px;color:var(--ink)}
+.tabs button:not(.on):hover{background:var(--primary-soft)}
+.card{border:1px solid var(--line);padding:22px}
+.card h2{font-size:1.35rem}
+.card .sub{font-size:1rem;line-height:1.7}
+label.f{font-size:1rem;font-weight:600;color:var(--ink);gap:6px}
+input[type=text],select{border:2px solid var(--line);border-radius:12px;padding:12px 14px;min-height:52px;font-size:1.08rem}
+input[type=text]:focus,select:focus{outline:3px solid var(--primary);outline-offset:1px;border-color:var(--primary)}
+.big input{font-size:1.6rem;padding:14px 16px}
+.btn{border:2px solid var(--line);border-radius:12px;padding:11px 20px;min-height:50px;font-size:1.05rem}
+.btn.pri{border-color:var(--primary)}
+.btn.sm{padding:8px 14px;min-height:44px;font-size:1rem}
+.btn.del{font-size:1.7rem;line-height:1;min-width:48px;min-height:48px;padding:4px 10px}
+.btn.del:hover{background:var(--warn-soft)}
+.xh{font-size:1.15rem}
+.xempty,.chk,.note{font-size:1rem}
+.chk{color:var(--ink);gap:10px}
+.chk input{width:24px;height:24px}
+.total{font-size:.95rem}
+.total b{font-size:1.2rem}
+.tag{font-size:.9rem;padding:3px 10px}
+.tile{border-width:2px}
+.tile .n{font-size:2rem}
+.tile .meta,.fact span{font-size:.95rem}
+.fact{border:1px solid var(--line)}
+.fact b{font-size:1.2rem}
+.hero .side .n{font-size:2.8rem}
+.hero .side .lbl{font-size:1.1rem}
+.sec-title{font-size:1.15rem}
+.warnbox{font-size:1rem;font-weight:600}
+table{font-size:1.02rem}
+th{font-size:.95rem;font-weight:700;color:var(--ink);background:var(--bg)}
+th,td{padding:12px 10px}
+.pay{font-size:1.5rem}
+.pay small{font-size:.92rem}
+.sum{font-size:1.1rem}
+.toast{font-size:1.05rem;padding:12px 22px}
+@media (max-width:560px){
+  html{font-size:18px}
+  header h1{font-size:1.4rem}
+  .tabs button{font-size:1rem;padding:12px 4px}
+  .card{padding:16px}
+}
+@media (max-width:640px){.xc{grid-template-columns:1fr;padding-top:52px;gap:12px}.xc .btn.del{top:4px;left:4px}}
 @media print{
   .tabs,.btn,header button{display:none!important}
   body{background:#fff}
@@ -136,7 +193,7 @@ tr.click{cursor:pointer}
 }
 </style>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#2f6f4f">
+<meta name="theme-color" content="#1d5a3c">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -169,6 +226,10 @@ tr.click{cursor:pointer}
         <label class="f">السعي<input type="text" inputmode="decimal" class="num" data-cost="sai"></label>
         <label class="f">أكياس التوزيع<input type="text" inputmode="decimal" class="num" data-cost="bags"></label>
       </div>
+      <h3 class="xh">تكاليف إضافية</h3>
+      <p class="sub">أضف أي تكلفة أخرى تُدفع على كل شوال (مثل ترحيل إضافي، أو تعبئة، أو حراسة). تُضاف تلقائيا إلى التكلفة الكاملة لكل صنف.</p>
+      <div id="extraCosts"></div>
+      <div class="row-actions"><button class="btn pri" id="addCost">+ إضافة تكلفة</button></div>
     </div>
 
     <div class="card">
@@ -259,6 +320,7 @@ const DEFAULT={
 let S;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
 if(!S||!S.items) S=JSON.parse(JSON.stringify(DEFAULT));
+if(!Array.isArray(S.extra)) S.extra=[];  /* تكاليف إضافية لكل شوال: {id,name,amt,millOnly} */
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 
 const $=s=>document.querySelector(s);
@@ -292,7 +354,8 @@ function itemCost(it){
   const p=num(it.price); if(p<=0) return 0;
   const c=S.costs;
   const tr=(it.tr!==''&&it.tr!=null)?num(it.tr):num(c.transport);
-  return p+(it.mill?num(c.mill):0)+tr+num(c.load)+num(c.sai)+num(c.bags);
+  const extra=(S.extra||[]).reduce((a,x)=>a+((x.millOnly&&!it.mill)?0:num(x.amt)),0);
+  return p+(it.mill?num(c.mill):0)+tr+num(c.load)+num(c.sai)+num(c.bags)+extra;
 }
 const catName={flour:'طحين',onion:'بصل',other:'أخرى'};
 
@@ -301,6 +364,30 @@ document.querySelectorAll('[data-cost]').forEach(inp=>{
   inp.value=S.costs[inp.dataset.cost]??'';
   inp.addEventListener('input',()=>{S.costs[inp.dataset.cost]=inp.value;save();updateAll();});
 });
+
+/* ---------- extra per-sack costs ---------- */
+function renderExtra(){
+  const box=$('#extraCosts');if(!box)return;
+  box.innerHTML=S.extra.length?S.extra.map(x=>`
+    <div class="xc" data-id="${x.id}">
+      <label class="f">اسم التكلفة<input type="text" data-x="name" value="${esc(x.name)}" placeholder="مثلا: تعبئة"></label>
+      <label class="f">المبلغ لكل شوال<input type="text" inputmode="decimal" class="num" data-x="amt" value="${esc(x.amt)}"></label>
+      <label class="chk"><input type="checkbox" data-x="millOnly" ${x.millOnly?'checked':''}> للأصناف المطحونة فقط</label>
+      <button class="btn del" data-xdel title="حذف">×</button>
+    </div>`).join(''):'<div class="xempty">لا توجد تكاليف إضافية بعد.</div>';
+}
+$('#extraCosts').addEventListener('input',e=>{
+  const row=e.target.closest('.xc');if(!row)return;const x=S.extra.find(y=>y.id===row.dataset.id),k=e.target.dataset.x;if(!x||!k)return;
+  x[k]=e.target.type==='checkbox'?e.target.checked:e.target.value;save();updateAll();
+});
+$('#extraCosts').addEventListener('change',e=>{if(e.target.matches('[type=checkbox]'))e.target.dispatchEvent(new Event('input',{bubbles:true}))});
+$('#extraCosts').addEventListener('click',e=>{
+  if(!e.target.closest('[data-xdel]'))return;const id=e.target.closest('.xc').dataset.id,x=S.extra.find(y=>y.id===id);
+  if(!confirm('حذف تكلفة «'+(x?.name||'بلا اسم')+'»؟'))return;S.extra=S.extra.filter(y=>y.id!==id);save();renderExtra();updateAll();
+});
+$('#addCost').onclick=()=>{S.extra.push({id:nid(),name:'',amt:'',millOnly:false});save();renderExtra();
+  const rows=document.querySelectorAll('.xc');rows[rows.length-1]?.querySelector('input')?.focus();};
+renderExtra();
 
 function renderItems(){
   $('#items').innerHTML=S.items.map(it=>`

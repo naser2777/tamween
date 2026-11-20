@@ -1,6 +1,6 @@
 /* حاسبة التموين والرواتب — يعمل بلا إنترنت بعد أول فتح. غيّر رقم الإصدار عند كل تحديث */
-const V="tamween-v5",RT="tamween-ext";
-const FILES=["./","./index.html","./manifest.webmanifest","./icon-192.png","./icon-512.png","./icon-512-maskable.png"];
+const V="tamween-v6",RT="tamween-ext";
+const FILES=["./","./index.html","./manifest.webmanifest","./icon-blue-192.png","./icon-blue-512.png","./icon-blue-512-maskable.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V&&k!==RT).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{const r=e.request;if(r.method!=="GET")return;const u=new URL(r.url);

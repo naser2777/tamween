@@ -239,6 +239,27 @@ tr.sel td{background:var(--gold-soft)}
 .sum{background:var(--gold-soft);border:1px solid var(--line)}
 .empty{background:var(--bg);border:1px dashed var(--line)}
 .toast{background:var(--primary);color:var(--primary-ink)}
+/* salary: result separate from settings */
+.reshead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.reshead h2{margin:0}
+.payrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 6px;border-bottom:1px solid var(--line)}
+.payrow:last-child{border-bottom:0}
+.pn{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pv{font-size:1.7rem;font-weight:800;color:var(--primary);white-space:nowrap}
+.pv small{font-size:.9rem;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.setup summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:50px}
+.setup summary::-webkit-details-marker{display:none}
+.setup summary b{display:block;font-size:1.25rem;color:var(--primary)}
+.setup summary small{color:var(--muted);font-size:1rem}
+.setup .okc{color:var(--primary);font-weight:800}
+.setup .bad{color:var(--warn);font-weight:700}
+.chev{flex:none;color:var(--primary);font-weight:700;border:1.5px solid var(--line);border-radius:12px;padding:10px 16px}
+.chev::after{content:"تعديل ▾"}
+.setup[open] .chev::after{content:"إخفاء ▴"}
+.setup[open] summary{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.person{grid-template-columns:1.6fr 1fr auto}
+@media (max-width:560px){.person{grid-template-columns:1fr 1fr auto}.pv{font-size:1.4rem}.pn{font-size:1.08rem}}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tile.flour,:root:not([data-theme="light"]) .tile.onion{border-color:var(--line)}}
 :root[data-theme="dark"] .tile.flour,:root[data-theme="dark"] .tile.onion{border-color:var(--line)}
 @media (max-width:560px){header{padding:16px;border-radius:16px}}
@@ -331,17 +352,16 @@ tr.sel td{background:var(--gold-soft)}
       <label class="f big"><input type="text" inputmode="decimal" class="num" id="salaryAmount" placeholder="مثال: 400,000"></label>
     </div>
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;flex-wrap:wrap">
-        <div>
-          <h2>التوزيع</h2>
-          <p class="sub">يمكن تعديل الأسماء والنسب. الربع = 25٪ والثمن = 12.5٪</p>
-        </div>
-        <button class="btn sm" id="copySalary">نسخ التوزيع</button>
-      </div>
-      <div id="people"></div>
-      <div class="row-actions"><button class="btn pri" id="addPerson">+ إضافة معلم</button></div>
+      <div class="reshead"><h2>نتيجة التوزيع</h2><button class="btn sm" id="copySalary">نسخ التوزيع</button></div>
+      <div id="salaryResult"></div>
       <div id="salarySum"></div>
     </div>
+    <details class="card setup" id="salarySetup">
+      <summary><span><b>طريقة التقسيم</b><small id="setupInfo"></small></span><span class="chev"></span></summary>
+      <p class="sub">هنا الأسماء ونسبة كل معلم. الربع = 25٪ والثمن = 12.5٪ والنصف = 50٪</p>
+      <div id="people"></div>
+      <div class="row-actions"><button class="btn pri" id="addPerson">+ إضافة معلم</button></div>
+    </details>
   </section>
 </div>
 <div class="toast" id="toast"></div>
@@ -589,7 +609,6 @@ function renderPeople(){
     <div class="person" data-id="${p.id}">
       <label class="f">الاسم<input type="text" data-f="name" value="${esc(p.name)}"></label>
       <label class="f">النسبة ٪<input type="text" inputmode="decimal" class="num" data-f="pct" value="${esc(p.pct)}"></label>
-      <div class="pay" data-pay></div>
       <button class="btn del" data-del title="حذف">×</button>
     </div>`).join('');
   updateSalary();
@@ -608,14 +627,19 @@ $('#addPerson').onclick=()=>{S.people.push({id:nid(),name:'',pct:''});save();ren
 
 let lastSalaryText='';
 function updateSalary(){
-  const A=num(S.salaryAmount);let total=0,pctSum=0;const lines=[];
-  document.querySelectorAll('.person').forEach(row=>{
-    const p=S.people.find(x=>x.id===row.dataset.id);const pct=num(p.pct);pctSum+=pct;
+  const A=num(S.salaryAmount);let total=0,pctSum=0;const lines=[],rows=[];
+  S.people.forEach(p=>{
+    const pct=num(p.pct);pctSum+=pct;
     const v=Math.floor(A*pct/100);total+=v;
     const frac=pct===25?'ربع':pct===12.5?'ثُمن':pct===50?'نصف':'';
-    row.querySelector('[data-pay]').innerHTML=A?`${fmt(v)} <small>جنيه ${frac?'· '+frac:''}</small>`:'<small>—</small>';
+    rows.push(`<div class="payrow"><div class="pn">${esc(p.name)||'<span class="muted">بلا اسم</span>'}<span class="tag other">${+pct.toFixed(3)}٪${frac?' · '+frac:''}</span></div><div class="pv">${fmt(v)} <small>جنيه</small></div></div>`);
     lines.push(`${p.name}: ${fmt(v)} جنيه`);
   });
+  $('#salaryResult').innerHTML=!S.people.length?'<div class="empty">لا يوجد معلمون. أضفهم من «طريقة التقسيم» في الأسفل.</div>'
+    :A?rows.join(''):'<div class="empty">اكتب المبلغ الواصل في الأعلى، فتظهر هنا حصة كل معلم.</div>';
+  const ok=Math.abs(pctSum-100)<1e-9;
+  $('#setupInfo').innerHTML=`${S.people.length} معلمين · مجموع النسب ${+pctSum.toFixed(3)}٪ ${ok?'<span class="okc">✓</span>':'<span class="bad">— يحتاج تصحيحا</span>'}`;
+  if(!ok) $('#salarySetup').open=true;
   let h='';
   if(A){
     h+=`<div class="sum"><span>المجموع الموزّع: ${fmt(total)}${J}</span><span>من أصل: ${fmt(A)}${J}</span></div>`;

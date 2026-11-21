@@ -283,7 +283,9 @@ tr.sel td{background:var(--gold-soft)}
 .htile small{font-size:.92rem;color:rgba(255,255,255,.85);line-height:1.5}
 .backbar{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;margin-bottom:16px;position:sticky;top:8px;z-index:5;box-shadow:0 4px 14px rgba(23,33,47,.08)}
 .backbar .scrtitle{margin:0;font-size:1.25rem;color:var(--primary)}
-.btn.back{background:var(--gold-soft);border-color:var(--gold);color:var(--ink);white-space:nowrap}
+.btn.back{background:#c98a24;border:2px solid #a96f14;color:#14202e;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px rgba(169,111,20,.3)}
+.btn.back:hover{filter:brightness(1.12)}
+.chosenbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gold-soft);border:1.5px solid var(--gold);border-radius:12px;padding:10px 14px;margin-bottom:12px}
 .scrfoot{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin:6px 0 20px}
 .scrfoot .btn{min-height:54px;flex:1 1 200px}
 #chosenInfo{margin:0 0 10px;padding:10px 12px;background:var(--gold-soft);border-radius:10px;color:var(--ink)}
@@ -364,9 +366,8 @@ tr.sel td{background:var(--gold-soft)}
   <section id="scr-home" class="screen">
   <div class="hgrid">
     <button class="htile" data-go="prices"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><b>التكاليف</b><small id="hs-prices">الأقسام والنسبة والترحيل والأصناف</small></button>
-    <button class="htile" data-go="result"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-1.5 3.5h-3z"/><path d="M10.5 6.5C6 9 4 13 4 16.5 4 19.5 6.5 21 12 21s8-1.5 8-4.5c0-3.5-2-7.5-6.5-10"/><path d="M9.5 13h5M9.5 16.5h5"/></svg></span><b>الشوالات</b><small id="hs-result"></small></button>
-    <button class="htile" data-go="options"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16.5 9.5"/></svg></span><b>المعتمد</b><small id="hs-options"></small></button>
-    <button class="htile" data-go="mix"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></span><b>الخلط</b><small id="hs-mix"></small></button>
+    <button class="htile" data-go="result"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-1.5 3.5h-3z"/><path d="M10.5 6.5C6 9 4 13 4 16.5 4 19.5 6.5 21 12 21s8-1.5 8-4.5c0-3.5-2-7.5-6.5-10"/><path d="M9.5 13h5M9.5 16.5h5"/></svg></span><b>المبلغ والنتيجة</b><small id="hs-result"></small></button>
+    <button class="htile" data-go="options"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16.5 9.5"/></svg></span><b>المعتمد والخلط</b><small id="hs-options"></small></button>
     <button class="htile" data-go="messages"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><b>الرسائل</b><small id="hs-messages">اعتماد الشراء والتفاصيل</small></button>
     <button class="htile" data-go="compare"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"/><rect x="6" y="11" width="3" height="6"/><rect x="10.5" y="6" width="3" height="11"/><rect x="15" y="13" width="3" height="4"/></svg></span><b>المقارنة</b><small id="hs-compare">مقارنة الأصناف</small></button>
     <button class="htile" data-go="salary"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17" cy="9" r="2.3"/><path d="M15.5 14.2c2.6-.3 5 1.4 5 4.3"/></svg></span><b>الرواتب</b><small id="hs-salary"></small></button>
@@ -433,12 +434,12 @@ tr.sel td{background:var(--gold-soft)}
         <button class="btn pri" id="addItem">+ إضافة صنف</button>
       </div>
     </div>
-    <div class="scrfoot"><button class="btn pri" data-go="result">الشوالات ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
+    <div class="scrfoot"><button class="btn pri" data-go="result">المبلغ والنتيجة ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
   </section>
 
   <!-- ============ حساب الشوالات ============ -->
   <section id="scr-result" class="screen hidden">
-    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">الشوالات</h2></div>
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">المبلغ والنتيجة</h2></div>
     <div class="card">
       <h2>المبلغ المتاح للتموين</h2>
       <label class="f big"><input type="text" inputmode="decimal" class="num" id="amount" placeholder="مثال: 1,000,000"></label>
@@ -448,30 +449,23 @@ tr.sel td{background:var(--gold-soft)}
       <h2>نتيجة الموازنة</h2>
       <div id="balance"></div>
     </div>
-    <div class="scrfoot"><button class="btn pri" data-go="options">المعتمد ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
+    <div class="scrfoot"><button class="btn pri" data-go="options">المعتمد والخلط ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
   </section>
 
   <!-- ============ الاختيار ============ -->
   <section id="scr-options" class="screen hidden">
-    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">المعتمد</h2></div>
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">المعتمد والخلط</h2></div>
     <div class="card">
-      <p class="sub">اضغط على ما تريد اعتماده: أحد الخيارين، أو أحد مقترحات الخلط. فتُكتب الرسائل بحسبه.</p>
+      <h2>اختر ما تعتمده</h2>
+      <p class="sub">اضغط على ما تريد اعتماده، فتتغير النتيجة والرسائل بحسبه مباشرة.</p>
       <div id="options"></div>
     </div>
     <div class="card">
-      <h2>مقترحات الخلط</h2>
+      <h2>أو اخلط نوعين من نفس القسم</h2>
+      <p class="sub">خلط نوعين ليُستغل الباقي. اضغط على المقترح لتعتمده.</p>
       <div id="mixes2"></div>
     </div>
-    <div class="scrfoot"><button class="btn pri" data-go="messages">الرسائل ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
-  </section>
-
-  <!-- ============ الخلط ============ -->
-  <section id="scr-mix" class="screen hidden">
-    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">الخلط</h2></div>
-    <div class="card">
-      <p class="sub">خلط نوعين من نفس القسم ليُستغل الباقي. اضغط على المقترح لتعتمده، فتُكتب الرسائل بحسبه.</p>
-      <div id="mixes"></div>
-    </div>
+    <div id="mixes" hidden></div>
     <div class="scrfoot"><button class="btn pri" data-go="messages">الرسائل ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
   </section>
 
@@ -594,7 +588,7 @@ $('#themeBtn').onclick=()=>{
 };
 
 /* ---------- tabs ---------- */
-const SCREENS=['home','prices','result','options','mix','messages','compare','salary'];
+const SCREENS=['home','prices','result','options','messages','compare','salary'];
 function showTab(t){
   if(!SCREENS.includes(t)) t='home';
   S.tab=t;save();
@@ -938,26 +932,12 @@ function renderBalance(A){
   const rtxt=ch.map(x=>x.r+' '+esc(x.c.name||'قسم')).join(' : ');
   let h='';
   if(k===0) h+='<div class="warnbox">المبلغ لا يكفي لمجموعة كاملة بالنسبة '+rtxt+'. هذه أقصى كمية ممكنة من الأصناف.</div>';
-  // hero: totals per category (full result)
-  h+='<div class="heroN">'+ch.map(x=>{
-    const its=oFull.plan.filter(p=>p[1].cat===x.c.id),n=its.reduce((a,p)=>a+p[0],0);
-    return `<div class="side ${tagCls(x.c.id)}"><div class="n">${fmtN(n)}</div><div class="lbl">شوال ${esc(x.c.name||'')} كامل</div><div class="note">${its.map(p=>fmtN(p[0])+' '+esc(iname(p[1]))).join(' + ')||'—'}</div></div>`;}).join('')+'</div>';
-  h+=`<div class="note">النسبة المطلوبة: <b>${rtxt}</b> — تحققت في <b>${fmtN(k)}</b> مجموعة${full.added.length?'، ثم أُضيف من الباقي: '+Object.entries(full.added.reduce((m,it)=>(m[iname(it)]=(m[iname(it)]||0)+1,m),{})).map(([n,c])=>'+'+c+' '+esc(n)).join('، '):''}.</div>`;
-  const pc=oFull.c;
-  h+=`<div class="facts">
-    <div class="fact"><span>قيمة الشراء</span><b>${fmt(pc.buy)}</b></div>
-    <div class="fact"><span>الترحيل</span><b>${S.trMode==='perSack'?'ضمن الشراء':fmt(pc.tr)}</b></div>
-    <div class="fact"><span>المصروف</span><b>${fmt(pc.total)}</b></div>
-    <div class="fact rem"><span>الباقي</span><b>${fmt(A-pc.total)}</b></div>
-  </div>`;
-  if(S.trMode==='trips') h+=`<div class="note">طريقة الترحيل: ${esc(trSummary(pc))}</div>`;
-  const noFare=S.trMode==='trips'?pc.tl.filter(x=>x.g.n>0&&!vehOf(x.g.r).length&&!num(x.g.r.ps)):[];
-  if(noFare.length) h+='<div class="warnbox">لم تُدخل أجرة الترحيل لمنطقة: '+noFare.map(x=>'«'+esc(x.g.r.name||'')+'»').join('، ')+'، فالترحيل محسوب صفرا. أدخلها من تبويب «الأسعار والتكاليف».</div>';
+  h+='<!--HERO-->';
   ch.filter(x=>x.manual).forEach(x=>h+=`<div class="note">اخترت «${esc(iname(x.it))}» يدويا في قسم ${esc(x.c.name)}. الأفضل عددا «${esc(iname(x.best))}». <a href="#" data-auto="${x.c.id}">رجوع للاختيار التلقائي</a></div>`);
 
   h+='<!--OPT-->';
-  h+=`<div class="sug pick mainpick" data-opt="full"><span><b>الخيار الأول — صرف المبلغ كله:</b> ${planLine(oFull.plan)} <small>· يبقى ${fmt(oFull.rem)}${J}</small><br><small>بالنسبة ${rtxt}، ثم يُشترى بالباقي شوالات زيادة حتى لا يبقى ما يكفي لشوال.</small></span></div>`;
-  if(full.added.length) h+=`<div class="sug pick" data-opt="ratio"><span><b>الخيار الثاني — النسبة بالضبط:</b> ${planLine(oRatio.plan)} <small>· يبقى ${fmt(oRatio.rem)}${J}</small><br><small>كل شوال ${esc(ch[0].c.name||'')} يقابله بالضبط ما حددته من الأقسام الأخرى، ولا يُشترى بالباقي شيء.</small></span></div>`;
+  h+=`<div class="sug pick mainpick" data-opt="full"><span><b>صرف المبلغ كله:</b> ${planLine(oFull.plan)} <small>· يبقى ${fmt(oFull.rem)}${J}</small><br><small>بالنسبة ${rtxt}، ثم يُشترى بالباقي شوالات زيادة حتى لا يبقى ما يكفي لشوال.</small></span></div>`;
+  if(full.added.length) h+=`<div class="sug pick" data-opt="ratio"><span><b>النسبة بالضبط:</b> ${planLine(oRatio.plan)} <small>· يبقى ${fmt(oRatio.rem)}${J}</small><br><small>كل شوال ${esc(ch[0].c.name||'')} يقابله بالضبط ما حددته من الأقسام الأخرى، ولا يُشترى بالباقي شيء.</small></span></div>`;
 
   // الخلط: استبدال جزء من الصنف المختار بصنف آخر من نفس القسم لاستغلال الباقي
   const mixes=[];
@@ -988,6 +968,27 @@ function renderBalance(A){
     h+='</tbody></table></div>';
   });
   lastOpt=O.find(o=>o.key===S.selOpt)||oFull;
+  /* النتيجة تُعرض بحسب ما اعتمدته */
+  const heroOf=o=>{
+    const pc=o.c,lab=o.key==='full'?'صرف المبلغ كله':o.key==='ratio'?'النسبة بالضبط':'خلط نوعين';
+    let x=`<div class="chosenbar"><span>المعتمد الآن: <b>${lab}</b></span><button class="btn sm" data-go="options">تغيير ←</button></div>`;
+    x+='<div class="heroN">'+ch.map(c=>{
+      const its=o.plan.filter(p=>p[1].cat===c.c.id&&p[0]>0),n=its.reduce((a,p)=>a+p[0],0);
+      return `<div class="side ${tagCls(c.c.id)}"><div class="n">${fmtN(n)}</div><div class="lbl">شوال ${esc(c.c.name||'')} كامل</div><div class="note">${its.map(p=>fmtN(p[0])+' '+esc(iname(p[1]))).join(' + ')||'—'}</div></div>`;}).join('')+'</div>';
+    if(o.key==='full') x+=`<div class="note">النسبة المطلوبة: <b>${rtxt}</b> — تحققت في <b>${fmtN(k)}</b> مجموعة${full.added.length?'، ثم أُضيف من الباقي: '+Object.entries(full.added.reduce((m,it)=>(m[iname(it)]=(m[iname(it)]||0)+1,m),{})).map(([n,c])=>'+'+c+' '+esc(n)).join('، '):''}.</div>`;
+    else x+=`<div class="note">النسبة المطلوبة: <b>${rtxt}</b> — بالضبط في <b>${fmtN(k)}</b> مجموعة.</div>`;
+    x+=`<div class="facts">
+      <div class="fact"><span>قيمة الشراء</span><b>${fmt(pc.buy)}</b></div>
+      <div class="fact"><span>الترحيل</span><b>${S.trMode==='perSack'?'ضمن الشراء':fmt(pc.tr)}</b></div>
+      <div class="fact"><span>المصروف</span><b>${fmt(pc.total)}</b></div>
+      <div class="fact rem"><span>الباقي</span><b>${fmt(A-pc.total)}</b></div>
+    </div>`;
+    if(S.trMode==='trips') x+=`<div class="note">طريقة الترحيل: ${esc(trSummary(pc))}</div>`;
+    const noFare=S.trMode==='trips'?pc.tl.filter(t=>t.g.n>0&&!vehOf(t.g.r).length&&!num(t.g.r.ps)):[];
+    if(noFare.length) x+='<div class="warnbox">لم تُدخل أجرة الترحيل لمنطقة: '+noFare.map(t=>'«'+esc(t.g.r.name||'')+'»').join('، ')+'، فالترحيل محسوب صفرا. أدخلها من «التكاليف».</div>';
+    return x;
+  };
+  h=h.split('<!--HERO-->').join(heroOf(lastOpt));
   h=h.split('data-opt="'+lastOpt.key+'"').join('data-opt="'+lastOpt.key+'" data-chosen');
   return h;
 }
@@ -1071,11 +1072,10 @@ document.querySelector('.wrap').addEventListener('click',e=>{
 
 function homeInfo(A){
   const mixN=document.querySelectorAll('#mixes [data-opt]').length;
-  const lbl=!lastOpt?'':lastOpt.key==='full'?'الخيار الأول: صرف المبلغ كله':lastOpt.key==='ratio'?'الخيار الثاني: النسبة بالضبط':'مقترح خلط';
+  const lbl=!lastOpt?'':lastOpt.key==='full'?'صرف المبلغ كله':lastOpt.key==='ratio'?'النسبة بالضبط':'خلط';
   const line=lastOpt?lastOpt.plan.filter(p=>p[0]>0).map(([q,it])=>fmtN(q)+' '+iname(it)).join(' + '):'';
   $('#hs-result').textContent=A?(line||'أدخل الأسعار أولا'):'اكتب المبلغ المتاح';
-  $('#hs-options').textContent=lbl?'المختار: '+lbl:'—';
-  $('#hs-mix').textContent=A?(mixN?mixN+' مقترحات':'لا مقترحات الآن'):'—';
+  $('#hs-options').textContent=lbl?'المعتمد: '+lbl+(mixN?' · '+mixN+' مقترحات خلط':''):'—';
   $('#chosenInfo').innerHTML=lastOpt?'الرسائل مكتوبة بحسب: <b>'+esc(lbl)+'</b> ('+esc(line)+')':'';
 }
 function updateCalc(){

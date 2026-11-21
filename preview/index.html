@@ -269,6 +269,29 @@ tr.sel td{background:var(--gold-soft)}
 .heroN .side .lbl{font-weight:700;font-size:1.1rem}
 .bad{color:var(--warn);font-weight:700}
 @media (max-width:640px){.veh{grid-template-columns:1fr 1fr;background:var(--card);border-radius:12px;padding:10px;border:1px solid var(--line);position:relative;padding-top:48px}.veh .btn.del{position:absolute;top:4px;left:4px}.catrow{grid-template-columns:1fr 1fr auto}}
+/* calc tab layout: numbered steps + quick jump */
+#tab-calc .card{scroll-margin-top:110px}
+.jump{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 16px}
+.jump a{flex:1 1 140px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;color:var(--primary);font-weight:700;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;min-height:50px}
+.jump a:hover{border-color:var(--gold)}
+.jump a span,.stepno{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--gold-soft);color:var(--flour);font-weight:800;flex:none;border:1.5px solid var(--gold)}
+.stephead{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.stephead h2{margin:0}.stephead h2::before{display:none}
+#balance .facts{margin-top:10px}
+#options .sug{margin-bottom:12px}
+#options .sec-title{margin-top:22px;padding-top:14px;border-top:1px solid var(--line)}
+.msgblock{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px;background:var(--bg)}
+.msghead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.msghead b{font-size:1.08rem;color:var(--primary)}
+.msgbtns{display:flex;gap:8px}
+.msgd summary{cursor:pointer;color:var(--primary);font-weight:700;margin-top:10px;min-height:40px;display:flex;align-items:center}
+.msgd[open] summary{margin-bottom:8px}
+.more summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:50px}
+.more summary::-webkit-details-marker{display:none}
+.more summary b{font-size:1.3rem;color:var(--primary);flex:1}
+.more .chev::after{content:"عرض ▾"}.more[open] .chev::after{content:"إخفاء ▴"}
+.more[open] summary{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+@media (max-width:560px){.jump a{flex:1 1 45%;font-size:.95rem;padding:8px}}
 /* salary: result separate from settings */
 .reshead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
 .reshead h2{margin:0}
@@ -391,34 +414,46 @@ tr.sel td{background:var(--gold-soft)}
       <div id="amountWords" class="note"></div>
     </div>
 
-    <div class="card">
-      <h2>الموازنة بين الأقسام</h2>
-      <p class="sub">أكبر عدد من الشوالات الكاملة بالنسبة التي حددتها، مع حجز الترحيل. ثم يُكمَل الباقي بشوالات كاملة حتى لا يبقى ما يكفي لشوال.</p>
+    <nav class="jump" aria-label="انتقال سريع">
+      <a href="#resCard"><span>١</span>النتيجة</a>
+      <a href="#optCard"><span>٢</span>اختر ما تعتمده</a>
+      <a href="#approveCard"><span>٣</span>الرسائل</a>
+      <a href="#moreCard"><span>٤</span>مقارنات</a>
+    </nav>
+
+    <div class="card step" id="resCard">
+      <div class="stephead"><span class="stepno">١</span><h2>النتيجة</h2></div>
       <div id="balance"></div>
     </div>
 
-    <div class="card" id="approveCard">
-      <h2>رسالة اعتماد الشراء</h2>
-      <p class="sub">اختر ما تعتمده بالضغط عليه في الأعلى: النتيجة الكاملة، أو النسبة فقط، أو أحد مقترحات الخلط. ثم انسخ الرسالة وأرسلها.</p>
-      <h3 class="xh">الرسالة الأولى: اعتماد الشراء</h3>
-      <div id="approve"></div>
-      <div class="row-actions">
-        <button class="btn pri" id="copyApprove">نسخ الرسالة الأولى</button>
-        <button class="btn" id="shareApprove">إرسال</button>
+    <div class="card step" id="optCard">
+      <div class="stephead"><span class="stepno">٢</span><h2>اختر ما تعتمده</h2></div>
+      <p class="sub">اضغط على الخيار الذي تريده، فتُكتب الرسائل في الخطوة التالية بحسبه.</p>
+      <div id="options"></div>
+    </div>
+
+    <div class="card step" id="approveCard">
+      <div class="stephead"><span class="stepno">٣</span><h2>الرسائل</h2></div>
+      <p class="sub">انسخ الرسالة أو أرسلها مباشرة. اضغط «عرض نص الرسالة» لتقرأها قبل الإرسال.</p>
+      <div class="msgblock">
+        <div class="msghead"><b>الرسالة الأولى: اعتماد الشراء</b>
+          <div class="msgbtns"><button class="btn pri" id="copyApprove">نسخ</button><button class="btn" id="shareApprove">إرسال</button></div></div>
+        <details class="msgd"><summary>عرض نص الرسالة</summary><div id="approve"></div></details>
       </div>
-      <h3 class="xh">الرسالة الثانية: تفاصيل الشراء والتكاليف</h3>
-      <div id="details"></div>
-      <div class="row-actions">
-        <button class="btn pri" id="copyDetails">نسخ الرسالة الثانية</button>
-        <button class="btn" id="shareDetails">إرسال</button>
+      <div class="msgblock">
+        <div class="msghead"><b>الرسالة الثانية: تفاصيل الشراء والتكاليف</b>
+          <div class="msgbtns"><button class="btn pri" id="copyDetails">نسخ</button><button class="btn" id="shareDetails">إرسال</button></div></div>
+        <details class="msgd"><summary>عرض نص الرسالة</summary><div id="details"></div></details>
       </div>
     </div>
 
-    <div class="card">
-      <h2>لو صُرف المبلغ على صنف واحد</h2>
+    <details class="card step more" id="moreCard">
+      <summary><span class="stepno">٤</span><b>مقارنات إضافية</b><span class="chev"></span></summary>
+      <div id="compare"></div>
+      <div class="sec-title">لو صُرف المبلغ على صنف واحد</div>
       <p class="sub">للمقارنة فقط: أقصى عدد شوالات من كل صنف وحده، مع حجز ترحيله.</p>
       <div id="simple"></div>
-    </div>
+    </details>
   </section>
 
 <!-- ============ الرواتب ============ -->
@@ -863,7 +898,7 @@ function renderBalance(A){
   if(noFare.length) h+='<div class="warnbox">لم تُدخل أجرة الترحيل لمنطقة: '+noFare.map(x=>'«'+esc(x.g.r.name||'')+'»').join('، ')+'، فالترحيل محسوب صفرا. أدخلها من تبويب «الأسعار والتكاليف».</div>';
   ch.filter(x=>x.manual).forEach(x=>h+=`<div class="note">اخترت «${esc(iname(x.it))}» يدويا في قسم ${esc(x.c.name)}. الأفضل عددا «${esc(iname(x.best))}». <a href="#" data-auto="${x.c.id}">رجوع للاختيار التلقائي</a></div>`);
 
-  h+='<div class="sec-title">اختر ما تعتمده</div>';
+  h+='<!--OPT-->';
   h+=`<div class="sug pick mainpick" data-opt="full"><span><b>الخيار الأول — صرف المبلغ كله:</b> ${planLine(oFull.plan)} <small>· يبقى ${fmt(oFull.rem)}${J}</small><br><small>بالنسبة ${rtxt}، ثم يُشترى بالباقي شوالات زيادة حتى لا يبقى ما يكفي لشوال.</small></span></div>`;
   if(full.added.length) h+=`<div class="sug pick" data-opt="ratio"><span><b>الخيار الثاني — النسبة بالضبط:</b> ${planLine(oRatio.plan)} <small>· يبقى ${fmt(oRatio.rem)}${J}</small><br><small>كل شوال ${esc(ch[0].c.name||'')} يقابله بالضبط ما حددته من الأقسام الأخرى، ولا يُشترى بالباقي شيء.</small></span></div>`;
 
@@ -880,7 +915,7 @@ function renderBalance(A){
   });
   mixes.sort((a,b)=>(A-a.c.total)-(A-b.c.total));
   if(mixes.length){
-    h+='<div class="sec-title">مقترح خلط نوعين من نفس القسم</div>';
+    h+='<div class="sec-title">أو اخلط نوعين من نفس القسم</div>';
     mixes.slice(0,6).forEach(m=>{const o=mk('m'+m.x.it.id+'_'+m.b.id,m.plan);
       const inX=m.plan.filter(p=>p[1].cat===m.x.c.id),tot=inX.reduce((a,p)=>a+p[0],0),others=m.plan.filter(p=>p[1].cat!==m.x.c.id);
       const ml='لو خلطنا '+inX.map(([q,it])=>'<b>'+fmtN(q)+'</b> '+esc(iname(it))).join(' + ')+' = (<b>'+fmtN(tot)+'</b> شوال '+esc(m.x.c.name||'')+')'
@@ -888,6 +923,7 @@ function renderBalance(A){
       h+=`<div class="sug mix pick" data-opt="${o.key}">${ml} <small>· يبقى ${fmt(o.rem)}${J}</small></div>`;});
   }
 
+  h+='<!--CMP-->';
   // جدول المقارنة لكل قسم فيه أكثر من صنف
   ch.filter(x=>x.items.length>1).forEach(x=>{
     h+=`<div class="sec-title">مقارنة أصناف ${esc(x.c.name||'')} <small class="note" style="margin:0">(اضغط على صف لاختياره)</small></div><div class="tbl"><table><thead><tr><th>الصنف</th><th>تكلفة الشوال</th><th>عدد المجموعات</th><th>الباقي</th></tr></thead><tbody>`;
@@ -967,7 +1003,7 @@ function shareText(t){
 $('#shareApprove').onclick=()=>shareText(lastApproveText);
 $('#copyDetails').onclick=()=>copy(lastDetailsText);
 $('#shareDetails').onclick=()=>shareText(lastDetailsText);
-$('#balance').addEventListener('click',e=>{
+$('#tab-calc').addEventListener('click',e=>{
   const tr=e.target.closest('[data-pick]');
   if(tr){const [c,id]=tr.dataset.pick.split('|');S.sel[c]=id;save();updateCalc();return;}
   const op=e.target.closest('[data-opt]');
@@ -979,7 +1015,10 @@ $('#balance').addEventListener('click',e=>{
 function updateCalc(){
   const A=num(S.amount);DPC={};
   $('#amountWords').textContent=A?('المبلغ: '+fmt(A)+J):'';
-  $('#balance').innerHTML=renderBalance(A);
+  const parts=renderBalance(A).split('<!--OPT-->'),p2=(parts[1]||'').split('<!--CMP-->');
+  $('#balance').innerHTML=parts[0];
+  $('#options').innerHTML=parts.length>1?p2[0]:'<div class="empty">تظهر الخيارات بعد ظهور النتيجة.</div>';
+  $('#compare').innerHTML=(p2[1]||'').trim()||'<div class="empty">لا توجد أقسام فيها أكثر من صنف للمقارنة.</div>';
   renderApprove(A);
   $('#simple').innerHTML=renderSimple(A);
 }

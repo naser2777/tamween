@@ -492,6 +492,7 @@ const num=v=>{
   const x=parseFloat(s);return isFinite(x)?x:0;
 };
 const fmt=n=>Math.round(n).toLocaleString('en-US');
+const fmtN=n=>String(Math.round(n)); /* عدد الشوالات: رقم صحيح بلا فواصل حتى لا يُظن كسرا */
 const J=' جنيه';
 
 /* ---------- theme ---------- */
@@ -578,10 +579,10 @@ function trDetails(pc){
   let t='\n▪ الترحيل:\n';
   if(S.trMode==='lump') return t+'   - ترحيل مقطوع: '+fmt(pc.tr)+' جنيه\n';
   pc.tl.forEach(({g,c})=>{
-    t+='   - '+(g.r.name||'منطقة')+' ('+g.names.join('، ')+'): '+fmt(g.n)+' شوال\n';
+    t+='   - '+(g.r.name||'منطقة')+' ('+g.names.join('، ')+'): '+fmtN(g.n)+' شوال\n';
     const by={};c.trips.forEach(x=>{(by[x.name]=by[x.name]||{l:[],fare:x.fare}).l.push(x.l);});
     Object.keys(by).forEach(k=>{const v=by[k];t+='       '+k+' × '+v.l.length+' ('+v.l.join(' + ')+' شوال) × '+fmt(v.fare)+' = '+fmt(v.l.length*v.fare)+' جنيه\n';});
-    if(c.loose) t+='       '+fmt(c.loose)+' شوال × '+fmt(c.ps)+' (أجرة ثابتة للشوال) = '+fmt(c.loose*c.ps)+' جنيه\n';
+    if(c.loose) t+='       '+fmtN(c.loose)+' شوال × '+fmt(c.ps)+' (أجرة ثابتة للشوال) = '+fmt(c.loose*c.ps)+' جنيه\n';
   });
   return t+'   = إجمالي الترحيل: '+fmt(pc.tr)+' جنيه\n';
 }
@@ -784,7 +785,7 @@ function renderSimple(A){
     const n=maxAlone(it,A),pc=planCost([[n,it]]);
     return `<div class="tile ${tagCls(it.cat)}">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:6px"><b>${esc(iname(it))}</b><span class="tag ${tagCls(it.cat)}">${esc(catName(it.cat))}</span></div>
-      <div class="n">${fmt(n)} <small>شوال</small></div>
+      <div class="n">${fmtN(n)} <small>شوال</small></div>
       <div class="meta">تكلفة الشوال: ${fmt(itemCost(it))}${J}</div>
       ${S.trMode!=='perSack'?`<div class="meta">الترحيل: ${fmt(pc.tr)}${J}</div>`:''}
       <div class="meta">الباقي: ${fmt(A-pc.total)}${J}</div>
@@ -828,7 +829,7 @@ function choose(A){
   });
   return ch;
 }
-const planLine=plan=>plan.filter(p=>p[0]>0).map(([q,it])=>'<b>'+fmt(q)+'</b> '+esc(iname(it))).join(' + ');
+const planLine=plan=>plan.filter(p=>p[0]>0).map(([q,it])=>'<b>'+fmtN(q)+'</b> '+esc(iname(it))).join(' + ');
 
 let lastOpt=null,lastApproveText='',lastDetailsText='';
 function renderBalance(A){
@@ -847,8 +848,8 @@ function renderBalance(A){
   // hero: totals per category (full result)
   h+='<div class="heroN">'+ch.map(x=>{
     const its=oFull.plan.filter(p=>p[1].cat===x.c.id),n=its.reduce((a,p)=>a+p[0],0);
-    return `<div class="side ${tagCls(x.c.id)}"><div class="n">${fmt(n)}</div><div class="lbl">شوال ${esc(x.c.name||'')}</div><div class="note">${its.map(p=>fmt(p[0])+' '+esc(iname(p[1]))).join(' + ')||'—'}</div></div>`;}).join('')+'</div>';
-  h+=`<div class="note">النسبة المطلوبة: <b>${rtxt}</b> — تحققت في <b>${fmt(k)}</b> مجموعة${full.added.length?'، ثم أُضيف من الباقي: '+Object.entries(full.added.reduce((m,it)=>(m[iname(it)]=(m[iname(it)]||0)+1,m),{})).map(([n,c])=>'+'+c+' '+esc(n)).join('، '):''}.</div>`;
+    return `<div class="side ${tagCls(x.c.id)}"><div class="n">${fmtN(n)}</div><div class="lbl">شوال ${esc(x.c.name||'')} كامل</div><div class="note">${its.map(p=>fmtN(p[0])+' '+esc(iname(p[1]))).join(' + ')||'—'}</div></div>`;}).join('')+'</div>';
+  h+=`<div class="note">النسبة المطلوبة: <b>${rtxt}</b> — تحققت في <b>${fmtN(k)}</b> مجموعة${full.added.length?'، ثم أُضيف من الباقي: '+Object.entries(full.added.reduce((m,it)=>(m[iname(it)]=(m[iname(it)]||0)+1,m),{})).map(([n,c])=>'+'+c+' '+esc(n)).join('، '):''}.</div>`;
   const pc=oFull.c;
   h+=`<div class="facts">
     <div class="fact"><span>قيمة الشراء</span><b>${fmt(pc.buy)}</b></div>
@@ -886,7 +887,7 @@ function renderBalance(A){
   // جدول المقارنة لكل قسم فيه أكثر من صنف
   ch.filter(x=>x.items.length>1).forEach(x=>{
     h+=`<div class="sec-title">مقارنة أصناف ${esc(x.c.name||'')} <small class="note" style="margin:0">(اضغط على صف لاختياره)</small></div><div class="tbl"><table><thead><tr><th>الصنف</th><th>تكلفة الشوال</th><th>عدد المجموعات</th><th>الباقي</th></tr></thead><tbody>`;
-    h+=x.rows.map((r,i)=>`<tr class="click ${r.it===x.it?'sel':''}" data-pick="${x.c.id}|${r.it.id}"><td>${esc(iname(r.it))} ${i===0?'<span class="tag best">الأفضل</span>':''}</td><td>${fmt(itemCost(r.it))}</td><td><b>${fmt(r.k)}</b></td><td>${fmt(r.rem)}</td></tr>`).join('');
+    h+=x.rows.map((r,i)=>`<tr class="click ${r.it===x.it?'sel':''}" data-pick="${x.c.id}|${r.it.id}"><td>${esc(iname(r.it))} ${i===0?'<span class="tag best">الأفضل</span>':''}</td><td>${fmt(itemCost(r.it))}</td><td><b>${fmtN(r.k)}</b></td><td>${fmt(r.rem)}</td></tr>`).join('');
     h+='</tbody></table></div>';
   });
   lastOpt=O.find(o=>o.key===S.selOpt)||oFull;
@@ -906,14 +907,14 @@ function renderApprove(A){
   if(!A||!lastOpt){$('#approve').innerHTML=$('#details').innerHTML='<div class="empty">أدخل المبلغ لتظهر النتيجة، ثم اختر ما تعتمده.</div>';return;}
   const o=lastOpt,pc=o.c,plan=o.plan.filter(p=>p[0]>0);
   const trLine=S.trMode==='perSack'?'الترحيل: محسوب ضمن تكلفة كل شوال':'الترحيل: '+fmt(pc.tr)+' جنيه'+(S.trMode==='trips'?' ('+trSummary(pc)+')':' (مقطوع)');
-  lastApproveText='السلام عليكم ورحمة الله وبركاته\n\nاعتمد شراء:\n'+plan.map(([q,it])=>'- '+fmt(q)+' شوال '+iname(it)).join('\n')
+  lastApproveText='السلام عليكم ورحمة الله وبركاته\n\nاعتمد شراء:\n'+plan.map(([q,it])=>'- '+fmtN(q)+' شوال '+iname(it)).join('\n')
     +'\n\nالمبلغ المتاح: '+fmt(A)+' جنيه\nقيمة الشراء: '+fmt(pc.buy)+' جنيه\n'+trLine+'\nإجمالي المصروف: '+fmt(pc.total)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';
   $('#approve').innerHTML='<div class="msgbox">'+esc(lastApproveText)+'</div>';
   let t='السلام عليكم ورحمة الله وبركاته\n\nتفاصيل قيمة الشراء:\n';
   plan.forEach(([q,it])=>{
     const c=itemCost(it);
-    t+='\n▪ '+iname(it)+': '+fmt(q)+' شوال\n'+costParts(it).map(([l,v])=>'   - '+l+': '+fmt(v)+' جنيه').join('\n')
-      +'\n   = تكلفة الشوال: '+fmt(c)+' جنيه\n   = الإجمالي: '+fmt(q)+' × '+fmt(c)+' = '+fmt(q*c)+' جنيه\n';
+    t+='\n▪ '+iname(it)+': '+fmtN(q)+' شوال\n'+costParts(it).map(([l,v])=>'   - '+l+': '+fmt(v)+' جنيه').join('\n')
+      +'\n   = تكلفة الشوال: '+fmt(c)+' جنيه\n   = الإجمالي: '+fmtN(q)+' × '+fmt(c)+' = '+fmt(q*c)+' جنيه\n';
   });
   t+=trDetails(pc);
   t+='\nالمبلغ المتاح: '+fmt(A)+' جنيه\nقيمة الشراء: '+fmt(pc.buy)+' جنيه'+(S.trMode==='perSack'?'':'\nالترحيل: '+fmt(pc.tr)+' جنيه')+'\nإجمالي المصروف: '+fmt(pc.total)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';

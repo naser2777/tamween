@@ -406,7 +406,7 @@ tr.sel td{background:var(--gold-soft)}
         <button class="btn pri" id="copyApprove">نسخ الرسالة الأولى</button>
         <button class="btn" id="shareApprove">إرسال</button>
       </div>
-      <h3 class="xh">الرسالة الثانية: تفاصيل القيمة والترحيل</h3>
+      <h3 class="xh">الرسالة الثانية: تفاصيل الشراء والتكاليف</h3>
       <div id="details"></div>
       <div class="row-actions">
         <button class="btn pri" id="copyDetails">نسخ الرسالة الثانية</button>
@@ -911,14 +911,47 @@ function renderApprove(A){
   lastApproveText='السلام عليكم ورحمة الله وبركاته\n\nاعتمد شراء:\n'+plan.map(([q,it])=>'- '+fmtN(q)+' شوال '+iname(it)).join('\n')
     +'\n\nالمبلغ المتاح: '+fmt(A)+' جنيه\nقيمة الشراء: '+fmt(pc.buy)+' جنيه\n'+trLine+'\nإجمالي المصروف: '+fmt(pc.total)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';
   $('#approve').innerHTML='<div class="msgbox">'+esc(lastApproveText)+'</div>';
-  let t='السلام عليكم ورحمة الله وبركاته\n\nتفاصيل قيمة الشراء:\n';
-  plan.forEach(([q,it])=>{
-    const c=itemCost(it);
-    t+='\n▪ '+iname(it)+': '+fmtN(q)+' شوال\n'+costParts(it).map(([l,v])=>'   - '+l+': '+fmt(v)+' جنيه').join('\n')
-      +'\n   = تكلفة الشوال: '+fmt(c)+' جنيه\n   = الإجمالي: '+fmtN(q)+' × '+fmt(c)+' = '+fmt(q*c)+' جنيه\n';
-  });
-  t+=trDetails(pc);
-  t+='\nالمبلغ المتاح: '+fmt(A)+' جنيه\nقيمة الشراء: '+fmt(pc.buy)+' جنيه'+(S.trMode==='perSack'?'':'\nالترحيل: '+fmt(pc.tr)+' جنيه')+'\nإجمالي المصروف: '+fmt(pc.total)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';
+  const AR=['١','٢','٣','٤','٥','٦','٧','٨','٩','١٠','١١','١٢','١٣','١٤','١٥'];let sec=0;const H=s=>'\n'+AR[sec++]+') '+s+'\n';
+  const SUM=[];
+  let t='السلام عليكم ورحمة الله وبركاته\n\nتفاصيل الشراء والتكاليف:\n';
+  // ١) الشراء
+  t+=H('الشراء');let buyOnly=0;
+  plan.forEach(([q,it])=>{const p=num(it.price);buyOnly+=q*p;
+    t+='- '+iname(it)+': '+fmtN(q)+' شوال\n   سعر الشوال: '+fmt(p)+' جنيه\n   قيمة '+fmtN(q)+' شوال: '+fmtN(q)+' × '+fmt(p)+' = '+fmt(q*p)+' جنيه\n';});
+  t+='= إجمالي الشراء: '+fmt(buyOnly)+' جنيه\n';SUM.push(['الشراء',buyOnly]);
+  // ٢) الترحيل
+  if(S.trMode==='trips'&&pc.tl.length){
+    t+=H('الترحيل');
+    pc.tl.forEach(({g,c})=>{
+      t+=(pc.tl.length>1||!g.r.mix?'- '+(g.r.name||'منطقة')+' ('+g.names.join('، ')+'): ':'- عدد الشوالات: ')+fmtN(g.n)+' شوال\n';
+      const by={};c.trips.forEach(x=>{(by[x.name]=by[x.name]||{l:[],fare:x.fare}).l.push(x.l);});
+      Object.keys(by).forEach(k=>{const v=by[k],cnt={};v.l.forEach(l=>cnt[l]=(cnt[l]||0)+1);
+        const loads=Object.keys(cnt).sort((a,b)=>b-a).map(l=>cnt[l]>1?cnt[l]+' × '+l+' شوال':l+' شوال').join(' + ');
+        t+='   '+fmtN(v.l.length)+' '+k+'، كل '+k+' بـ '+fmt(v.fare)+' جنيه = '+fmt(v.l.length*v.fare)+' جنيه ('+loads+')\n';});
+      if(c.loose) t+='   الـ'+fmtN(c.loose)+' شوال المتبقية: أجرة كل شوال '+fmt(c.ps)+' جنيه = '+fmt(c.loose*c.ps)+' جنيه\n';
+    });
+    t+='= إجمالي الترحيل: '+fmt(pc.tr)+' جنيه\n';SUM.push(['الترحيل',pc.tr]);
+  } else if(S.trMode==='lump'&&pc.tr>0){
+    t+=H('الترحيل')+'- ترحيل مقطوع\n= إجمالي الترحيل: '+fmt(pc.tr)+' جنيه\n';SUM.push(['الترحيل',pc.tr]);
+  } else if(S.trMode==='perSack'){
+    let trT=0,tx='';
+    plan.forEach(([q,it])=>{const r=trOf(it);if(r>0){trT+=q*r;tx+='- '+iname(it)+': '+fmtN(q)+' شوال × '+fmt(r)+' جنيه = '+fmt(q*r)+' جنيه\n';}});
+    if(trT>0){t+=H('الترحيل')+tx+'= إجمالي الترحيل: '+fmt(trT)+' جنيه\n';SUM.push(['الترحيل',trT]);}
+  }
+  // التكاليف التي على كل شوال
+  const per=(title,rate,filter)=>{
+    if(rate<=0) return; const sel=plan.filter(([q,it])=>filter(it)),n=sel.reduce((a,[q])=>a+q,0); if(!n) return;
+    const who=sel.length<plan.length?' ('+sel.map(([q,it])=>iname(it)).join('، ')+')':'';
+    t+=H(title)+'- '+title+' على كل شوال: '+fmt(rate)+' جنيه\n- عدد الشوالات: '+fmtN(n)+' شوال'+who+'\n= إجمالي '+title+': '+fmtN(n)+' × '+fmt(rate)+' = '+fmt(n*rate)+' جنيه\n';
+    SUM.push([title,n*rate]);
+  };
+  per('الطحن',cv('mill'),it=>it.mill);
+  per('التحميل',cv('load'),()=>true);
+  per('السعي',cv('sai'),()=>true);
+  per('أكياس التوزيع',cv('bags'),()=>true);
+  (S.extra||[]).forEach(x=>per(x.name||'تكلفة إضافية',num(x.amt),it=>!(x.millOnly&&!it.mill)));
+  t+='\n—————————\nالملخص:\n'+SUM.map(([k,v])=>'- '+k+': '+fmt(v)+' جنيه').join('\n')
+    +'\n= إجمالي المصروف: '+fmt(pc.total)+' جنيه\n\nالمبلغ المتاح: '+fmt(A)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';
   lastDetailsText=t;
   $('#details').innerHTML='<div class="msgbox">'+esc(t)+'</div>';
 }

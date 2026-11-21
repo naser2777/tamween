@@ -357,7 +357,7 @@ tr.sel td{background:var(--gold-soft)}
         <button data-mode="perSack">مبلغ ثابت على كل شوال</button>
       </div>
       <div id="trTrips">
-        <p class="sub">لكل منطقة سياراتها وأجرة المشوار. السيارة تُستعمل فقط إذا امتلأت بين أقل حمولة وأقصى حمولة، وما لا يكفي لملء سيارة يُحسب بأجرة ثابتة لكل شوال. البرنامج يختار أرخص توزيع تلقائيا.</p>
+        <p class="sub">لكل منطقة سياراتها وأجرة المشوار. تُملأ السيارة إلى أقصى حمولتها، وكلما بلغ الباقي «أقل حمولة» تُستأجر سيارة أخرى. وما يبقى أقل من ذلك يُحسب بالأجرة الثابتة لكل شوال.</p>
         <div id="regions"></div>
         <div class="row-actions"><button class="btn pri" id="addRegion">+ إضافة منطقة</button></div>
       </div>
@@ -543,12 +543,13 @@ function dp(r,n){
   }
   return c;
 }
-/* أرخص طريقة لترحيل n شوال من منطقة r */
+/* ترحيل n شوال من منطقة r: تُملأ السيارة إلى أقصى حمولتها، وكلما بلغ الباقي أقل حمولة استُؤجرت سيارة أخرى، وما بقي دون ذلك بالأجرة الثابتة لكل شوال */
 function carry(r,n){
   if(n<=0) return {cost:0,trips:[],loose:0,ps:0};
-  const c=dp(r,n),trips=[];let m=n,loose=0;
-  while(m>0){const x=c.ch[m];if(x){trips.push({name:c.V[x[0]].name,l:x[1],fare:c.V[x[0]].fare});m-=x[1];}else{loose++;m--;}}
-  return {cost:c.b[n],trips,loose,ps:c.ps};
+  const V=vehOf(r).sort((a,b)=>b.max-a.max),ps=num(r.ps),trips=[];let m=n;
+  V.forEach(v=>{while(m>=v.max){trips.push({name:v.name,l:v.max,fare:v.fare});m-=v.max;}
+    if(m>0&&m>=v.min){trips.push({name:v.name,l:m,fare:v.fare});m=0;}});
+  return {cost:trips.reduce((a,t)=>a+t.fare,0)+m*ps,trips,loose:m,ps};
 }
 /* plan = [[عدد, صنف], ...] */
 function planCost(plan){

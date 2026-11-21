@@ -276,7 +276,9 @@ tr.sel td{background:var(--gold-soft)}
   box-shadow:0 8px 22px rgba(29,58,95,.22),inset 0 -5px 0 var(--gold)}
 .htile:hover{filter:brightness(1.08)}
 .htile:active{transform:scale(.98)}
-.htile .hi{font-size:2.4rem;line-height:1}
+.htile .hi{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#e9c46a;background:rgba(255,255,255,.08);border:1.5px solid rgba(233,196,106,.55)}
+.htile .hi svg{width:36px;height:36px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.htile b{font-size:1.45rem}
 .htile b{font-size:1.3rem}
 .htile small{font-size:.92rem;color:rgba(255,255,255,.85);line-height:1.5}
 .backbar{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;margin-bottom:16px;position:sticky;top:8px;z-index:5;box-shadow:0 4px 14px rgba(23,33,47,.08)}
@@ -286,7 +288,7 @@ tr.sel td{background:var(--gold-soft)}
 .scrfoot .btn{min-height:54px;flex:1 1 200px}
 #chosenInfo{margin:0 0 10px;padding:10px 12px;background:var(--gold-soft);border-radius:10px;color:var(--ink)}
 #chosenInfo:empty{display:none}
-@media (max-width:560px){.hgrid{grid-template-columns:1fr 1fr;gap:10px}.htile{min-height:150px;aspect-ratio:auto;padding:12px}.htile b{font-size:1.12rem}.htile .hi{font-size:2rem}.htile small{font-size:.82rem}}
+@media (max-width:560px){.hgrid{grid-template-columns:1fr 1fr;gap:10px}.htile{min-height:150px;aspect-ratio:auto;padding:12px}.htile b{font-size:1.12rem}.htile .hi{width:58px;height:58px}.htile .hi svg{width:30px;height:30px}.htile small{font-size:.82rem}}
 /* calc tab layout: numbered steps + quick jump */
 #tab-calc .card{scroll-margin-top:110px}
 .jump{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 16px}
@@ -361,19 +363,19 @@ tr.sel td{background:var(--gold-soft)}
   <!-- ============ الشاشة الرئيسية ============ -->
   <section id="scr-home" class="screen">
   <div class="hgrid">
-    <button class="htile" data-go="prices"><span class="hi">💰</span><b>الأسعار والتكاليف</b><small id="hs-prices">الأقسام والنسبة والترحيل والأصناف</small></button>
-    <button class="htile" data-go="result"><span class="hi">🧮</span><b>حساب الشوالات</b><small id="hs-result"></small></button>
-    <button class="htile" data-go="options"><span class="hi">✅</span><b>اختر ما تعتمده</b><small id="hs-options"></small></button>
-    <button class="htile" data-go="mix"><span class="hi">🔀</span><b>مقترحات الخلط</b><small id="hs-mix"></small></button>
-    <button class="htile" data-go="messages"><span class="hi">✉️</span><b>الرسائل</b><small id="hs-messages">اعتماد الشراء والتفاصيل</small></button>
-    <button class="htile" data-go="compare"><span class="hi">📊</span><b>مقارنات إضافية</b><small id="hs-compare">مقارنة الأصناف</small></button>
-    <button class="htile" data-go="salary"><span class="hi">👥</span><b>رواتب الحلقات</b><small id="hs-salary"></small></button>
+    <button class="htile" data-go="prices"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><b>التكاليف</b><small id="hs-prices">الأقسام والنسبة والترحيل والأصناف</small></button>
+    <button class="htile" data-go="result"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-1.5 3.5h-3z"/><path d="M10.5 6.5C6 9 4 13 4 16.5 4 19.5 6.5 21 12 21s8-1.5 8-4.5c0-3.5-2-7.5-6.5-10"/><path d="M9.5 13h5M9.5 16.5h5"/></svg></span><b>الشوالات</b><small id="hs-result"></small></button>
+    <button class="htile" data-go="options"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16.5 9.5"/></svg></span><b>المعتمد</b><small id="hs-options"></small></button>
+    <button class="htile" data-go="mix"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></span><b>الخلط</b><small id="hs-mix"></small></button>
+    <button class="htile" data-go="messages"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><b>الرسائل</b><small id="hs-messages">اعتماد الشراء والتفاصيل</small></button>
+    <button class="htile" data-go="compare"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"/><rect x="6" y="11" width="3" height="6"/><rect x="10.5" y="6" width="3" height="11"/><rect x="15" y="13" width="3" height="4"/></svg></span><b>المقارنة</b><small id="hs-compare">مقارنة الأصناف</small></button>
+    <button class="htile" data-go="salary"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17" cy="9" r="2.3"/><path d="M15.5 14.2c2.6-.3 5 1.4 5 4.3"/></svg></span><b>الرواتب</b><small id="hs-salary"></small></button>
   </div>
   </section>
 
   <!-- ============ الأسعار ============ -->
   <section id="scr-prices" class="screen hidden">
-    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">الأسعار والتكاليف</h2></div>
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">التكاليف</h2></div>
     <div class="card">
       <h2>الأقسام ونسبة الموازنة</h2>
       <p class="sub">لكل قسم نسبة. مثلا: طحين 1 وبصل 3 تعني أن كل شوال طحين يقابله 3 شوالات بصل. اكتب 0 لقسم لا يدخل في الموازنة.</p>
@@ -431,12 +433,12 @@ tr.sel td{background:var(--gold-soft)}
         <button class="btn pri" id="addItem">+ إضافة صنف</button>
       </div>
     </div>
-    <div class="scrfoot"><button class="btn pri" data-go="result">حساب الشوالات ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
+    <div class="scrfoot"><button class="btn pri" data-go="result">الشوالات ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
   </section>
 
   <!-- ============ حساب الشوالات ============ -->
   <section id="scr-result" class="screen hidden">
-    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">حساب الشوالات</h2></div>
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">الشوالات</h2></div>
     <div class="card">
       <h2>المبلغ المتاح للتموين</h2>
       <label class="f big"><input type="text" inputmode="decimal" class="num" id="amount" placeholder="مثال: 1,000,000"></label>
@@ -446,22 +448,26 @@ tr.sel td{background:var(--gold-soft)}
       <h2>نتيجة الموازنة</h2>
       <div id="balance"></div>
     </div>
-    <div class="scrfoot"><button class="btn pri" data-go="options">اختر ما تعتمده ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
+    <div class="scrfoot"><button class="btn pri" data-go="options">المعتمد ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
   </section>
 
   <!-- ============ الاختيار ============ -->
   <section id="scr-options" class="screen hidden">
-    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">اختر ما تعتمده</h2></div>
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">المعتمد</h2></div>
     <div class="card">
-      <p class="sub">اضغط على الخيار الذي تريده، فتُكتب الرسائل بحسبه. ويمكنك أيضا اختيار أحد «مقترحات الخلط».</p>
+      <p class="sub">اضغط على ما تريد اعتماده: أحد الخيارين، أو أحد مقترحات الخلط. فتُكتب الرسائل بحسبه.</p>
       <div id="options"></div>
     </div>
-    <div class="scrfoot"><button class="btn pri" data-go="messages">الرسائل ←</button><button class="btn pri" data-go="mix">مقترحات الخلط ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
+    <div class="card">
+      <h2>مقترحات الخلط</h2>
+      <div id="mixes2"></div>
+    </div>
+    <div class="scrfoot"><button class="btn pri" data-go="messages">الرسائل ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
   </section>
 
   <!-- ============ الخلط ============ -->
   <section id="scr-mix" class="screen hidden">
-    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">مقترحات الخلط</h2></div>
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">الخلط</h2></div>
     <div class="card">
       <p class="sub">خلط نوعين من نفس القسم ليُستغل الباقي. اضغط على المقترح لتعتمده، فتُكتب الرسائل بحسبه.</p>
       <div id="mixes"></div>
@@ -491,7 +497,7 @@ tr.sel td{background:var(--gold-soft)}
 
   <!-- ============ المقارنات ============ -->
   <section id="scr-compare" class="screen hidden">
-    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">مقارنات إضافية</h2></div>
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">المقارنة</h2></div>
     <div class="card">
       <div id="compare"></div>
     </div>
@@ -505,7 +511,7 @@ tr.sel td{background:var(--gold-soft)}
 
   <!-- ============ رواتب الحلقات ============ -->
   <section id="scr-salary" class="screen hidden">
-    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">رواتب الحلقات</h2></div>
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">الرواتب</h2></div>
     <div class="card">
       <h2>المبلغ الواصل للرواتب</h2>
       <label class="f big"><input type="text" inputmode="decimal" class="num" id="salaryAmount" placeholder="مثال: 400,000"></label>
@@ -1079,6 +1085,7 @@ function updateCalc(){
   $('#balance').innerHTML=parts[0];
   $('#options').innerHTML=parts.length>1?p3[0]:'<div class="empty">أدخل المبلغ في «حساب الشوالات» لتظهر الخيارات.</div>';
   $('#mixes').innerHTML=(p3[1]||'').trim()||'<div class="empty">'+(parts.length>1?'لا يوجد خلط يستغل الباقي بالأسعار الحالية.':'أدخل المبلغ في «حساب الشوالات» لتظهر المقترحات.')+'</div>';
+  $('#mixes2').innerHTML=$('#mixes').innerHTML;
   $('#compare').innerHTML=(p2[1]||'').trim()||'<div class="empty">لا توجد أقسام فيها أكثر من صنف للمقارنة.</div>';
   homeInfo(A);
   renderApprove(A);
@@ -1134,7 +1141,7 @@ function updateSalary(){
   }
   if(Math.abs(pctSum-100)>1e-9) h+=`<div class="warnbox">مجموع النسب ${+pctSum.toFixed(3)}٪ — يجب أن يكون 100٪.${pctSum<100&&A?' غير موزّع: '+fmt(A-total)+J:''}</div>`;
   $('#salarySum').innerHTML=h;
-  $('#hs-salary').textContent=A?'المبلغ: '+fmt(A)+J:'التوزيع على المعلمين';
+  $('#hs-salary').textContent=A?'المبلغ: '+fmt(A)+J:'رواتب الحلقات';
   lastSalaryText=A?`توزيع الرواتب (المبلغ ${fmt(A)} جنيه):\n`+lines.join('\n'):'';
 }
 

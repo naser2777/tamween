@@ -251,6 +251,24 @@ tr.sel td{background:var(--gold-soft)}
 .sug.pick[data-chosen]::after{background:var(--primary);border-color:var(--primary);box-shadow:inset 0 0 0 4px var(--card)}
 .sug.mainpick{background:var(--card);border:1.5px solid var(--line);border-inline-start:4px solid var(--primary);margin-top:12px;font-weight:600}
 .msgbox{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-inline-start:4px solid var(--gold);border-radius:12px;padding:14px 18px;font-size:1.08rem;line-height:1.9}
+/* categories, transport, multi-category hero */
+.catrow{display:grid;grid-template-columns:1.6fr 1fr auto;gap:10px;align-items:end;padding:10px 0;border-bottom:1px dashed var(--line)}
+.seg{display:flex;gap:6px;flex-wrap:wrap;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:6px;margin-bottom:14px}
+.seg button{flex:1 1 150px;font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:12px 10px;border-radius:10px;cursor:pointer;min-height:50px}
+.seg button.on{background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;box-shadow:inset 0 -3px 0 var(--gold)}
+.region{border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;background:var(--bg);display:flex;flex-direction:column;gap:10px}
+.rhead{display:flex;gap:8px;align-items:end}.rhead label{flex:1}
+.veh{display:grid;grid-template-columns:1.3fr 1fr 1fr 1.2fr auto;gap:8px;align-items:end;padding:8px 0;border-bottom:1px dashed var(--line)}
+.region input[type=text]{background:var(--field)}
+.region .chk{white-space:normal;align-items:flex-start;padding-bottom:0}.region .chk input{flex:none;margin-top:4px}
+.heroN{display:flex;flex-wrap:wrap;gap:12px;margin:6px 0 12px}
+.heroN .side{flex:1 1 170px;border-radius:14px;padding:16px;text-align:center;border:1.5px solid var(--line)}
+.heroN .side.flour{background:var(--flour-soft)}.heroN .side.onion{background:var(--onion-soft)}.heroN .side.other{background:var(--primary-soft)}
+.heroN .side .n{font-size:2.6rem;font-weight:800;line-height:1.1}
+.heroN .side.flour .n{color:var(--flour)}.heroN .side.onion .n{color:var(--onion)}.heroN .side.other .n{color:var(--primary)}
+.heroN .side .lbl{font-weight:700;font-size:1.1rem}
+.bad{color:var(--warn);font-weight:700}
+@media (max-width:640px){.veh{grid-template-columns:1fr 1fr;background:var(--card);border-radius:12px;padding:10px;border:1px solid var(--line);position:relative;padding-top:48px}.veh .btn.del{position:absolute;top:4px;left:4px}.catrow{grid-template-columns:1fr 1fr auto}}
 /* salary: result separate from settings */
 .reshead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
 .reshead h2{margin:0}
@@ -307,25 +325,57 @@ tr.sel td{background:var(--gold-soft)}
   <!-- ============ الأسعار ============ -->
   <section id="tab-prices">
     <div class="card">
+      <h2>الأقسام ونسبة الموازنة</h2>
+      <p class="sub">لكل قسم نسبة. مثلا: طحين 1 وبصل 3 تعني أن كل شوال طحين يقابله 3 شوالات بصل. اكتب 0 لقسم لا يدخل في الموازنة.</p>
+      <div id="cats"></div>
+      <div id="ratioInfo" class="note"></div>
+      <div class="row-actions"><button class="btn pri" id="addCat">+ إضافة قسم</button></div>
+    </div>
+
+    <div class="card">
       <h2>تكاليف موحّدة لكل شوال</h2>
-      <p class="sub">تُضاف على كل شوال من كل الأصناف. الطحن يُضاف فقط للأصناف التي تُطحن. الترحيل هنا هو الافتراضي، ويمكن تغييره لأي صنف يأتي من منطقة أخرى.</p>
+      <p class="sub">تُضاف على كل شوال من كل الأصناف. الطحن يُضاف فقط للأصناف التي تُطحن، وأجرته تشمل نقل الحب إلى الطاحونة.</p>
       <div class="grid">
         <div class="fc" data-fc="mill"><label class="f">الطحن<input type="text" inputmode="decimal" class="num" data-cost="mill"></label><button class="btn del" data-fdel="mill" title="حذف هذه التكلفة">×</button></div>
-        <div class="fc" data-fc="transport"><label class="f">الترحيل (افتراضي)<input type="text" inputmode="decimal" class="num" data-cost="transport"></label><button class="btn del" data-fdel="transport" title="حذف هذه التكلفة">×</button></div>
         <div class="fc" data-fc="load"><label class="f">التحميل<input type="text" inputmode="decimal" class="num" data-cost="load"></label><button class="btn del" data-fdel="load" title="حذف هذه التكلفة">×</button></div>
         <div class="fc" data-fc="sai"><label class="f">السعي<input type="text" inputmode="decimal" class="num" data-cost="sai"></label><button class="btn del" data-fdel="sai" title="حذف هذه التكلفة">×</button></div>
         <div class="fc" data-fc="bags"><label class="f">أكياس التوزيع<input type="text" inputmode="decimal" class="num" data-cost="bags"></label><button class="btn del" data-fdel="bags" title="حذف هذه التكلفة">×</button></div>
       </div>
       <div class="row-actions" id="restoreWrap"><button class="btn" id="restoreCosts"></button></div>
       <h3 class="xh">تكاليف إضافية</h3>
-      <p class="sub">أضف أي تكلفة أخرى تُدفع على كل شوال (مثل ترحيل إضافي، أو تعبئة، أو حراسة). تُضاف تلقائيا إلى التكلفة الكاملة لكل صنف.</p>
+      <p class="sub">أضف أي تكلفة أخرى تُدفع على كل شوال (مثل تعبئة أو حراسة). تُضاف تلقائيا إلى تكلفة كل شوال.</p>
       <div id="extraCosts"></div>
       <div class="row-actions"><button class="btn pri" id="addCost">+ إضافة تكلفة</button></div>
     </div>
 
     <div class="card">
+      <h2>الترحيل</h2>
+      <p class="sub">مبلغ الترحيل يُحجز من المبلغ المتاح قبل الشراء، حتى لا يُصرف في الشراء دون انتباه.</p>
+      <div class="seg" id="trModes">
+        <button data-mode="trips">بالسيارات والمشاوير</button>
+        <button data-mode="lump">مبلغ مقطوع</button>
+        <button data-mode="perSack">مبلغ ثابت على كل شوال</button>
+      </div>
+      <div id="trTrips">
+        <p class="sub">لكل منطقة سياراتها وأجرة المشوار. تُملأ السيارة إلى أقصى حمولتها، وكلما بلغ الباقي «أقل حمولة» تُستأجر سيارة أخرى. وما يبقى أقل من ذلك يُحسب بالأجرة الثابتة لكل شوال.</p>
+        <div id="regions"></div>
+        <div class="row-actions"><button class="btn pri" id="addRegion">+ إضافة منطقة</button></div>
+      </div>
+      <div id="trLumpBox">
+        <label class="f">مبلغ الترحيل كله (مقطوع)<input type="text" inputmode="decimal" class="num" id="trLump" placeholder="مثال: 300,000"></label>
+        <div class="note">يُخصم هذا المبلغ كما هو من المبلغ المتاح، والباقي للشراء.</div>
+      </div>
+      <div id="trPerSack">
+        <div class="grid">
+          <div class="fc" data-fc="transport"><label class="f">الترحيل لكل شوال (افتراضي)<input type="text" inputmode="decimal" class="num" data-cost="transport"></label><button class="btn del" data-fdel="transport" title="حذف هذه التكلفة">×</button></div>
+        </div>
+        <div class="note">يمكن كتابة ترحيل خاص لأي صنف في جدول الأصناف.</div>
+      </div>
+    </div>
+
+    <div class="card">
       <h2>الأصناف وأسعارها</h2>
-      <p class="sub">سعر الشوال الواحد. اترك «ترحيل خاص» فارغاً ليُحسب بالترحيل الافتراضي.</p>
+      <p class="sub">سعر الشوال الواحد، وقسم كل صنف.</p>
       <div id="items"></div>
       <div class="row-actions">
         <button class="btn pri" id="addItem">+ إضافة صنف</button>
@@ -342,41 +392,36 @@ tr.sel td{background:var(--gold-soft)}
     </div>
 
     <div class="card">
-      <h2>النتيجة المبدئية</h2>
-      <p class="sub">لو صُرف المبلغ كله على صنف واحد — شاملاً كل التكاليف (طحن، ترحيل، تحميل، سعي، أكياس).</p>
-      <div id="simple"></div>
-    </div>
-
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;flex-wrap:wrap">
-        <div>
-          <h2>موازنة الطحين مع البصل</h2>
-          <p class="sub">عدد شوالات الطحين = عدد شوالات البصل، باختيار النوع الذي يعطي أكثر عدد.</p>
-        </div>
-        <button class="btn sm" id="copyBalance">نسخ النتيجة</button>
-      </div>
+      <h2>الموازنة بين الأقسام</h2>
+      <p class="sub">أكبر عدد من الشوالات الكاملة بالنسبة التي حددتها، مع حجز الترحيل. ثم يُكمَل الباقي بشوالات كاملة حتى لا يبقى ما يكفي لشوال.</p>
       <div id="balance"></div>
     </div>
 
     <div class="card" id="approveCard">
       <h2>رسالة اعتماد الشراء</h2>
-      <p class="sub">اختر ما تريد اعتماده بالضغط عليه في الأعلى: النتيجة المذكورة، أو أحد مقترحات استغلال الباقي، أو أحد مقترحات الخلط. ثم انسخ الرسالة وأرسلها.</p>
+      <p class="sub">اختر ما تعتمده بالضغط عليه في الأعلى: النتيجة الكاملة، أو النسبة فقط، أو أحد مقترحات الخلط. ثم انسخ الرسالة وأرسلها.</p>
       <h3 class="xh">الرسالة الأولى: اعتماد الشراء</h3>
       <div id="approve"></div>
       <div class="row-actions">
         <button class="btn pri" id="copyApprove">نسخ الرسالة الأولى</button>
         <button class="btn" id="shareApprove">إرسال</button>
       </div>
-      <h3 class="xh">الرسالة الثانية: تفاصيل قيمة كل شوال</h3>
+      <h3 class="xh">الرسالة الثانية: تفاصيل الشراء والتكاليف</h3>
       <div id="details"></div>
       <div class="row-actions">
         <button class="btn pri" id="copyDetails">نسخ الرسالة الثانية</button>
         <button class="btn" id="shareDetails">إرسال</button>
       </div>
     </div>
+
+    <div class="card">
+      <h2>لو صُرف المبلغ على صنف واحد</h2>
+      <p class="sub">للمقارنة فقط: أقصى عدد شوالات من كل صنف وحده، مع حجز ترحيله.</p>
+      <div id="simple"></div>
+    </div>
   </section>
 
-  <!-- ============ الرواتب ============ -->
+<!-- ============ الرواتب ============ -->
   <section id="tab-salary" class="hidden">
     <div class="card">
       <h2>المبلغ الواصل للرواتب</h2>
@@ -428,6 +473,15 @@ let S;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
 if(!S||!S.items) S=JSON.parse(JSON.stringify(DEFAULT));
 if(!Array.isArray(S.extra)) S.extra=[];  /* تكاليف إضافية لكل شوال: {id,name,amt,millOnly} */
+/* أقسام الموازنة ونسبها */
+if(!Array.isArray(S.cats)||!S.cats.length){S.cats=[{id:'flour',name:'طحين',ratio:'1'},{id:'onion',name:'بصل',ratio:'1'}];if(S.items.some(i=>i.cat==='other'))S.cats.push({id:'other',name:'أخرى',ratio:'0'});}
+S.items.forEach(it=>{if(!S.cats.some(c=>c.id===it.cat))it.cat=S.cats[0].id;});
+/* مناطق الترحيل وسياراتها */
+if(!Array.isArray(S.regions)||!S.regions.length)S.regions=[{id:nid(),name:'المنطقة الأولى',mix:true,ps:'',veh:[{id:nid(),name:'دينة',min:'45',max:'60',fare:''}]}];
+S.items.forEach(it=>{if(!S.regions.some(r=>r.id===it.region))it.region=S.regions[0].id;});
+if(!S.trMode)S.trMode='trips';
+if(S.trLump==null)S.trLump='';
+if(!S.sel)S.sel={flour:S.selFlour||'auto'};
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 
 const $=s=>document.querySelector(s);
@@ -438,6 +492,7 @@ const num=v=>{
   const x=parseFloat(s);return isFinite(x)?x:0;
 };
 const fmt=n=>Math.round(n).toLocaleString('en-US');
+const fmtN=n=>String(Math.round(n)); /* عدد الشوالات: رقم صحيح بلا فواصل حتى لا يُظن كسرا */
 const J=' جنيه';
 
 /* ---------- theme ---------- */
@@ -460,13 +515,115 @@ document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dat
 /* تكلفة موحّدة محذوفة = لا تُحسب */
 const cv=k=>(S.off&&S.off[k])?0:num(S.costs[k]);
 const trOf=it=>(S.off&&S.off.transport)?0:((it.tr!==''&&it.tr!=null)?num(it.tr):num(S.costs.transport));
+/* تكلفة الشوال الواحد (الترحيل داخلها فقط في طريقة «مبلغ ثابت على كل شوال») */
 function itemCost(it){
   const p=num(it.price); if(p<=0) return 0;
-  const tr=trOf(it);
   const extra=(S.extra||[]).reduce((a,x)=>a+((x.millOnly&&!it.mill)?0:num(x.amt)),0);
-  return p+(it.mill?cv('mill'):0)+tr+cv('load')+cv('sai')+cv('bags')+extra;
+  return p+(it.mill?cv('mill'):0)+(S.trMode==='perSack'?trOf(it):0)+cv('load')+cv('sai')+cv('bags')+extra;
 }
-const catName={flour:'طحين',onion:'بصل',other:'أخرى'};
+const catOf=id=>S.cats.find(c=>c.id===id);
+const catName=id=>(catOf(id)&&catOf(id).name)||'قسم';
+const tagCls=id=>(id==='flour'||id==='onion')?id:'other';
+const regOf=it=>S.regions.find(r=>r.id===it.region)||S.regions[0];
+const iname=it=>it.name||'صنف بلا اسم';
+
+/* ---------- transport (trips) ---------- */
+let DPC={};
+function vehOf(r){
+  return (r.veh||[]).map(v=>({name:v.name||'سيارة',min:Math.max(1,Math.floor(num(v.min))||1),max:Math.floor(num(v.max)),fare:num(v.fare)}))
+    .filter(v=>v.max>=1&&v.fare>0&&v.min<=v.max);
+}
+function dp(r,n){
+  let c=DPC[r.id]; if(!c) c=DPC[r.id]={b:[0],ch:[null],V:vehOf(r),ps:num(r.ps)};
+  const {b,ch,V,ps}=c;
+  for(let m=b.length;m<=n;m++){
+    let best=b[m-1]+ps,cho=null;
+    for(let i=0;i<V.length;i++){const v=V[i];for(let l=v.min;l<=Math.min(v.max,m);l++){const x=b[m-l]+v.fare;if(x<best-1e-9){best=x;cho=[i,l];}}}
+    b[m]=best;ch[m]=cho;
+  }
+  return c;
+}
+/* ترحيل n شوال من منطقة r: تُملأ السيارة إلى أقصى حمولتها، وكلما بلغ الباقي أقل حمولة استُؤجرت سيارة أخرى، وما بقي دون ذلك بالأجرة الثابتة لكل شوال */
+function carry(r,n){
+  if(n<=0) return {cost:0,trips:[],loose:0,ps:0};
+  const V=vehOf(r).sort((a,b)=>b.max-a.max),ps=num(r.ps),trips=[];let m=n;
+  V.forEach(v=>{while(m>=v.max){trips.push({name:v.name,l:v.max,fare:v.fare});m-=v.max;}
+    if(m>0&&m>=v.min){trips.push({name:v.name,l:m,fare:v.fare});m=0;}});
+  return {cost:trips.reduce((a,t)=>a+t.fare,0)+m*ps,trips,loose:m,ps};
+}
+/* plan = [[عدد, صنف], ...] */
+function planCost(plan){
+  let buy=0,qty=0;const groups=new Map();
+  plan.forEach(([q,it])=>{
+    if(q<=0) return; buy+=q*itemCost(it); qty+=q;
+    if(S.trMode==='trips'){const r=regOf(it);if(!r)return;const key=r.mix?r.id:r.id+'|'+it.id;
+      const g=groups.get(key)||{r,n:0,names:[]};g.n+=q;if(!g.names.includes(iname(it)))g.names.push(iname(it));groups.set(key,g);}
+  });
+  let tr=0;const tl=[];
+  if(S.trMode==='lump') tr=qty?num(S.trLump):0;
+  else if(S.trMode==='trips') groups.forEach(g=>{const c=carry(g.r,g.n);tr+=c.cost;tl.push({g,c});});
+  return {buy,tr,total:buy+tr,tl,qty};
+}
+function tripsText(c){
+  const by={};c.trips.forEach(t=>{(by[t.name]=by[t.name]||{n:0,l:[],fare:t.fare}).n++;by[t.name].l.push(t.l);});
+  const parts=Object.keys(by).map(k=>k+' × '+by[k].n);
+  if(c.loose) parts.push(c.loose+' شوال بالأجرة الثابتة');
+  return parts.join(' + ');
+}
+function trSummary(pc){
+  if(S.trMode==='perSack') return 'ضمن تكلفة كل شوال';
+  if(S.trMode==='lump') return 'مبلغ مقطوع';
+  return pc.tl.filter(x=>x.g.n>0).map(x=>(S.regions.length>1||!x.g.r.mix?x.g.r.name+': ':'')+tripsText(x.c)).join(' · ')||'—';
+}
+function trDetails(pc){
+  if(S.trMode==='perSack') return '';
+  let t='\n▪ الترحيل:\n';
+  if(S.trMode==='lump') return t+'   - ترحيل مقطوع: '+fmt(pc.tr)+' جنيه\n';
+  pc.tl.forEach(({g,c})=>{
+    t+='   - '+(g.r.name||'منطقة')+' ('+g.names.join('، ')+'): '+fmtN(g.n)+' شوال\n';
+    const by={};c.trips.forEach(x=>{(by[x.name]=by[x.name]||{l:[],fare:x.fare}).l.push(x.l);});
+    Object.keys(by).forEach(k=>{const v=by[k];t+='       '+k+' × '+v.l.length+' ('+v.l.join(' + ')+' شوال) × '+fmt(v.fare)+' = '+fmt(v.l.length*v.fare)+' جنيه\n';});
+    if(c.loose) t+='       '+fmtN(c.loose)+' شوال × '+fmt(c.ps)+' (أجرة ثابتة للشوال) = '+fmt(c.loose*c.ps)+' جنيه\n';
+  });
+  return t+'   = إجمالي الترحيل: '+fmt(pc.tr)+' جنيه\n';
+}
+
+/* ---------- categories & ratio ---------- */
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+function intRatios(arr){
+  let d=0;arr.forEach(x=>{const s=String(+(+x).toFixed(3));const i=s.indexOf('.');if(i>=0)d=Math.max(d,s.length-i-1);});
+  const m=10**d,v=arr.map(x=>Math.round(x*m)),g=v.reduce((a,b)=>gcd(a,b));return v.map(x=>x/g);
+}
+function balCats(){return S.cats.filter(c=>num(c.ratio)>0).map(c=>({c,items:S.items.filter(it=>it.cat===c.id&&itemCost(it)>0)}));}
+function renderCats(){
+  $('#cats').innerHTML=S.cats.map(c=>`
+    <div class="catrow" data-cid="${c.id}">
+      <label class="f">اسم القسم<input type="text" data-c="name" value="${esc(c.name)}"></label>
+      <label class="f">النسبة<input type="text" inputmode="decimal" class="num" data-c="ratio" value="${esc(c.ratio)}"></label>
+      <button class="btn del" data-cdel title="حذف القسم">×</button>
+    </div>`).join('');
+  ratioInfo();
+}
+function ratioInfo(){
+  const bc=S.cats.filter(c=>num(c.ratio)>0);
+  if(!bc.length){$('#ratioInfo').innerHTML='<span class="bad">لا يوجد قسم له نسبة، فلن تُحسب الموازنة.</span>';return;}
+  const R=intRatios(bc.map(c=>num(c.ratio)));
+  $('#ratioInfo').innerHTML='الموازنة الآن: <b>'+bc.map((c,i)=>R[i]+' '+esc(c.name||'قسم')).join(' : ')+'</b>';
+}
+$('#cats').addEventListener('input',e=>{
+  const row=e.target.closest('.catrow');if(!row)return;const c=catOf(row.dataset.cid),k=e.target.dataset.c;if(!c||!k)return;
+  c[k]=e.target.value;save();ratioInfo();renderItems();updateCalc();
+});
+$('#cats').addEventListener('click',e=>{
+  if(!e.target.closest('[data-cdel]'))return;
+  const id=e.target.closest('.catrow').dataset.cid,c=catOf(id);
+  if(S.cats.length<2){alert('يجب أن يبقى قسم واحد على الأقل.');return;}
+  const rest=S.cats.filter(x=>x.id!==id),used=S.items.filter(it=>it.cat===id).length;
+  if(!confirm('حذف قسم «'+(c.name||'')+'»؟'+(used?' أصنافه ('+used+') ستنتقل إلى قسم «'+(rest[0].name||'')+'».':'')))return;
+  S.items.forEach(it=>{if(it.cat===id)it.cat=rest[0].id;});S.cats=rest;delete S.sel[id];save();renderCats();renderItems();updateAll();
+});
+$('#addCat').onclick=()=>{S.cats.push({id:nid(),name:'',ratio:'1'});save();renderCats();renderItems();updateAll();
+  const rows=document.querySelectorAll('.catrow');rows[rows.length-1]?.querySelector('input')?.focus();};
 
 /* ---------- prices tab ---------- */
 document.querySelectorAll('[data-cost]').forEach(inp=>{
@@ -487,8 +644,56 @@ document.querySelectorAll('[data-fdel]').forEach(b=>b.onclick=()=>{
 });
 $('#restoreCosts').onclick=()=>{S.off={};save();renderFixed();updateAll();};
 renderFixed();
-(function(){
+
+/* ---------- transport settings ---------- */
+function renderTransport(){
+  document.querySelectorAll('#trModes button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.trMode));
+  $('#trTrips').classList.toggle('hidden',S.trMode!=='trips');
+  $('#trLumpBox').classList.toggle('hidden',S.trMode!=='lump');
+  $('#trPerSack').classList.toggle('hidden',S.trMode!=='perSack');
+  $('#regions').innerHTML=S.regions.map(r=>{
+    const its=S.items.filter(it=>regOf(it)===r).map(iname);
+    return `<div class="region" data-rid="${r.id}">
+      <div class="rhead"><label class="f">اسم المنطقة<input type="text" data-r="name" value="${esc(r.name)}"></label><button class="btn del" data-rdel title="حذف المنطقة">×</button></div>
+      <div class="vlist">${(r.veh||[]).map(v=>`
+        <div class="veh" data-vid="${v.id}">
+          <label class="f">السيارة<input type="text" data-v="name" value="${esc(v.name)}"></label>
+          <label class="f">أقل حمولة<input type="text" inputmode="decimal" class="num" data-v="min" value="${esc(v.min)}"></label>
+          <label class="f">أقصى حمولة<input type="text" inputmode="decimal" class="num" data-v="max" value="${esc(v.max)}"></label>
+          <label class="f">أجرة المشوار<input type="text" inputmode="decimal" class="num" data-v="fare" value="${esc(v.fare)}"></label>
+          <button class="btn del" data-vdel title="حذف السيارة">×</button>
+        </div>`).join('')||'<div class="xempty">لا توجد سيارات في هذه المنطقة.</div>'}</div>
+      <div class="row-actions"><button class="btn" data-vadd>+ إضافة سيارة</button></div>
+      <label class="f">ما لا يكفي لملء سيارة: أجرة ثابتة لكل شوال<input type="text" inputmode="decimal" class="num" data-r="ps" value="${esc(r.ps)}"></label>
+      <label class="chk"><input type="checkbox" data-r="mix" ${r.mix?'checked':''}> الأصناف المختلفة من هذه المنطقة تُحمَّل معا في سيارة واحدة</label>
+      <div class="note">أصناف هذه المنطقة: ${its.length?its.map(esc).join('، '):'لا يوجد (اختر المنطقة لكل صنف في جدول الأصناف)'}</div>
+    </div>`;}).join('');
+  $('#trLump').value=S.trLump||'';
+}
+$('#trModes').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(!b)return;S.trMode=b.dataset.mode;save();renderTransport();renderItems();updateAll();});
+$('#trLump').addEventListener('input',e=>{S.trLump=e.target.value;save();updateAll();});
+$('#trLump').addEventListener('blur',e=>{const v=num(e.target.value);if(v){e.target.value=fmt(v);S.trLump=e.target.value;save();}});
+$('#regions').addEventListener('input',e=>{
+  const rb=e.target.closest('.region');if(!rb)return;const r=S.regions.find(x=>x.id===rb.dataset.rid);if(!r)return;
+  const vb=e.target.closest('.veh');
+  if(vb){const v=r.veh.find(x=>x.id===vb.dataset.vid),k=e.target.dataset.v;if(v&&k)v[k]=e.target.value;}
+  else{const k=e.target.dataset.r;if(!k)return;r[k]=e.target.type==='checkbox'?e.target.checked:e.target.value;if(k==='name')renderItems();}
+  save();updateAll();
 });
+$('#regions').addEventListener('change',e=>{if(e.target.matches('[type=checkbox]'))e.target.dispatchEvent(new Event('input',{bubbles:true}))});
+$('#regions').addEventListener('click',e=>{
+  const rb=e.target.closest('.region');if(!rb)return;const r=S.regions.find(x=>x.id===rb.dataset.rid);if(!r)return;
+  if(e.target.closest('[data-vadd]')){r.veh=r.veh||[];r.veh.push({id:nid(),name:'',min:'1',max:'',fare:''});save();renderTransport();
+    const vs=rb.parentNode.querySelector('[data-rid="'+r.id+'"]').querySelectorAll('.veh');vs[vs.length-1]?.querySelector('input')?.focus();return;}
+  if(e.target.closest('[data-vdel]')){const id=e.target.closest('.veh').dataset.vid,v=r.veh.find(x=>x.id===id);
+    if(!confirm('حذف السيارة «'+(v?.name||'بلا اسم')+'»؟'))return;r.veh=r.veh.filter(x=>x.id!==id);save();renderTransport();updateAll();return;}
+  if(e.target.closest('[data-rdel]')){
+    if(S.regions.length<2){alert('يجب أن تبقى منطقة واحدة على الأقل.');return;}
+    if(!confirm('حذف منطقة «'+(r.name||'')+'»؟ أصنافها ستنتقل إلى المنطقة الأولى المتبقية.'))return;
+    S.regions=S.regions.filter(x=>x.id!==r.id);S.items.forEach(it=>{if(it.region===r.id)it.region=S.regions[0].id;});
+    save();renderTransport();renderItems();updateAll();}
+});
+$('#addRegion').onclick=()=>{S.regions.push({id:nid(),name:'منطقة '+(S.regions.length+1),mix:true,ps:'',veh:[{id:nid(),name:'دينة',min:'45',max:'60',fare:''}]});save();renderTransport();renderItems();};
 
 /* ---------- extra per-sack costs ---------- */
 function renderExtra(){
@@ -514,17 +719,22 @@ $('#addCost').onclick=()=>{S.extra.push({id:nid(),name:'',amt:'',millOnly:false}
   const rows=document.querySelectorAll('.xc');rows[rows.length-1]?.querySelector('input')?.focus();};
 renderExtra();
 
+/* ---------- items ---------- */
 function renderItems(){
+  const trCol=it=>S.trMode==='trips'
+    ?`<label class="f">المنطقة<select data-f="region">${S.regions.map(r=>`<option value="${r.id}" ${regOf(it)===r?'selected':''}>${esc(r.name)||'منطقة'}</option>`).join('')}</select></label>`
+    :S.trMode==='perSack'?`<label class="f">ترحيل خاص<input type="text" inputmode="decimal" class="num" data-f="tr" value="${esc(it.tr)}" placeholder="افتراضي"></label>`
+    :`<div class="total"><span>الترحيل</span><b>مقطوع</b></div>`;
   $('#items').innerHTML=S.items.map(it=>`
     <div class="item" data-id="${it.id}">
       <label class="f name">الصنف<input type="text" data-f="name" value="${esc(it.name)}"></label>
       <label class="f">القسم<select data-f="cat">
-        ${['flour','onion','other'].map(k=>`<option value="${k}" ${it.cat===k?'selected':''}>${catName[k]}</option>`).join('')}
+        ${S.cats.map(c=>`<option value="${c.id}" ${it.cat===c.id?'selected':''}>${esc(c.name)||'قسم'}</option>`).join('')}
       </select></label>
       <label class="f">سعر الشوال<input type="text" inputmode="decimal" class="num" data-f="price" value="${esc(it.price)}"></label>
-      <label class="f">ترحيل خاص<input type="text" inputmode="decimal" class="num" data-f="tr" value="${esc(it.tr)}" placeholder="افتراضي"></label>
+      ${trCol(it)}
       <label class="chk"><input type="checkbox" data-f="mill" ${it.mill?'checked':''}> يُطحن</label>
-      <div class="total"><span>التكلفة الكاملة</span><b data-total></b></div>
+      <div class="total"><span>${S.trMode==='perSack'?'تكلفة الشوال':'تكلفة الشوال بلا ترحيل'}</span><b data-total></b></div>
       <button class="btn del" data-del title="حذف">×</button>
     </div>`).join('');
   updateTotals();
@@ -534,16 +744,18 @@ $('#items').addEventListener('input',e=>{
   const it=S.items.find(x=>x.id===row.dataset.id); const f=e.target.dataset.f; if(!it||!f) return;
   it[f]=e.target.type==='checkbox'?e.target.checked:e.target.value;
   if(f==='cat'&&e.target.value==='onion'){it.mill=false;row.querySelector('[data-f=mill]').checked=false;}
-  save();updateAll();
+  save();
+  if(f==='region'||f==='name') renderTransport();
+  updateAll();
 });
 $('#items').addEventListener('change',e=>{ if(e.target.matches('select,[type=checkbox]')) e.target.dispatchEvent(new Event('input',{bubbles:true})); });
 $('#items').addEventListener('click',e=>{
   if(!e.target.closest('[data-del]')) return;
   const id=e.target.closest('.item').dataset.id;const it=S.items.find(x=>x.id===id);
   if(!confirm('حذف صنف «'+(it?.name||'')+'»؟')) return;
-  S.items=S.items.filter(x=>x.id!==id);save();renderItems();updateAll();
+  S.items=S.items.filter(x=>x.id!==id);save();renderItems();renderTransport();updateAll();
 });
-$('#addItem').onclick=()=>{S.items.push({id:nid(),name:'',cat:'flour',price:'',mill:true,tr:''});save();renderItems();
+$('#addItem').onclick=()=>{S.items.push({id:nid(),name:'',cat:S.cats[0].id,price:'',mill:true,tr:'',region:S.regions[0]?.id});save();renderItems();renderTransport();
   const rows=document.querySelectorAll('.item');rows[rows.length-1]?.querySelector('input')?.focus();};
 
 function updateTotals(){
@@ -558,112 +770,191 @@ const amountInp=$('#amount');amountInp.value=S.amount||'';
 amountInp.addEventListener('input',()=>{S.amount=amountInp.value;save();updateCalc();});
 amountInp.addEventListener('blur',()=>{const v=num(amountInp.value);if(v){amountInp.value=fmt(v);S.amount=amountInp.value;save();}});
 
+const lumpAmt=()=>S.trMode==='lump'?num(S.trLump):0;
+/* أكبر عدد شوالات كاملة من صنف واحد */
+function maxAlone(it,A){
+  const u=itemCost(it);if(u<=0)return 0;
+  let n=Math.floor(Math.max(0,A-lumpAmt())/u);
+  while(n>0&&planCost([[n,it]]).total>A+1e-9) n--;
+  return n;
+}
 function renderSimple(A){
   const list=S.items.filter(it=>itemCost(it)>0);
   if(!A) return '<div class="empty">أدخل المبلغ أعلاه لتظهر النتائج.</div>';
   if(!list.length) return '<div class="empty">أدخل أسعار الأصناف أولاً من تبويب «الأسعار والتكاليف».</div>';
   return '<div class="tiles">'+list.map(it=>{
-    const c=itemCost(it),n=Math.floor(A/c),r=A-n*c;
-    return `<div class="tile ${it.cat}">
-      <div style="display:flex;justify-content:space-between;align-items:center"><b>${esc(it.name)||'بدون اسم'}</b><span class="tag ${it.cat}">${catName[it.cat]}</span></div>
-      <div class="n">${fmt(n)} <small>شوال</small></div>
-      <div class="meta">تكلفة الشوال: ${fmt(c)}${J}</div>
-      <div class="meta">الباقي: ${fmt(r)}${J}</div>
+    const n=maxAlone(it,A),pc=planCost([[n,it]]);
+    return `<div class="tile ${tagCls(it.cat)}">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:6px"><b>${esc(iname(it))}</b><span class="tag ${tagCls(it.cat)}">${esc(catName(it.cat))}</span></div>
+      <div class="n">${fmtN(n)} <small>شوال</small></div>
+      <div class="meta">تكلفة الشوال: ${fmt(itemCost(it))}${J}</div>
+      ${S.trMode!=='perSack'?`<div class="meta">الترحيل: ${fmt(pc.tr)}${J}</div>`:''}
+      <div class="meta">الباقي: ${fmt(A-pc.total)}${J}</div>
     </div>`;}).join('')+'</div>';
 }
 
-let lastBalanceText='';
-function renderBalance(A){
-  lastBalanceText='';lastOpt=null;
-  const O=[],FN=(x,d)=>(x&&x.name)||d;
-  const flours=S.items.filter(it=>it.cat==='flour'&&itemCost(it)>0);
-  const onions=S.items.filter(it=>it.cat==='onion'&&itemCost(it)>0);
-  if(!A) return '<div class="empty">أدخل المبلغ أعلاه لتظهر النتائج.</div>';
-  if(!flours.length||!onions.length) return '<div class="empty">يلزم سعر صنف واحد على الأقل في قسم «طحين» وصنف في قسم «بصل».</div>';
-  const on=onions.reduce((a,b)=>itemCost(a)<=itemCost(b)?a:b), co=itemCost(on);
-  const rows=flours.map(f=>{const cf=itemCost(f),N=Math.floor(A/(cf+co));return{f,cf,N,rem:A-N*(cf+co)};})
-    .sort((a,b)=>b.N-a.N||a.rem-b.rem);
-  const best=rows[0];
-  let sel=S.selFlour==='auto'?best:(rows.find(r=>r.f.id===S.selFlour)||best);
-  const {f,cf,N,rem}=sel;
-  const fname=esc(f.name)||'طحين', oname=esc(on.name)||'بصل';
-  let h='';
-  if(N===0) return '<div class="warnbox">المبلغ لا يكفي لشوال طحين وشوال بصل معاً. أقل مبلغ مطلوب: '+fmt(best.cf+co)+J+'</div>';
-  h+=`<div class="hero">
-    <div class="side flour"><div class="n">${fmt(N)}</div><div class="lbl">شوال ${fname}</div><div class="note">${fmt(N*cf)}${J}</div></div>
-    <div class="eq">=</div>
-    <div class="side onion"><div class="n">${fmt(N)}</div><div class="lbl">شوال ${oname}</div><div class="note">${fmt(N*co)}${J}</div></div>
-  </div>
-  <div class="facts">
-    <div class="fact"><span>تكلفة شوال ${fname}</span><b>${fmt(cf)}</b></div>
-    <div class="fact"><span>تكلفة شوال ${oname}</span><b>${fmt(co)}</b></div>
-    <div class="fact"><span>المصروف</span><b>${fmt(N*(cf+co))}</b></div>
-    <div class="fact rem"><span>الباقي</span><b>${fmt(rem)}</b></div>
-  </div>`;
-  if(sel!==best) h+=`<div class="note">اخترت «${fname}» يدوياً. الأفضل عدداً هو «${esc(best.f.name)}» (${fmt(best.N)} شوال). <a href="#" data-auto>رجوع للاختيار التلقائي</a></div>`;
-  if(onions.length>1) h+=`<div class="note">تم احتساب البصل الأرخص: «${oname}».</div>`;
-  const fn=FN(f,'طحين'),onn=FN(on,'بصل');
-  O.push({key:'main',lines:[[N,fn,f],[N,onn,on]],rem});
-  h+=`<div class="sug pick mainpick" data-opt="main">اعتماد النتيجة المذكورة: <b>${fmt(N)}</b> ${fname} و <b>${fmt(N)}</b> ${oname} <small>· يبقى ${fmt(rem)}${J}</small></div>`;
-  lastBalanceText=`نتيجة التموين (المبلغ ${fmt(A)} جنيه):\n${fmt(N)} شوال ${f.name}\n${fmt(N)} شوال ${on.name}\nالمصروف: ${fmt(N*(cf+co))} جنيه\nالباقي: ${fmt(rem)} جنيه`;
-
-  // استغلال الباقي
-  const sugs=[];
-  const kf=Math.min(2,Math.floor(rem/cf)), ko=Math.min(2,Math.floor(rem/co));
-  for(let k=kf;k>=1;k--) O.push({key:'f'+k,lines:[[N+k,fn,f],[N,onn,on]],rem:rem-k*cf}),sugs.push(`<div class="sug pick" data-opt="f${k}">أضف <b>${k}</b> شوال ${fname} ← ${fmt(N+k)} طحين و ${fmt(N)} بصل <small>· يبقى ${fmt(rem-k*cf)}${J}</small></div>`);
-  for(let k=ko;k>=1;k--) O.push({key:'o'+k,lines:[[N,fn,f],[N+k,onn,on]],rem:rem-k*co}),sugs.push(`<div class="sug pick" data-opt="o${k}">أضف <b>${k}</b> شوال ${oname} ← ${fmt(N)} طحين و ${fmt(N+k)} بصل <small>· يبقى ${fmt(rem-k*co)}${J}</small></div>`);
-  // أنواع أخرى أرخص من النوع المختار
-  rows.filter(r=>r.f.id!==f.id&&r.cf<cf).forEach(r=>{
-    const k=Math.min(2,Math.floor(rem/r.cf));
-    if(k>0) O.push({key:'x'+r.f.id+'_'+k,lines:[[N,fn,f],[k,FN(r.f,'طحين'),r.f],[N,onn,on]],rem:rem-k*r.cf}),sugs.push(`<div class="sug pick" data-opt="x${r.f.id}_${k}">أضف <b>${k}</b> شوال ${esc(r.f.name)} ← ${fmt(N+k)} طحين و ${fmt(N)} بصل <small>· يبقى ${fmt(rem-k*r.cf)}${J}</small></div>`);
-  });
-  h+='<div class="sec-title">استغلال الباقي <small class="note" style="margin:0">(فرق شوال أو شوالين)</small></div>';
-  h+=sugs.length?sugs.join(''):'<div class="empty">الباقي لا يكفي لشوال إضافي.</div>';
-
-  // الخلط
-  const mixes=[];
-  for(const a of rows) for(const b of rows){
-    if(a.f.id===b.f.id||!(a.cf<b.cf)) continue; // a أرخص
-    const Nm=a.N, r0=a.rem, nb=Math.min(Nm,Math.floor(r0/(b.cf-a.cf)));
-    if(nb<=0||nb>=Nm) continue;
-    mixes.push({a,b,Nm,na:Nm-nb,nb,rem:r0-nb*(b.cf-a.cf)});
+const setsPlan=(ch,k)=>ch.map(x=>[k*x.r,x.it]);
+function maxSets(ch,A){
+  const per=ch.reduce((a,x)=>a+x.r*itemCost(x.it),0);if(per<=0)return 0;
+  let k=Math.floor(Math.max(0,A-lumpAmt())/per);
+  for(;k>0;k--) if(planCost(setsPlan(ch,k)).total<=A+1e-9) break;
+  return k;
+}
+/* إكمال الباقي بشوالات كاملة، مع الحفاظ على النسبة قدر الإمكان */
+function fillRest(ch,k,A){
+  const q=new Map(ch.map(x=>[x.it.id,{it:x.it,q:k*x.r}]));
+  const pool=ch.flatMap(x=>x.items).filter(it=>!ch.some(x=>x.it===it)).sort((a,b)=>itemCost(a)-itemCost(b));
+  const plan=()=>[...q.values()].filter(o=>o.q>0).map(o=>[o.q,o.it]);
+  const added=[];
+  for(let guard=0;guard<5000;guard++){
+    const cnt={};q.forEach(o=>{cnt[o.it.cat]=(cnt[o.it.cat]||0)+o.q;});
+    const order=ch.slice().sort((a,b)=>((cnt[a.c.id]||0)/a.r)-((cnt[b.c.id]||0)/b.r)||itemCost(a.it)-itemCost(b.it)).map(x=>x.it).concat(pool);
+    let ok=false;
+    for(const it of order){
+      const o=q.get(it.id)||{it,q:0};o.q++;q.set(it.id,o);
+      if(planCost(plan()).total<=A+1e-9){added.push(it);ok=true;break;}
+      o.q--;
+    }
+    if(!ok) break;
   }
-  mixes.sort((x,y)=>y.Nm-x.Nm||y.nb-x.nb);
-  h+='<div class="sec-title">مقترح خلط نوعين من الطحين</div>';
-  mixes.slice(0,6).forEach(m=>O.push({key:'m'+m.a.f.id+'_'+m.b.f.id,lines:[[m.na,FN(m.a.f,'طحين'),m.a.f],[m.nb,FN(m.b.f,'طحين'),m.b.f],[m.Nm,onn,on]],rem:m.rem}));
-  h+=mixes.length?mixes.slice(0,6).map(m=>`<div class="sug mix pick" data-opt="m${m.a.f.id}_${m.b.f.id}">`+`لو خلطنا <b>${fmt(m.na)}</b> ${esc(m.a.f.name)} + <b>${fmt(m.nb)}</b> ${esc(m.b.f.name)} = <b>${fmt(m.Nm)}</b> طحين مع <b>${fmt(m.Nm)}</b> ${oname} <small>· يبقى ${fmt(m.rem)}${J}</small></div>`).join('')
-    :'<div class="empty">لا يوجد خلط يحسّن النتيجة بالأسعار الحالية.</div>';
+  return {plan:plan(),added};
+}
+function choose(A){
+  const bc=balCats(),R=intRatios(bc.map(x=>num(x.c.ratio)));
+  const ch=bc.map((x,i)=>({c:x.c,r:R[i],items:x.items,it:x.items.reduce((a,b)=>itemCost(a)<=itemCost(b)?a:b)}));
+  ch.forEach(x=>{
+    const s=S.sel[x.c.id],man=s&&s!=='auto'?x.items.find(i=>i.id===s):null;
+    x.rows=x.items.map(it=>{const t=ch.map(y=>y===x?Object.assign({},y,{it}):y);const k=maxSets(t,A);return{it,k,rem:A-planCost(setsPlan(t,k)).total};})
+      .sort((a,b)=>b.k-a.k||a.rem-b.rem);
+    x.best=x.rows[0].it;x.it=man||x.best;x.manual=!!man&&man!==x.best;
+  });
+  return ch;
+}
+const planLine=plan=>plan.filter(p=>p[0]>0).map(([q,it])=>'<b>'+fmtN(q)+'</b> شوال '+esc(iname(it))).join(' + ');
 
-  // جدول المقارنة
-  h+='<div class="sec-title">مقارنة كل الأنواع <small class="note" style="margin:0">(اضغط على صف لاختياره)</small></div><div class="tbl"><table><thead><tr><th>النوع</th><th>تكلفة الشوال</th><th>طحين = بصل</th><th>الباقي</th></tr></thead><tbody>';
-  h+=rows.map((r,i)=>`<tr class="click ${r===sel?'sel':''}" data-pick="${r.f.id}"><td>${esc(r.f.name)} ${i===0?'<span class="tag best">الأفضل</span>':''}</td><td>${fmt(r.cf)}</td><td><b>${fmt(r.N)}</b> + ${fmt(r.N)}</td><td>${fmt(r.rem)}</td></tr>`).join('');
-  h+='</tbody></table></div>';
-  lastOpt=O.find(o=>o.key===S.selOpt)||O[0];
+let lastOpt=null,lastApproveText='',lastDetailsText='';
+function renderBalance(A){
+  lastOpt=null;DPC={};
+  if(!A) return '<div class="empty">أدخل المبلغ أعلاه لتظهر النتائج.</div>';
+  const bc=balCats();
+  if(!bc.length) return '<div class="empty">حدد نسبة لقسم واحد على الأقل في «الأقسام ونسبة الموازنة».</div>';
+  const miss=bc.filter(x=>!x.items.length);
+  if(miss.length) return '<div class="empty">أدخل سعر صنف واحد على الأقل في: '+miss.map(x=>'«'+esc(x.c.name||'قسم')+'»').join('، ')+'.</div>';
+  const ch=choose(A),k=maxSets(ch,A),ratioPlan=setsPlan(ch,k),full=fillRest(ch,k,A);
+  const O=[],mk=(key,plan)=>{const c=planCost(plan),o={key,plan,c,rem:A-c.total};O.push(o);return o;};
+  const oFull=mk('full',full.plan),oRatio=mk('ratio',ratioPlan);
+  const rtxt=ch.map(x=>x.r+' '+esc(x.c.name||'قسم')).join(' : ');
+  let h='';
+  if(k===0) h+='<div class="warnbox">المبلغ لا يكفي لمجموعة كاملة بالنسبة '+rtxt+'. هذه أقصى كمية ممكنة من الأصناف.</div>';
+  // hero: totals per category (full result)
+  h+='<div class="heroN">'+ch.map(x=>{
+    const its=oFull.plan.filter(p=>p[1].cat===x.c.id),n=its.reduce((a,p)=>a+p[0],0);
+    return `<div class="side ${tagCls(x.c.id)}"><div class="n">${fmtN(n)}</div><div class="lbl">شوال ${esc(x.c.name||'')} كامل</div><div class="note">${its.map(p=>fmtN(p[0])+' '+esc(iname(p[1]))).join(' + ')||'—'}</div></div>`;}).join('')+'</div>';
+  h+=`<div class="note">النسبة المطلوبة: <b>${rtxt}</b> — تحققت في <b>${fmtN(k)}</b> مجموعة${full.added.length?'، ثم أُضيف من الباقي: '+Object.entries(full.added.reduce((m,it)=>(m[iname(it)]=(m[iname(it)]||0)+1,m),{})).map(([n,c])=>'+'+c+' '+esc(n)).join('، '):''}.</div>`;
+  const pc=oFull.c;
+  h+=`<div class="facts">
+    <div class="fact"><span>قيمة الشراء</span><b>${fmt(pc.buy)}</b></div>
+    <div class="fact"><span>الترحيل</span><b>${S.trMode==='perSack'?'ضمن الشراء':fmt(pc.tr)}</b></div>
+    <div class="fact"><span>المصروف</span><b>${fmt(pc.total)}</b></div>
+    <div class="fact rem"><span>الباقي</span><b>${fmt(A-pc.total)}</b></div>
+  </div>`;
+  if(S.trMode==='trips') h+=`<div class="note">طريقة الترحيل: ${esc(trSummary(pc))}</div>`;
+  const noFare=S.trMode==='trips'?pc.tl.filter(x=>x.g.n>0&&!vehOf(x.g.r).length&&!num(x.g.r.ps)):[];
+  if(noFare.length) h+='<div class="warnbox">لم تُدخل أجرة الترحيل لمنطقة: '+noFare.map(x=>'«'+esc(x.g.r.name||'')+'»').join('، ')+'، فالترحيل محسوب صفرا. أدخلها من تبويب «الأسعار والتكاليف».</div>';
+  ch.filter(x=>x.manual).forEach(x=>h+=`<div class="note">اخترت «${esc(iname(x.it))}» يدويا في قسم ${esc(x.c.name)}. الأفضل عددا «${esc(iname(x.best))}». <a href="#" data-auto="${x.c.id}">رجوع للاختيار التلقائي</a></div>`);
+
+  h+='<div class="sec-title">اختر ما تعتمده</div>';
+  h+=`<div class="sug pick mainpick" data-opt="full"><span><b>الخيار الأول — صرف المبلغ كله:</b> ${planLine(oFull.plan)} <small>· يبقى ${fmt(oFull.rem)}${J}</small><br><small>بالنسبة ${rtxt}، ثم يُشترى بالباقي شوالات زيادة حتى لا يبقى ما يكفي لشوال.</small></span></div>`;
+  if(full.added.length) h+=`<div class="sug pick" data-opt="ratio"><span><b>الخيار الثاني — النسبة بالضبط:</b> ${planLine(oRatio.plan)} <small>· يبقى ${fmt(oRatio.rem)}${J}</small><br><small>كل شوال ${esc(ch[0].c.name||'')} يقابله بالضبط ما حددته من الأقسام الأخرى، ولا يُشترى بالباقي شيء.</small></span></div>`;
+
+  // الخلط: استبدال جزء من الصنف المختار بصنف آخر من نفس القسم لاستغلال الباقي
+  const mixes=[];
+  if(k>0) ch.filter(x=>x.items.length>1).forEach(x=>{
+    const qa=k*x.r;
+    x.items.filter(b=>b!==x.it).forEach(b=>{
+      let nb=0;
+      const mp=n=>ch.flatMap(y=>y===x?[[qa-n,x.it],[n,b]]:[[k*y.r,y.it]]);
+      while(nb+1<qa&&planCost(mp(nb+1)).total<=A+1e-9) nb++;
+      if(nb>0){const plan=mp(nb).filter(p=>p[0]>0),c=planCost(plan);if(c.total>oRatio.c.total+1e-9)mixes.push({x,b,nb,plan,c});}
+    });
+  });
+  mixes.sort((a,b)=>(A-a.c.total)-(A-b.c.total));
+  if(mixes.length){
+    h+='<div class="sec-title">مقترح خلط نوعين من نفس القسم</div>';
+    mixes.slice(0,6).forEach(m=>{const o=mk('m'+m.x.it.id+'_'+m.b.id,m.plan);
+      const inX=m.plan.filter(p=>p[1].cat===m.x.c.id),tot=inX.reduce((a,p)=>a+p[0],0),others=m.plan.filter(p=>p[1].cat!==m.x.c.id);
+      const ml='لو خلطنا '+inX.map(([q,it])=>'<b>'+fmtN(q)+'</b> '+esc(iname(it))).join(' + ')+' = (<b>'+fmtN(tot)+'</b> شوال '+esc(m.x.c.name||'')+')'
+        +others.map(([q,it])=>' + <b>'+fmtN(q)+'</b> شوال '+esc(iname(it))).join('');
+      h+=`<div class="sug mix pick" data-opt="${o.key}">${ml} <small>· يبقى ${fmt(o.rem)}${J}</small></div>`;});
+  }
+
+  // جدول المقارنة لكل قسم فيه أكثر من صنف
+  ch.filter(x=>x.items.length>1).forEach(x=>{
+    h+=`<div class="sec-title">مقارنة أصناف ${esc(x.c.name||'')} <small class="note" style="margin:0">(اضغط على صف لاختياره)</small></div><div class="tbl"><table><thead><tr><th>الصنف</th><th>تكلفة الشوال</th><th>عدد المجموعات</th><th>الباقي</th></tr></thead><tbody>`;
+    h+=x.rows.map((r,i)=>`<tr class="click ${r.it===x.it?'sel':''}" data-pick="${x.c.id}|${r.it.id}"><td>${esc(iname(r.it))} ${i===0?'<span class="tag best">الأفضل</span>':''}</td><td>${fmt(itemCost(r.it))}</td><td><b>${fmtN(r.k)}</b></td><td>${fmt(r.rem)}</td></tr>`).join('');
+    h+='</tbody></table></div>';
+  });
+  lastOpt=O.find(o=>o.key===S.selOpt)||oFull;
   h=h.split('data-opt="'+lastOpt.key+'"').join('data-opt="'+lastOpt.key+'" data-chosen');
   return h;
 }
-let lastOpt=null,lastApproveText='',lastDetailsText='';
 function costParts(it){
   const P=[['سعر الشوال',num(it.price)]];
   if(it.mill) P.push(['الطحن',cv('mill')]);
-  P.push(['الترحيل',trOf(it)],['التحميل',cv('load')],['السعي',cv('sai')],['أكياس التوزيع',cv('bags')]);
+  if(S.trMode==='perSack') P.push(['الترحيل',trOf(it)]);
+  P.push(['التحميل',cv('load')],['السعي',cv('sai')],['أكياس التوزيع',cv('bags')]);
   (S.extra||[]).forEach(x=>{if(!(x.millOnly&&!it.mill)) P.push([x.name||'تكلفة إضافية',num(x.amt)]);});
   return P.filter(p=>p[1]>0);
 }
 function renderApprove(A){
   lastApproveText='';lastDetailsText='';
   if(!A||!lastOpt){$('#approve').innerHTML=$('#details').innerHTML='<div class="empty">أدخل المبلغ لتظهر النتيجة، ثم اختر ما تعتمده.</div>';return;}
-  const o=lastOpt;
-  lastApproveText='السلام عليكم ورحمة الله وبركاته\n\nاعتمد شراء:\n'+o.lines.map(([q,nm])=>'- '+fmt(q)+' شوال '+nm).join('\n')
-    +'\n\nالمبلغ المتاح: '+fmt(A)+' جنيه\nالمصروف: '+fmt(A-o.rem)+' جنيه\nالباقي: '+fmt(o.rem)+' جنيه';
+  const o=lastOpt,pc=o.c,plan=o.plan.filter(p=>p[0]>0);
+  const trLine=S.trMode==='perSack'?'الترحيل: محسوب ضمن تكلفة كل شوال':'الترحيل: '+fmt(pc.tr)+' جنيه'+(S.trMode==='trips'?' ('+trSummary(pc)+')':' (مقطوع)');
+  lastApproveText='السلام عليكم ورحمة الله وبركاته\n\nاعتمد شراء:\n'+plan.map(([q,it])=>'- '+fmtN(q)+' شوال '+iname(it)).join('\n')
+    +'\n\nالمبلغ المتاح: '+fmt(A)+' جنيه\nالشراء مع التكاليف على الشوال: '+fmt(pc.buy)+' جنيه\n'+trLine+'\nإجمالي المصروف: '+fmt(pc.total)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';
   $('#approve').innerHTML='<div class="msgbox">'+esc(lastApproveText)+'</div>';
-  let t='السلام عليكم ورحمة الله وبركاته\n\nتفاصيل قيمة الشراء:\n',tot=0;
-  o.lines.forEach(([q,nm,it])=>{
-    const c=itemCost(it),sub=q*c;tot+=sub;
-    t+='\n▪ '+nm+': '+fmt(q)+' شوال\n'+costParts(it).map(([l,v])=>'   - '+l+': '+fmt(v)+' جنيه').join('\n')
-      +'\n   = تكلفة الشوال: '+fmt(c)+' جنيه\n   = الإجمالي: '+fmt(q)+' × '+fmt(c)+' = '+fmt(sub)+' جنيه\n';
-  });
-  t+='\nالمبلغ المتاح: '+fmt(A)+' جنيه\nإجمالي المصروف: '+fmt(tot)+' جنيه\nالباقي: '+fmt(A-tot)+' جنيه';
+  const AR=['١','٢','٣','٤','٥','٦','٧','٨','٩','١٠','١١','١٢','١٣','١٤','١٥'];let sec=0;const H=s=>'\n'+AR[sec++]+') '+s+'\n';
+  const SUM=[];
+  let t='السلام عليكم ورحمة الله وبركاته\n\nتفاصيل الشراء والتكاليف:\n';
+  // ١) الشراء
+  t+=H('الشراء');let buyOnly=0;
+  plan.forEach(([q,it])=>{const p=num(it.price);buyOnly+=q*p;
+    t+='- '+iname(it)+': '+fmtN(q)+' شوال\n   سعر الشوال: '+fmt(p)+' جنيه\n   قيمة '+fmtN(q)+' شوال: '+fmtN(q)+' × '+fmt(p)+' = '+fmt(q*p)+' جنيه\n';});
+  t+='= إجمالي الشراء: '+fmt(buyOnly)+' جنيه\n';SUM.push(['الشراء',buyOnly]);
+  // ٢) الترحيل
+  if(S.trMode==='trips'&&pc.tl.length){
+    t+=H('الترحيل');
+    pc.tl.forEach(({g,c})=>{
+      t+=(pc.tl.length>1||!g.r.mix?'- '+(g.r.name||'منطقة')+' ('+g.names.join('، ')+'): ':'- عدد الشوالات: ')+fmtN(g.n)+' شوال\n';
+      const by={};c.trips.forEach(x=>{(by[x.name]=by[x.name]||{l:[],fare:x.fare}).l.push(x.l);});
+      Object.keys(by).forEach(k=>{const v=by[k],cnt={};v.l.forEach(l=>cnt[l]=(cnt[l]||0)+1);
+        const loads=Object.keys(cnt).sort((a,b)=>b-a).map(l=>cnt[l]>1?cnt[l]+' × '+l+' شوال':l+' شوال').join(' + ');
+        t+='   '+fmtN(v.l.length)+' '+k+'، كل '+k+' بـ '+fmt(v.fare)+' جنيه = '+fmt(v.l.length*v.fare)+' جنيه ('+loads+')\n';});
+      if(c.loose) t+='   الـ'+fmtN(c.loose)+' شوال المتبقية: أجرة كل شوال '+fmt(c.ps)+' جنيه = '+fmt(c.loose*c.ps)+' جنيه\n';
+    });
+    t+='= إجمالي الترحيل: '+fmt(pc.tr)+' جنيه\n';SUM.push(['الترحيل',pc.tr]);
+  } else if(S.trMode==='lump'&&pc.tr>0){
+    t+=H('الترحيل')+'- ترحيل مقطوع\n= إجمالي الترحيل: '+fmt(pc.tr)+' جنيه\n';SUM.push(['الترحيل',pc.tr]);
+  } else if(S.trMode==='perSack'){
+    let trT=0,tx='';
+    plan.forEach(([q,it])=>{const r=trOf(it);if(r>0){trT+=q*r;tx+='- '+iname(it)+': '+fmtN(q)+' شوال × '+fmt(r)+' جنيه = '+fmt(q*r)+' جنيه\n';}});
+    if(trT>0){t+=H('الترحيل')+tx+'= إجمالي الترحيل: '+fmt(trT)+' جنيه\n';SUM.push(['الترحيل',trT]);}
+  }
+  // التكاليف التي على كل شوال
+  const per=(title,rate,filter)=>{
+    if(rate<=0) return; const sel=plan.filter(([q,it])=>filter(it)),n=sel.reduce((a,[q])=>a+q,0); if(!n) return;
+    const who=sel.length<plan.length?' ('+sel.map(([q,it])=>iname(it)).join('، ')+')':'';
+    t+=H(title)+'- '+title+' على كل شوال: '+fmt(rate)+' جنيه\n- عدد الشوالات: '+fmtN(n)+' شوال'+who+'\n= إجمالي '+title+': '+fmtN(n)+' × '+fmt(rate)+' = '+fmt(n*rate)+' جنيه\n';
+    SUM.push([title,n*rate]);
+  };
+  per('الطحن',cv('mill'),it=>it.mill);
+  per('التحميل',cv('load'),()=>true);
+  per('السعي',cv('sai'),()=>true);
+  per('أكياس التوزيع',cv('bags'),()=>true);
+  (S.extra||[]).forEach(x=>per(x.name||'تكلفة إضافية',num(x.amt),it=>!(x.millOnly&&!it.mill)));
+  t+='\n—————————\nالملخص:\n'+SUM.map(([k,v])=>'- '+k+': '+fmt(v)+' جنيه').join('\n')
+    +'\n= إجمالي المصروف: '+fmt(pc.total)+' جنيه\n\nالمبلغ المتاح: '+fmt(A)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';
   lastDetailsText=t;
   $('#details').innerHTML='<div class="msgbox">'+esc(t)+'</div>';
 }
@@ -678,19 +969,21 @@ $('#copyDetails').onclick=()=>copy(lastDetailsText);
 $('#shareDetails').onclick=()=>shareText(lastDetailsText);
 $('#balance').addEventListener('click',e=>{
   const tr=e.target.closest('[data-pick]');
-  if(tr){S.selFlour=tr.dataset.pick;save();updateCalc();return;}
+  if(tr){const [c,id]=tr.dataset.pick.split('|');S.sel[c]=id;save();updateCalc();return;}
   const op=e.target.closest('[data-opt]');
   if(op){S.selOpt=op.dataset.opt;save();updateCalc();toast('تم اختياره لرسالة الاعتماد');return;}
-  if(e.target.closest('[data-auto]')){e.preventDefault();S.selFlour='auto';save();updateCalc();}
+  const au=e.target.closest('[data-auto]');
+  if(au){e.preventDefault();S.sel[au.dataset.auto]='auto';save();updateCalc();}
 });
 
 function updateCalc(){
-  const A=num(S.amount);
+  const A=num(S.amount);DPC={};
   $('#amountWords').textContent=A?('المبلغ: '+fmt(A)+J):'';
-  $('#simple').innerHTML=renderSimple(A);
   $('#balance').innerHTML=renderBalance(A);
   renderApprove(A);
+  $('#simple').innerHTML=renderSimple(A);
 }
+renderCats();renderTransport();
 
 /* ---------- salary tab ---------- */
 const salInp=$('#salaryAmount');salInp.value=S.salaryAmount||'';
@@ -751,7 +1044,6 @@ function copy(text){
     try{document.execCommand('copy');toast('تم النسخ');}catch(e){toast('تعذّر النسخ');}ta.remove();};
   if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>toast('تم النسخ'),fallback); else fallback();
 }
-$('#copyBalance').onclick=()=>copy(lastBalanceText);
 $('#copySalary').onclick=()=>copy(lastSalaryText);
 
 function updateAll(){updateTotals();updateCalc();}

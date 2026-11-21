@@ -6,11 +6,11 @@
 <title>معاينة — حاسبة التموين</title>
 <style>
 :root{
-  --bg:#f6f2e9; --card:#fffdf9; --ink:#17212f; --muted:#495466; --line:#e2d8c6;
+  --bg:#eef2f7; --card:#ffffff; --ink:#16202e; --muted:#4a5568; --line:#d8dfe9;
   --primary:#1d3a5f; --primary-soft:#e6edf6; --primary-ink:#ffffff;
-  --gold:#b8862b; --gold-soft:#f8eed8; --field:#ffffff;
-  --flour:#94600f; --flour-soft:#fbf0d8;
-  --onion:#8c2a3f; --onion-soft:#f9e6e9;
+  --gold:#b8862b; --gold-soft:#f4ecdb; --field:#fbfcfe;
+  --flour:#8a5a12; --flour-soft:#f5eedf;
+  --onion:#7f2a3c; --onion-soft:#f4e8eb;
   --warn:#a8381c; --warn-soft:#fce8e1;
   --hero1:#1d3a5f; --hero2:#2d5687;
   --shadow:0 1px 2px rgba(0,0,0,.05),0 6px 20px rgba(40,50,40,.06);
@@ -283,7 +283,7 @@ tr.sel td{background:var(--gold-soft)}
 .htile small{font-size:.92rem;color:rgba(255,255,255,.85);line-height:1.5}
 .backbar{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;margin-bottom:16px;position:sticky;top:8px;z-index:5;box-shadow:0 4px 14px rgba(23,33,47,.08)}
 .backbar .scrtitle{margin:0;font-size:1.25rem;color:var(--primary)}
-.btn.back{background:linear-gradient(135deg,#17707a,#228e96);border:2px solid #135f68;color:#fff;font-weight:800;white-space:nowrap;box-shadow:0 3px 10px rgba(19,95,104,.3)}
+.btn.back{white-space:nowrap}
 .btn.back:hover{filter:brightness(1.12)}
 .chosenbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gold-soft);border:1.5px solid var(--gold);border-radius:12px;padding:10px 14px;margin-bottom:12px}
 .scrfoot{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin:6px 0 20px}
@@ -344,6 +344,42 @@ tr.sel td{background:var(--gold-soft)}
   body{background:#fff}
   .card{box-shadow:none;border:1px solid #ddd}
 }
+
+/* ===== تناسق الألوان: كحلي + رمادي مزرق هادئ + الذهبي لمسة رفيعة فقط ===== */
+body{background:var(--bg)}
+.card{border-color:var(--line);box-shadow:0 1px 2px rgba(22,32,46,.04),0 8px 24px rgba(22,32,46,.06)}
+.btn{background:var(--card);border:1.5px solid #c5d0de;color:var(--primary)}
+.btn:hover{border-color:var(--primary);background:var(--primary-soft)}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 3px 10px rgba(29,58,95,.22)}
+.btn.pri:hover{background:#244a78;border-color:#244a78}
+.btn.back{background:var(--card);border:2px solid var(--primary);color:var(--primary);font-weight:800;box-shadow:none}
+.btn.back:hover{background:var(--primary);color:#fff;filter:none}
+.backbar{border-color:var(--line);border-bottom:3px solid var(--primary)}
+input[type=text]:hover,select:hover{border-color:#aebdd0}
+.big input{border-color:var(--primary)}
+#chosenInfo,.chosenbar{background:var(--primary-soft);border:0;border-inline-start:4px solid var(--primary);color:var(--ink)}
+.msgblock{background:var(--card);border-color:var(--line)}
+.msgbox{background:var(--bg);border-inline-start-color:var(--primary)}
+.sug,.sug.mix{background:var(--card);border:1.5px solid var(--line);border-inline-start:4px solid #9fb2ca}
+.sug.mainpick{border-inline-start-color:#9fb2ca}
+.sug.pick:hover{box-shadow:0 0 0 2px #9fb2ca inset}
+.sug.pick[data-chosen]{background:var(--primary-soft);border-color:var(--primary);box-shadow:0 0 0 2px var(--primary) inset}
+.sum{background:var(--primary-soft);border-color:var(--line)}
+tr.sel td{background:var(--primary-soft)}
+th{background:var(--bg);color:var(--primary)}
+.fact{background:var(--bg);border-color:var(--line)}
+.heroN .side{border-color:var(--line)}
+.region{background:var(--bg);border-color:var(--line)}
+.seg{background:var(--bg);border-color:var(--line)}
+.seg button.on{background:var(--primary);box-shadow:none}
+.tile{border-color:var(--line)}
+.tile.flour,.tile.onion{border-color:var(--line)}
+.empty{background:var(--bg);border-color:#c5d0de}
+.chev{border-color:#c5d0de;color:var(--primary)}
+.htile{box-shadow:0 8px 22px rgba(29,58,95,.20),inset 0 -4px 0 var(--gold)}
+:root[data-theme="dark"] .btn.back:hover{color:var(--bg)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn{border-color:var(--line)}}
+:root[data-theme="dark"] .btn{border-color:var(--line)}
 </style>
 
 <meta name="theme-color" content="#1d3a5f">

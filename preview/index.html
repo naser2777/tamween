@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معاينة — حاسبة التموين</title>
+<style>
+:root{
+  --bg:#f6f2e9; --card:#fffdf9; --ink:#17212f; --muted:#495466; --line:#e2d8c6;
+  --primary:#1d3a5f; --primary-soft:#e6edf6; --primary-ink:#ffffff;
+  --gold:#b8862b; --gold-soft:#f8eed8; --field:#ffffff;
+  --flour:#94600f; --flour-soft:#fbf0d8;
+  --onion:#8c2a3f; --onion-soft:#f9e6e9;
+  --warn:#a8381c; --warn-soft:#fce8e1;
+  --hero1:#1d3a5f; --hero2:#2d5687;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 6px 20px rgba(40,50,40,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1520; --card:#162131; --ink:#f2f4f8; --muted:#c2cad7; --line:#2c3a50;
+    --primary:#9cc0f0; --primary-soft:#1d2c42; --primary-ink:#0e1520;
+    --gold:#e6bb62; --gold-soft:#3a3020; --field:#101a28;
+    --flour:#f2c46e; --flour-soft:#3a2f1c;
+    --onion:#f3a0b2; --onion-soft:#3d2229;
+    --warn:#ff9f80; --warn-soft:#3d241c;
+    --hero1:#172a45; --hero2:#22406a;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1520; --card:#162131; --ink:#f2f4f8; --muted:#c2cad7; --line:#2c3a50;
+  --primary:#9cc0f0; --primary-soft:#1d2c42; --primary-ink:#0e1520;
+  --gold:#e6bb62; --gold-soft:#3a3020; --field:#101a28;
+  --flour:#f2c46e; --flour-soft:#3a2f1c;
+  --onion:#f3a0b2; --onion-soft:#3d2229;
+  --warn:#ff9f80; --warn-soft:#3d241c;
+  --hero1:#172a45; --hero2:#22406a;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif;font-size:16px;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+header h1{margin:0;font-size:1.55rem}
+header p{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+.tabs{display:flex;gap:6px;background:var(--card);padding:6px;border-radius:14px;box-shadow:var(--shadow);margin-bottom:18px;position:sticky;top:8px;z-index:5}
+.tabs button{flex:1;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:600;padding:10px 6px;border-radius:10px;cursor:pointer}
+.tabs button.on{background:var(--primary);color:var(--primary-ink)}
+.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+.card h2{margin:0 0 4px;font-size:1.15rem}
+.card .sub{margin:0 0 14px;color:var(--muted);font-size:.9rem}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.88rem;color:var(--muted)}
+input[type=text]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%;min-width:0}
+input[type=text]:focus,select:focus{outline:2px solid var(--primary);outline-offset:1px}
+select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 8px;width:100%}
+.num{direction:ltr;text-align:right}
+.big input{font-size:1.4rem;font-weight:700;padding:12px 14px}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 14px;cursor:pointer}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+.btn.sm{padding:5px 10px;font-size:.85rem}
+.btn.del{color:var(--warn);border-color:transparent;background:transparent;font-size:1.2rem;padding:4px 8px}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.xh{margin:18px 0 2px;font-size:1rem}
+.xc{display:grid;grid-template-columns:1.6fr 1fr auto auto;gap:10px;align-items:end;padding:10px 0;border-bottom:1px dashed var(--line)}
+.xc .chk{white-space:nowrap}
+@media (max-width:640px){.xc{grid-template-columns:1fr 1fr;background:var(--bg);border:0;border-radius:12px;padding:12px;margin-bottom:8px;position:relative}.xc .btn.del{position:absolute;top:6px;left:6px}}
+.xempty{color:var(--muted);font-size:.9rem;padding:6px 0}
+
+/* items */
+.item{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr auto 1fr auto;gap:10px;align-items:end;padding:12px 0;border-bottom:1px dashed var(--line)}
+.item:last-child{border-bottom:0}
+.chk{display:flex;align-items:center;gap:6px;font-size:.88rem;color:var(--muted);padding-bottom:10px;white-space:nowrap}
+.chk input{width:18px;height:18px;accent-color:var(--primary)}
+.total{display:flex;flex-direction:column;font-size:.8rem;color:var(--muted)}
+.total b{font-size:1.05rem;color:var(--ink)}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:99px}
+.tag.flour{background:var(--flour-soft);color:var(--flour)}
+.tag.onion{background:var(--onion-soft);color:var(--onion)}
+.tag.other{background:var(--primary-soft);color:var(--primary)}
+.tag.best{background:var(--primary);color:var(--primary-ink)}
+@media (max-width:760px){
+  .item{grid-template-columns:1fr 1fr;background:var(--bg);border:0;border-radius:12px;padding:12px;margin-bottom:10px}
+  .item .name{grid-column:1/-1}
+  .item .del{position:absolute;left:6px;top:6px}
+  .item{position:relative}
+  .item input[type=text],.item select{background:var(--card)}
+}
+
+/* results */
+.tiles{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(165px,1fr))}
+.tile{border:1px solid var(--line);border-radius:12px;padding:12px}
+.tile .n{font-size:1.8rem;font-weight:800;line-height:1.2}
+.tile .n small{font-size:.9rem;font-weight:600;color:var(--muted)}
+.tile .meta{font-size:.8rem;color:var(--muted)}
+.tile.flour{border-color:var(--flour-soft);background:linear-gradient(var(--flour-soft),transparent 70%)}
+.tile.onion{border-color:var(--onion-soft);background:linear-gradient(var(--onion-soft),transparent 70%)}
+.hero{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:6px 0 14px}
+.hero .side{border-radius:14px;padding:16px;text-align:center}
+.hero .side.flour{background:var(--flour-soft)}
+.hero .side.onion{background:var(--onion-soft)}
+.hero .side .n{font-size:2.6rem;font-weight:800;line-height:1.1}
+.hero .side.flour .n{color:var(--flour)}
+.hero .side.onion .n{color:var(--onion)}
+.hero .side .lbl{font-weight:700}
+.hero .eq{font-size:2rem;font-weight:800;color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.fact{background:var(--bg);border-radius:10px;padding:8px 12px}
+.fact span{display:block;font-size:.8rem;color:var(--muted)}
+.fact b{font-size:1.05rem}
+.fact.rem b{color:var(--primary)}
+.sec-title{font-weight:700;margin:18px 0 8px;display:flex;align-items:center;gap:8px}
+.sug{border-inline-start:4px solid var(--primary);background:var(--primary-soft);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.sug.mix{border-color:var(--flour);background:var(--flour-soft)}
+.sug small{color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:18px;background:var(--bg);border-radius:12px}
+.note{font-size:.85rem;color:var(--muted);margin-top:8px}
+.warnbox{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:8px 12px;font-size:.9rem;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:right;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:.82rem}
+tr.sel td{background:var(--primary-soft)}
+tr.click{cursor:pointer}
+.tbl{overflow-x:auto}
+
+/* salaries */
+.person{display:grid;grid-template-columns:1.5fr 1fr 1.3fr auto;gap:10px;align-items:end;padding:10px 0;border-bottom:1px dashed var(--line)}
+.person:last-child{border-bottom:0}
+.pay{font-size:1.35rem;font-weight:800;color:var(--primary);padding-bottom:6px}
+.pay small{font-size:.8rem;color:var(--muted);font-weight:600}
+.sum{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:12px;padding:12px;background:var(--bg);border-radius:12px;font-weight:700}
+@media (max-width:560px){
+  .person{grid-template-columns:1fr 1fr}
+  .person .pay{grid-column:1/2}
+  .hero{grid-template-columns:1fr;}
+  .hero .eq{text-align:center;font-size:1.4rem}
+  header h1{font-size:1.25rem}
+  .tabs button{font-size:.9rem}
+}
+.hidden{display:none}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:99px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+
+/* ===== قراءة مريحة: خط أكبر وأزرار أوسع ===== */
+html{font-size:19px}
+body{font-size:1rem;line-height:1.7}
+.wrap{max-width:1040px}
+header h1{font-size:1.7rem}
+header p{font-size:1rem;color:var(--muted)}
+.tabs{gap:8px;padding:8px;border:1px solid var(--line)}
+.tabs button{font-size:1.08rem;font-weight:700;padding:14px 8px;min-height:54px;color:var(--ink)}
+.tabs button:not(.on):hover{background:var(--primary-soft)}
+.card{border:1px solid var(--line);padding:22px}
+.card h2{font-size:1.35rem}
+.card .sub{font-size:1rem;line-height:1.7}
+label.f{font-size:1rem;font-weight:600;color:var(--ink);gap:6px}
+input[type=text],select{border:2px solid var(--line);border-radius:12px;padding:12px 14px;min-height:52px;font-size:1.08rem}
+input[type=text]:focus,select:focus{outline:3px solid var(--primary);outline-offset:1px;border-color:var(--primary)}
+.big input{font-size:1.6rem;padding:14px 16px}
+.btn{border:2px solid var(--line);border-radius:12px;padding:11px 20px;min-height:50px;font-size:1.05rem}
+.btn.pri{border-color:var(--primary)}
+.btn.sm{padding:8px 14px;min-height:44px;font-size:1rem}
+.btn.del{font-size:1.7rem;line-height:1;min-width:48px;min-height:48px;padding:4px 10px}
+.btn.del:hover{background:var(--warn-soft)}
+.xh{font-size:1.15rem}
+.xempty,.chk,.note{font-size:1rem}
+.chk{color:var(--ink);gap:10px}
+.chk input{width:24px;height:24px}
+.total{font-size:.95rem}
+.total b{font-size:1.2rem}
+.tag{font-size:.9rem;padding:3px 10px}
+.tile{border-width:2px}
+.tile .n{font-size:2rem}
+.tile .meta,.fact span{font-size:.95rem}
+.fact{border:1px solid var(--line)}
+.fact b{font-size:1.2rem}
+.hero .side .n{font-size:2.8rem}
+.hero .side .lbl{font-size:1.1rem}
+.sec-title{font-size:1.15rem}
+.warnbox{font-size:1rem;font-weight:600}
+table{font-size:1.02rem}
+th{font-size:.95rem;font-weight:700;color:var(--ink);background:var(--bg)}
+th,td{padding:12px 10px}
+.pay{font-size:1.5rem}
+.pay small{font-size:.92rem}
+.sum{font-size:1.1rem}
+.toast{font-size:1.05rem;padding:12px 22px}
+@media (max-width:560px){
+  html{font-size:18px}
+  header h1{font-size:1.4rem}
+  .tabs button{font-size:1rem;padding:12px 4px}
+  .card{padding:16px}
+}
+@media (max-width:640px){.xc{grid-template-columns:1fr;padding-top:52px;gap:12px}.xc .btn.del{top:4px;left:4px}}
+
+/* ===== لمسة جمالية: كحلي وذهبي ===== */
+body{background:var(--bg) radial-gradient(circle at 100% 0,var(--gold-soft),transparent 45%) no-repeat}
+header{background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;border-radius:20px;padding:20px 22px;
+  box-shadow:0 10px 30px rgba(29,58,95,.25);border-bottom:4px solid var(--gold)}
+header h1{color:#fff;letter-spacing:.2px}
+header p{color:rgba(255,255,255,.85)}
+header .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff}
+.tabs{background:var(--card);border:1px solid var(--line);box-shadow:0 4px 14px rgba(23,33,47,.06)}
+.tabs button{color:var(--muted)}
+.tabs button:not(.on):hover{background:var(--gold-soft);color:var(--ink)}
+.tabs button.on{background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;box-shadow:inset 0 -3px 0 var(--gold)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 2px 4px rgba(23,33,47,.04),0 10px 26px rgba(23,33,47,.06)}
+.card h2{color:var(--primary);display:flex;align-items:center;gap:10px}
+.card h2::before{content:"";width:6px;height:1.1em;border-radius:3px;background:var(--gold);flex:none}
+.xh{color:var(--primary)}
+label.f{color:var(--ink)}
+input[type=text],select{background:var(--field);border:1.5px solid var(--line)}
+input[type=text]:hover,select:hover{border-color:var(--gold)}
+input[type=text]:focus,select:focus{outline:3px solid var(--primary-soft);border-color:var(--primary)}
+.big input{border-color:var(--gold);background:var(--field)}
+.btn{background:var(--card);border:1.5px solid var(--line);transition:background .15s,border-color .15s}
+.btn:hover{border-color:var(--gold)}
+.btn.pri{background:linear-gradient(135deg,var(--hero1),var(--hero2));border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(29,58,95,.25)}
+:root[data-theme="dark"] .btn.pri{box-shadow:none}
+.btn.del{border-color:transparent;background:transparent}
+.chk input{accent-color:var(--primary)}
+.item,.xc,.person{border-bottom-color:var(--line)}
+.tile{background:var(--card);border:1.5px solid var(--line)}
+.tile.flour{border-color:#e9d3a6;background:linear-gradient(var(--flour-soft),var(--card) 75%)}
+.tile.onion{border-color:#efc6ce;background:linear-gradient(var(--onion-soft),var(--card) 75%)}
+.tile.flour .n{color:var(--flour)}
+.tile.onion .n{color:var(--onion)}
+.hero .side{border:1.5px solid var(--line)}
+.hero .eq{color:var(--gold)}
+.fact{background:var(--bg);border:1px solid var(--line)}
+.fact.rem b{color:var(--primary)}
+.sug{background:var(--primary-soft);border-inline-start-color:var(--primary)}
+.sug.mix{background:var(--gold-soft);border-color:var(--gold)}
+.tag.other{background:var(--primary-soft);color:var(--primary)}
+.tag.best{background:var(--gold);color:#fff}
+th{background:var(--primary-soft);color:var(--primary)}
+tr.sel td{background:var(--gold-soft)}
+.pay{color:var(--primary)}
+.sum{background:var(--gold-soft);border:1px solid var(--line)}
+.empty{background:var(--bg);border:1px dashed var(--line)}
+.toast{background:var(--primary);color:var(--primary-ink)}
+.fc{display:flex;align-items:flex-end;gap:4px}
+.fc.hidden{display:none}
+.fc label.f{flex:1;min-width:0}
+.fc .btn.del{margin-bottom:2px}
+/* purchase approval: pickable options */
+.sug.pick{cursor:pointer;position:relative;padding-inline-end:56px;min-height:52px;display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.sug.pick::after{content:"";position:absolute;inset-inline-end:16px;top:50%;width:24px;height:24px;margin-top:-12px;border-radius:50%;border:2px solid var(--muted);background:var(--card)}
+.sug.pick:hover{box-shadow:0 0 0 2px var(--gold) inset}
+.sug.pick[data-chosen]{box-shadow:0 0 0 3px var(--primary) inset}
+.sug.pick[data-chosen]::after{background:var(--primary);border-color:var(--primary);box-shadow:inset 0 0 0 4px var(--card)}
+.sug.mainpick{background:var(--card);border:1.5px solid var(--line);border-inline-start:4px solid var(--primary);margin-top:12px;font-weight:600}
+.msgbox{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-inline-start:4px solid var(--gold);border-radius:12px;padding:14px 18px;font-size:1.08rem;line-height:1.9}
+/* categories, transport, multi-category hero */
+.catrow{display:grid;grid-template-columns:1.6fr 1fr auto;gap:10px;align-items:end;padding:10px 0;border-bottom:1px dashed var(--line)}
+.seg{display:flex;gap:6px;flex-wrap:wrap;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:6px;margin-bottom:14px}
+.seg button{flex:1 1 150px;font:inherit;font-weight:700;border:0;background:transparent;color:var(--ink);padding:12px 10px;border-radius:10px;cursor:pointer;min-height:50px}
+.seg button.on{background:linear-gradient(135deg,var(--hero1),var(--hero2));color:#fff;box-shadow:inset 0 -3px 0 var(--gold)}
+.region{border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;background:var(--bg);display:flex;flex-direction:column;gap:10px}
+.rhead{display:flex;gap:8px;align-items:end}.rhead label{flex:1}
+.veh{display:grid;grid-template-columns:1.3fr 1fr 1fr 1.2fr auto;gap:8px;align-items:end;padding:8px 0;border-bottom:1px dashed var(--line)}
+.region input[type=text]{background:var(--field)}
+.region .chk{white-space:normal;align-items:flex-start;padding-bottom:0}.region .chk input{flex:none;margin-top:4px}
+.heroN{display:flex;flex-wrap:wrap;gap:12px;margin:6px 0 12px}
+.heroN .side{flex:1 1 170px;border-radius:14px;padding:16px;text-align:center;border:1.5px solid var(--line)}
+.heroN .side.flour{background:var(--flour-soft)}.heroN .side.onion{background:var(--onion-soft)}.heroN .side.other{background:var(--primary-soft)}
+.heroN .side .n{font-size:2.6rem;font-weight:800;line-height:1.1}
+.heroN .side.flour .n{color:var(--flour)}.heroN .side.onion .n{color:var(--onion)}.heroN .side.other .n{color:var(--primary)}
+.heroN .side .lbl{font-weight:700;font-size:1.1rem}
+.bad{color:var(--warn);font-weight:700}
+@media (max-width:640px){.veh{grid-template-columns:1fr 1fr;background:var(--card);border-radius:12px;padding:10px;border:1px solid var(--line);position:relative;padding-top:48px}.veh .btn.del{position:absolute;top:4px;left:4px}.catrow{grid-template-columns:1fr 1fr auto}}
+/* salary: result separate from settings */
+.reshead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.reshead h2{margin:0}
+.payrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 6px;border-bottom:1px solid var(--line)}
+.payrow:last-child{border-bottom:0}
+.pn{font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pv{font-size:1.7rem;font-weight:800;color:var(--primary);white-space:nowrap}
+.pv small{font-size:.9rem;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.setup summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:50px}
+.setup summary::-webkit-details-marker{display:none}
+.setup summary b{display:block;font-size:1.25rem;color:var(--primary)}
+.setup summary small{color:var(--muted);font-size:1rem}
+.setup .okc{color:var(--primary);font-weight:800}
+.setup .bad{color:var(--warn);font-weight:700}
+.chev{flex:none;color:var(--primary);font-weight:700;border:1.5px solid var(--line);border-radius:12px;padding:10px 16px}
+.chev::after{content:"تعديل ▾"}
+.setup[open] .chev::after{content:"إخفاء ▴"}
+.setup[open] summary{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.person{grid-template-columns:1.6fr 1fr auto}
+@media (max-width:560px){.person{grid-template-columns:1fr 1fr auto}.pv{font-size:1.4rem}.pn{font-size:1.08rem}}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tile.flour,:root:not([data-theme="light"]) .tile.onion{border-color:var(--line)}}
+:root[data-theme="dark"] .tile.flour,:root[data-theme="dark"] .tile.onion{border-color:var(--line)}
+@media (max-width:560px){header{padding:16px;border-radius:16px}}
+@media print{
+  .tabs,.btn,header button{display:none!important}
+  body{background:#fff}
+  .card{box-shadow:none;border:1px solid #ddd}
+}
+</style>
+
+<meta name="theme-color" content="#1d3a5f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="../icon-blue-192.png">
+<link rel="icon" type="image/png" href="../icon-blue-192.png">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>حاسبة التموين والرواتب</h1>
+      <p>نسخة معاينة للتجربة فقط · بياناتها منفصلة عن تطبيقك · العملة: جنيه</p>
+    </div>
+    <button class="btn sm" id="themeBtn" title="تبديل الوضع">◐</button>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="prices">الأسعار والتكاليف</button>
+    <button data-tab="calc">حساب الشوالات</button>
+    <button data-tab="salary">الرواتب</button>
+  </nav>
+
+  <!-- ============ الأسعار ============ -->
+  <section id="tab-prices">
+    <div class="card">
+      <h2>الأقسام ونسبة الموازنة</h2>
+      <p class="sub">لكل قسم نسبة. مثلا: طحين 1 وبصل 3 تعني أن كل شوال طحين يقابله 3 شوالات بصل. اكتب 0 لقسم لا يدخل في الموازنة.</p>
+      <div id="cats"></div>
+      <div id="ratioInfo" class="note"></div>
+      <div class="row-actions"><button class="btn pri" id="addCat">+ إضافة قسم</button></div>
+    </div>
+
+    <div class="card">
+      <h2>تكاليف موحّدة لكل شوال</h2>
+      <p class="sub">تُضاف على كل شوال من كل الأصناف. الطحن يُضاف فقط للأصناف التي تُطحن، وأجرته تشمل نقل الحب إلى الطاحونة.</p>
+      <div class="grid">
+        <div class="fc" data-fc="mill"><label class="f">الطحن<input type="text" inputmode="decimal" class="num" data-cost="mill"></label><button class="btn del" data-fdel="mill" title="حذف هذه التكلفة">×</button></div>
+        <div class="fc" data-fc="load"><label class="f">التحميل<input type="text" inputmode="decimal" class="num" data-cost="load"></label><button class="btn del" data-fdel="load" title="حذف هذه التكلفة">×</button></div>
+        <div class="fc" data-fc="sai"><label class="f">السعي<input type="text" inputmode="decimal" class="num" data-cost="sai"></label><button class="btn del" data-fdel="sai" title="حذف هذه التكلفة">×</button></div>
+        <div class="fc" data-fc="bags"><label class="f">أكياس التوزيع<input type="text" inputmode="decimal" class="num" data-cost="bags"></label><button class="btn del" data-fdel="bags" title="حذف هذه التكلفة">×</button></div>
+      </div>
+      <div class="row-actions" id="restoreWrap"><button class="btn" id="restoreCosts"></button></div>
+      <h3 class="xh">تكاليف إضافية</h3>
+      <p class="sub">أضف أي تكلفة أخرى تُدفع على كل شوال (مثل تعبئة أو حراسة). تُضاف تلقائيا إلى تكلفة كل شوال.</p>
+      <div id="extraCosts"></div>
+      <div class="row-actions"><button class="btn pri" id="addCost">+ إضافة تكلفة</button></div>
+    </div>
+
+    <div class="card">
+      <h2>الترحيل</h2>
+      <p class="sub">مبلغ الترحيل يُحجز من المبلغ المتاح قبل الشراء، حتى لا يُصرف في الشراء دون انتباه.</p>
+      <div class="seg" id="trModes">
+        <button data-mode="trips">بالسيارات والمشاوير</button>
+        <button data-mode="lump">مبلغ مقطوع</button>
+        <button data-mode="perSack">مبلغ ثابت على كل شوال</button>
+      </div>
+      <div id="trTrips">
+        <p class="sub">لكل منطقة سياراتها وأجرة المشوار. السيارة تُستعمل فقط إذا امتلأت بين أقل حمولة وأقصى حمولة، وما لا يكفي لملء سيارة يُحسب بأجرة ثابتة لكل شوال. البرنامج يختار أرخص توزيع تلقائيا.</p>
+        <div id="regions"></div>
+        <div class="row-actions"><button class="btn pri" id="addRegion">+ إضافة منطقة</button></div>
+      </div>
+      <div id="trLumpBox">
+        <label class="f">مبلغ الترحيل كله (مقطوع)<input type="text" inputmode="decimal" class="num" id="trLump" placeholder="مثال: 300,000"></label>
+        <div class="note">يُخصم هذا المبلغ كما هو من المبلغ المتاح، والباقي للشراء.</div>
+      </div>
+      <div id="trPerSack">
+        <div class="grid">
+          <div class="fc" data-fc="transport"><label class="f">الترحيل لكل شوال (افتراضي)<input type="text" inputmode="decimal" class="num" data-cost="transport"></label><button class="btn del" data-fdel="transport" title="حذف هذه التكلفة">×</button></div>
+        </div>
+        <div class="note">يمكن كتابة ترحيل خاص لأي صنف في جدول الأصناف.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>الأصناف وأسعارها</h2>
+      <p class="sub">سعر الشوال الواحد، وقسم كل صنف.</p>
+      <div id="items"></div>
+      <div class="row-actions">
+        <button class="btn pri" id="addItem">+ إضافة صنف</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ الحساب ============ -->
+  <section id="tab-calc" class="hidden">
+    <div class="card">
+      <h2>المبلغ المتاح للتموين</h2>
+      <label class="f big"><input type="text" inputmode="decimal" class="num" id="amount" placeholder="مثال: 1,000,000"></label>
+      <div id="amountWords" class="note"></div>
+    </div>
+
+    <div class="card">
+      <h2>الموازنة بين الأقسام</h2>
+      <p class="sub">أكبر عدد من الشوالات الكاملة بالنسبة التي حددتها، مع حجز الترحيل. ثم يُكمَل الباقي بشوالات كاملة حتى لا يبقى ما يكفي لشوال.</p>
+      <div id="balance"></div>
+    </div>
+
+    <div class="card" id="approveCard">
+      <h2>رسالة اعتماد الشراء</h2>
+      <p class="sub">اختر ما تعتمده بالضغط عليه في الأعلى: النتيجة الكاملة، أو النسبة فقط، أو أحد مقترحات الخلط. ثم انسخ الرسالة وأرسلها.</p>
+      <h3 class="xh">الرسالة الأولى: اعتماد الشراء</h3>
+      <div id="approve"></div>
+      <div class="row-actions">
+        <button class="btn pri" id="copyApprove">نسخ الرسالة الأولى</button>
+        <button class="btn" id="shareApprove">إرسال</button>
+      </div>
+      <h3 class="xh">الرسالة الثانية: تفاصيل القيمة والترحيل</h3>
+      <div id="details"></div>
+      <div class="row-actions">
+        <button class="btn pri" id="copyDetails">نسخ الرسالة الثانية</button>
+        <button class="btn" id="shareDetails">إرسال</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>لو صُرف المبلغ على صنف واحد</h2>
+      <p class="sub">للمقارنة فقط: أقصى عدد شوالات من كل صنف وحده، مع حجز ترحيله.</p>
+      <div id="simple"></div>
+    </div>
+  </section>
+
+<!-- ============ الرواتب ============ -->
+  <section id="tab-salary" class="hidden">
+    <div class="card">
+      <h2>المبلغ الواصل للرواتب</h2>
+      <label class="f big"><input type="text" inputmode="decimal" class="num" id="salaryAmount" placeholder="مثال: 400,000"></label>
+    </div>
+    <div class="card">
+      <div class="reshead"><h2>نتيجة التوزيع</h2><button class="btn sm" id="copySalary">نسخ التوزيع</button></div>
+      <div id="salaryResult"></div>
+      <div id="salarySum"></div>
+    </div>
+    <details class="card setup" id="salarySetup">
+      <summary><span><b>طريقة التقسيم</b><small id="setupInfo"></small></span><span class="chev"></span></summary>
+      <p class="sub">هنا الأسماء ونسبة كل معلم. الربع = 25٪ والثمن = 12.5٪ والنصف = 50٪</p>
+      <div id="people"></div>
+      <div class="row-actions"><button class="btn pri" id="addPerson">+ إضافة معلم</button></div>
+    </details>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+const KEY='tamween-preview';
+let uid=Date.now();
+const nid=()=>'i'+(uid++).toString(36);
+const DEFAULT={
+  tab:'prices',
+  costs:{mill:'',transport:'',load:'',sai:'',bags:''},
+  items:[
+    {id:nid(),name:'فوتريتة',cat:'flour',price:'',mill:true,tr:''},
+    {id:nid(),name:'ذرة شامي',cat:'flour',price:'',mill:true,tr:''},
+    {id:nid(),name:'قمح',cat:'flour',price:'',mill:true,tr:''},
+    {id:nid(),name:'دقيق أبيض',cat:'flour',price:'',mill:false,tr:''},
+    {id:nid(),name:'بصل',cat:'onion',price:'',mill:false,tr:''}
+  ],
+  amount:'',
+  selFlour:'auto',
+  salaryAmount:'',
+  people:[
+    {id:nid(),name:'المعلم 1',pct:25},
+    {id:nid(),name:'المعلم 2',pct:25},
+    {id:nid(),name:'المعلم 3',pct:25},
+    {id:nid(),name:'المعلم 4',pct:12.5},
+    {id:nid(),name:'المعلم 5',pct:12.5}
+  ],
+  theme:''
+};
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+if(!S||!S.items) S=JSON.parse(JSON.stringify(DEFAULT));
+if(!Array.isArray(S.extra)) S.extra=[];  /* تكاليف إضافية لكل شوال: {id,name,amt,millOnly} */
+/* أقسام الموازنة ونسبها */
+if(!Array.isArray(S.cats)||!S.cats.length){S.cats=[{id:'flour',name:'طحين',ratio:'1'},{id:'onion',name:'بصل',ratio:'1'}];if(S.items.some(i=>i.cat==='other'))S.cats.push({id:'other',name:'أخرى',ratio:'0'});}
+S.items.forEach(it=>{if(!S.cats.some(c=>c.id===it.cat))it.cat=S.cats[0].id;});
+/* مناطق الترحيل وسياراتها */
+if(!Array.isArray(S.regions)||!S.regions.length)S.regions=[{id:nid(),name:'المنطقة الأولى',mix:true,ps:'',veh:[{id:nid(),name:'دينة',min:'45',max:'60',fare:''}]}];
+S.items.forEach(it=>{if(!S.regions.some(r=>r.id===it.region))it.region=S.regions[0].id;});
+if(!S.trMode)S.trMode='trips';
+if(S.trLump==null)S.trLump='';
+if(!S.sel)S.sel={flour:S.selFlour||'auto'};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>{
+  if(v===''||v==null) return 0;
+  const s=String(v).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/٫/g,'.').replace(/[,٬\s]/g,'');
+  const x=parseFloat(s);return isFinite(x)?x:0;
+};
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const J=' جنيه';
+
+/* ---------- theme ---------- */
+const applyTheme=()=>{ if(S.theme) document.documentElement.dataset.theme=S.theme; else delete document.documentElement.dataset.theme; };
+applyTheme();
+$('#themeBtn').onclick=()=>{
+  const dark=S.theme? S.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  S.theme=dark?'light':'dark';applyTheme();save();
+};
+
+/* ---------- tabs ---------- */
+function showTab(t){
+  S.tab=t;save();
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  ['prices','calc','salary'].forEach(x=>$('#tab-'+x).classList.toggle('hidden',x!==t));
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+/* ---------- cost model ---------- */
+/* تكلفة موحّدة محذوفة = لا تُحسب */
+const cv=k=>(S.off&&S.off[k])?0:num(S.costs[k]);
+const trOf=it=>(S.off&&S.off.transport)?0:((it.tr!==''&&it.tr!=null)?num(it.tr):num(S.costs.transport));
+/* تكلفة الشوال الواحد (الترحيل داخلها فقط في طريقة «مبلغ ثابت على كل شوال») */
+function itemCost(it){
+  const p=num(it.price); if(p<=0) return 0;
+  const extra=(S.extra||[]).reduce((a,x)=>a+((x.millOnly&&!it.mill)?0:num(x.amt)),0);
+  return p+(it.mill?cv('mill'):0)+(S.trMode==='perSack'?trOf(it):0)+cv('load')+cv('sai')+cv('bags')+extra;
+}
+const catOf=id=>S.cats.find(c=>c.id===id);
+const catName=id=>(catOf(id)&&catOf(id).name)||'قسم';
+const tagCls=id=>(id==='flour'||id==='onion')?id:'other';
+const regOf=it=>S.regions.find(r=>r.id===it.region)||S.regions[0];
+const iname=it=>it.name||'صنف بلا اسم';
+
+/* ---------- transport (trips) ---------- */
+let DPC={};
+function vehOf(r){
+  return (r.veh||[]).map(v=>({name:v.name||'سيارة',min:Math.max(1,Math.floor(num(v.min))||1),max:Math.floor(num(v.max)),fare:num(v.fare)}))
+    .filter(v=>v.max>=1&&v.fare>0&&v.min<=v.max);
+}
+function dp(r,n){
+  let c=DPC[r.id]; if(!c) c=DPC[r.id]={b:[0],ch:[null],V:vehOf(r),ps:num(r.ps)};
+  const {b,ch,V,ps}=c;
+  for(let m=b.length;m<=n;m++){
+    let best=b[m-1]+ps,cho=null;
+    for(let i=0;i<V.length;i++){const v=V[i];for(let l=v.min;l<=Math.min(v.max,m);l++){const x=b[m-l]+v.fare;if(x<best-1e-9){best=x;cho=[i,l];}}}
+    b[m]=best;ch[m]=cho;
+  }
+  return c;
+}
+/* أرخص طريقة لترحيل n شوال من منطقة r */
+function carry(r,n){
+  if(n<=0) return {cost:0,trips:[],loose:0,ps:0};
+  const c=dp(r,n),trips=[];let m=n,loose=0;
+  while(m>0){const x=c.ch[m];if(x){trips.push({name:c.V[x[0]].name,l:x[1],fare:c.V[x[0]].fare});m-=x[1];}else{loose++;m--;}}
+  return {cost:c.b[n],trips,loose,ps:c.ps};
+}
+/* plan = [[عدد, صنف], ...] */
+function planCost(plan){
+  let buy=0,qty=0;const groups=new Map();
+  plan.forEach(([q,it])=>{
+    if(q<=0) return; buy+=q*itemCost(it); qty+=q;
+    if(S.trMode==='trips'){const r=regOf(it);if(!r)return;const key=r.mix?r.id:r.id+'|'+it.id;
+      const g=groups.get(key)||{r,n:0,names:[]};g.n+=q;if(!g.names.includes(iname(it)))g.names.push(iname(it));groups.set(key,g);}
+  });
+  let tr=0;const tl=[];
+  if(S.trMode==='lump') tr=qty?num(S.trLump):0;
+  else if(S.trMode==='trips') groups.forEach(g=>{const c=carry(g.r,g.n);tr+=c.cost;tl.push({g,c});});
+  return {buy,tr,total:buy+tr,tl,qty};
+}
+function tripsText(c){
+  const by={};c.trips.forEach(t=>{(by[t.name]=by[t.name]||{n:0,l:[],fare:t.fare}).n++;by[t.name].l.push(t.l);});
+  const parts=Object.keys(by).map(k=>k+' × '+by[k].n);
+  if(c.loose) parts.push(c.loose+' شوال بالأجرة الثابتة');
+  return parts.join(' + ');
+}
+function trSummary(pc){
+  if(S.trMode==='perSack') return 'ضمن تكلفة كل شوال';
+  if(S.trMode==='lump') return 'مبلغ مقطوع';
+  return pc.tl.filter(x=>x.g.n>0).map(x=>(S.regions.length>1||!x.g.r.mix?x.g.r.name+': ':'')+tripsText(x.c)).join(' · ')||'—';
+}
+function trDetails(pc){
+  if(S.trMode==='perSack') return '';
+  let t='\n▪ الترحيل:\n';
+  if(S.trMode==='lump') return t+'   - ترحيل مقطوع: '+fmt(pc.tr)+' جنيه\n';
+  pc.tl.forEach(({g,c})=>{
+    t+='   - '+(g.r.name||'منطقة')+' ('+g.names.join('، ')+'): '+fmt(g.n)+' شوال\n';
+    const by={};c.trips.forEach(x=>{(by[x.name]=by[x.name]||{l:[],fare:x.fare}).l.push(x.l);});
+    Object.keys(by).forEach(k=>{const v=by[k];t+='       '+k+' × '+v.l.length+' ('+v.l.join(' + ')+' شوال) × '+fmt(v.fare)+' = '+fmt(v.l.length*v.fare)+' جنيه\n';});
+    if(c.loose) t+='       '+fmt(c.loose)+' شوال × '+fmt(c.ps)+' (أجرة ثابتة للشوال) = '+fmt(c.loose*c.ps)+' جنيه\n';
+  });
+  return t+'   = إجمالي الترحيل: '+fmt(pc.tr)+' جنيه\n';
+}
+
+/* ---------- categories & ratio ---------- */
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+function intRatios(arr){
+  let d=0;arr.forEach(x=>{const s=String(+(+x).toFixed(3));const i=s.indexOf('.');if(i>=0)d=Math.max(d,s.length-i-1);});
+  const m=10**d,v=arr.map(x=>Math.round(x*m)),g=v.reduce((a,b)=>gcd(a,b));return v.map(x=>x/g);
+}
+function balCats(){return S.cats.filter(c=>num(c.ratio)>0).map(c=>({c,items:S.items.filter(it=>it.cat===c.id&&itemCost(it)>0)}));}
+function renderCats(){
+  $('#cats').innerHTML=S.cats.map(c=>`
+    <div class="catrow" data-cid="${c.id}">
+      <label class="f">اسم القسم<input type="text" data-c="name" value="${esc(c.name)}"></label>
+      <label class="f">النسبة<input type="text" inputmode="decimal" class="num" data-c="ratio" value="${esc(c.ratio)}"></label>
+      <button class="btn del" data-cdel title="حذف القسم">×</button>
+    </div>`).join('');
+  ratioInfo();
+}
+function ratioInfo(){
+  const bc=S.cats.filter(c=>num(c.ratio)>0);
+  if(!bc.length){$('#ratioInfo').innerHTML='<span class="bad">لا يوجد قسم له نسبة، فلن تُحسب الموازنة.</span>';return;}
+  const R=intRatios(bc.map(c=>num(c.ratio)));
+  $('#ratioInfo').innerHTML='الموازنة الآن: <b>'+bc.map((c,i)=>R[i]+' '+esc(c.name||'قسم')).join(' : ')+'</b>';
+}
+$('#cats').addEventListener('input',e=>{
+  const row=e.target.closest('.catrow');if(!row)return;const c=catOf(row.dataset.cid),k=e.target.dataset.c;if(!c||!k)return;
+  c[k]=e.target.value;save();ratioInfo();renderItems();updateCalc();
+});
+$('#cats').addEventListener('click',e=>{
+  if(!e.target.closest('[data-cdel]'))return;
+  const id=e.target.closest('.catrow').dataset.cid,c=catOf(id);
+  if(S.cats.length<2){alert('يجب أن يبقى قسم واحد على الأقل.');return;}
+  const rest=S.cats.filter(x=>x.id!==id),used=S.items.filter(it=>it.cat===id).length;
+  if(!confirm('حذف قسم «'+(c.name||'')+'»؟'+(used?' أصنافه ('+used+') ستنتقل إلى قسم «'+(rest[0].name||'')+'».':'')))return;
+  S.items.forEach(it=>{if(it.cat===id)it.cat=rest[0].id;});S.cats=rest;delete S.sel[id];save();renderCats();renderItems();updateAll();
+});
+$('#addCat').onclick=()=>{S.cats.push({id:nid(),name:'',ratio:'1'});save();renderCats();renderItems();updateAll();
+  const rows=document.querySelectorAll('.catrow');rows[rows.length-1]?.querySelector('input')?.focus();};
+
+/* ---------- prices tab ---------- */
+document.querySelectorAll('[data-cost]').forEach(inp=>{
+  inp.value=S.costs[inp.dataset.cost]??'';
+  inp.addEventListener('input',()=>{S.costs[inp.dataset.cost]=inp.value;save();updateAll();});
+});
+const FCN={mill:'الطحن',transport:'الترحيل',load:'التحميل',sai:'السعي',bags:'أكياس التوزيع'};
+function renderFixed(){
+  if(!S.off) S.off={};
+  document.querySelectorAll('[data-fc]').forEach(d=>d.classList.toggle('hidden',!!S.off[d.dataset.fc]));
+  const off=Object.keys(S.off).filter(k=>S.off[k]);
+  $('#restoreWrap').classList.toggle('hidden',!off.length);
+  $('#restoreCosts').textContent='↩ إرجاع التكاليف المحذوفة ('+off.map(k=>FCN[k]).join('، ')+')';
+}
+document.querySelectorAll('[data-fdel]').forEach(b=>b.onclick=()=>{
+  const k=b.dataset.fdel;if(!confirm('حذف تكلفة «'+FCN[k]+'»؟ لن تُحسب بعد الآن، ويمكنك إرجاعها لاحقا.'))return;
+  S.off[k]=true;save();renderFixed();updateAll();
+});
+$('#restoreCosts').onclick=()=>{S.off={};save();renderFixed();updateAll();};
+renderFixed();
+
+/* ---------- transport settings ---------- */
+function renderTransport(){
+  document.querySelectorAll('#trModes button').forEach(b=>b.classList.toggle('on',b.dataset.mode===S.trMode));
+  $('#trTrips').classList.toggle('hidden',S.trMode!=='trips');
+  $('#trLumpBox').classList.toggle('hidden',S.trMode!=='lump');
+  $('#trPerSack').classList.toggle('hidden',S.trMode!=='perSack');
+  $('#regions').innerHTML=S.regions.map(r=>{
+    const its=S.items.filter(it=>regOf(it)===r).map(iname);
+    return `<div class="region" data-rid="${r.id}">
+      <div class="rhead"><label class="f">اسم المنطقة<input type="text" data-r="name" value="${esc(r.name)}"></label><button class="btn del" data-rdel title="حذف المنطقة">×</button></div>
+      <div class="vlist">${(r.veh||[]).map(v=>`
+        <div class="veh" data-vid="${v.id}">
+          <label class="f">السيارة<input type="text" data-v="name" value="${esc(v.name)}"></label>
+          <label class="f">أقل حمولة<input type="text" inputmode="decimal" class="num" data-v="min" value="${esc(v.min)}"></label>
+          <label class="f">أقصى حمولة<input type="text" inputmode="decimal" class="num" data-v="max" value="${esc(v.max)}"></label>
+          <label class="f">أجرة المشوار<input type="text" inputmode="decimal" class="num" data-v="fare" value="${esc(v.fare)}"></label>
+          <button class="btn del" data-vdel title="حذف السيارة">×</button>
+        </div>`).join('')||'<div class="xempty">لا توجد سيارات في هذه المنطقة.</div>'}</div>
+      <div class="row-actions"><button class="btn" data-vadd>+ إضافة سيارة</button></div>
+      <label class="f">ما لا يكفي لملء سيارة: أجرة ثابتة لكل شوال<input type="text" inputmode="decimal" class="num" data-r="ps" value="${esc(r.ps)}"></label>
+      <label class="chk"><input type="checkbox" data-r="mix" ${r.mix?'checked':''}> الأصناف المختلفة من هذه المنطقة تُحمَّل معا في سيارة واحدة</label>
+      <div class="note">أصناف هذه المنطقة: ${its.length?its.map(esc).join('، '):'لا يوجد (اختر المنطقة لكل صنف في جدول الأصناف)'}</div>
+    </div>`;}).join('');
+  $('#trLump').value=S.trLump||'';
+}
+$('#trModes').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(!b)return;S.trMode=b.dataset.mode;save();renderTransport();renderItems();updateAll();});
+$('#trLump').addEventListener('input',e=>{S.trLump=e.target.value;save();updateAll();});
+$('#trLump').addEventListener('blur',e=>{const v=num(e.target.value);if(v){e.target.value=fmt(v);S.trLump=e.target.value;save();}});
+$('#regions').addEventListener('input',e=>{
+  const rb=e.target.closest('.region');if(!rb)return;const r=S.regions.find(x=>x.id===rb.dataset.rid);if(!r)return;
+  const vb=e.target.closest('.veh');
+  if(vb){const v=r.veh.find(x=>x.id===vb.dataset.vid),k=e.target.dataset.v;if(v&&k)v[k]=e.target.value;}
+  else{const k=e.target.dataset.r;if(!k)return;r[k]=e.target.type==='checkbox'?e.target.checked:e.target.value;if(k==='name')renderItems();}
+  save();updateAll();
+});
+$('#regions').addEventListener('change',e=>{if(e.target.matches('[type=checkbox]'))e.target.dispatchEvent(new Event('input',{bubbles:true}))});
+$('#regions').addEventListener('click',e=>{
+  const rb=e.target.closest('.region');if(!rb)return;const r=S.regions.find(x=>x.id===rb.dataset.rid);if(!r)return;
+  if(e.target.closest('[data-vadd]')){r.veh=r.veh||[];r.veh.push({id:nid(),name:'',min:'1',max:'',fare:''});save();renderTransport();
+    const vs=rb.parentNode.querySelector('[data-rid="'+r.id+'"]').querySelectorAll('.veh');vs[vs.length-1]?.querySelector('input')?.focus();return;}
+  if(e.target.closest('[data-vdel]')){const id=e.target.closest('.veh').dataset.vid,v=r.veh.find(x=>x.id===id);
+    if(!confirm('حذف السيارة «'+(v?.name||'بلا اسم')+'»؟'))return;r.veh=r.veh.filter(x=>x.id!==id);save();renderTransport();updateAll();return;}
+  if(e.target.closest('[data-rdel]')){
+    if(S.regions.length<2){alert('يجب أن تبقى منطقة واحدة على الأقل.');return;}
+    if(!confirm('حذف منطقة «'+(r.name||'')+'»؟ أصنافها ستنتقل إلى المنطقة الأولى المتبقية.'))return;
+    S.regions=S.regions.filter(x=>x.id!==r.id);S.items.forEach(it=>{if(it.region===r.id)it.region=S.regions[0].id;});
+    save();renderTransport();renderItems();updateAll();}
+});
+$('#addRegion').onclick=()=>{S.regions.push({id:nid(),name:'منطقة '+(S.regions.length+1),mix:true,ps:'',veh:[{id:nid(),name:'دينة',min:'45',max:'60',fare:''}]});save();renderTransport();renderItems();};
+
+/* ---------- extra per-sack costs ---------- */
+function renderExtra(){
+  const box=$('#extraCosts');if(!box)return;
+  box.innerHTML=S.extra.length?S.extra.map(x=>`
+    <div class="xc" data-id="${x.id}">
+      <label class="f">اسم التكلفة<input type="text" data-x="name" value="${esc(x.name)}" placeholder="مثلا: تعبئة"></label>
+      <label class="f">المبلغ لكل شوال<input type="text" inputmode="decimal" class="num" data-x="amt" value="${esc(x.amt)}"></label>
+      <label class="chk"><input type="checkbox" data-x="millOnly" ${x.millOnly?'checked':''}> للأصناف المطحونة فقط</label>
+      <button class="btn del" data-xdel title="حذف">×</button>
+    </div>`).join(''):'<div class="xempty">لا توجد تكاليف إضافية بعد.</div>';
+}
+$('#extraCosts').addEventListener('input',e=>{
+  const row=e.target.closest('.xc');if(!row)return;const x=S.extra.find(y=>y.id===row.dataset.id),k=e.target.dataset.x;if(!x||!k)return;
+  x[k]=e.target.type==='checkbox'?e.target.checked:e.target.value;save();updateAll();
+});
+$('#extraCosts').addEventListener('change',e=>{if(e.target.matches('[type=checkbox]'))e.target.dispatchEvent(new Event('input',{bubbles:true}))});
+$('#extraCosts').addEventListener('click',e=>{
+  if(!e.target.closest('[data-xdel]'))return;const id=e.target.closest('.xc').dataset.id,x=S.extra.find(y=>y.id===id);
+  if(!confirm('حذف تكلفة «'+(x?.name||'بلا اسم')+'»؟'))return;S.extra=S.extra.filter(y=>y.id!==id);save();renderExtra();updateAll();
+});
+$('#addCost').onclick=()=>{S.extra.push({id:nid(),name:'',amt:'',millOnly:false});save();renderExtra();
+  const rows=document.querySelectorAll('.xc');rows[rows.length-1]?.querySelector('input')?.focus();};
+renderExtra();
+
+/* ---------- items ---------- */
+function renderItems(){
+  const trCol=it=>S.trMode==='trips'
+    ?`<label class="f">المنطقة<select data-f="region">${S.regions.map(r=>`<option value="${r.id}" ${regOf(it)===r?'selected':''}>${esc(r.name)||'منطقة'}</option>`).join('')}</select></label>`
+    :S.trMode==='perSack'?`<label class="f">ترحيل خاص<input type="text" inputmode="decimal" class="num" data-f="tr" value="${esc(it.tr)}" placeholder="افتراضي"></label>`
+    :`<div class="total"><span>الترحيل</span><b>مقطوع</b></div>`;
+  $('#items').innerHTML=S.items.map(it=>`
+    <div class="item" data-id="${it.id}">
+      <label class="f name">الصنف<input type="text" data-f="name" value="${esc(it.name)}"></label>
+      <label class="f">القسم<select data-f="cat">
+        ${S.cats.map(c=>`<option value="${c.id}" ${it.cat===c.id?'selected':''}>${esc(c.name)||'قسم'}</option>`).join('')}
+      </select></label>
+      <label class="f">سعر الشوال<input type="text" inputmode="decimal" class="num" data-f="price" value="${esc(it.price)}"></label>
+      ${trCol(it)}
+      <label class="chk"><input type="checkbox" data-f="mill" ${it.mill?'checked':''}> يُطحن</label>
+      <div class="total"><span>${S.trMode==='perSack'?'تكلفة الشوال':'تكلفة الشوال بلا ترحيل'}</span><b data-total></b></div>
+      <button class="btn del" data-del title="حذف">×</button>
+    </div>`).join('');
+  updateTotals();
+}
+$('#items').addEventListener('input',e=>{
+  const row=e.target.closest('.item'); if(!row) return;
+  const it=S.items.find(x=>x.id===row.dataset.id); const f=e.target.dataset.f; if(!it||!f) return;
+  it[f]=e.target.type==='checkbox'?e.target.checked:e.target.value;
+  if(f==='cat'&&e.target.value==='onion'){it.mill=false;row.querySelector('[data-f=mill]').checked=false;}
+  save();
+  if(f==='region'||f==='name') renderTransport();
+  updateAll();
+});
+$('#items').addEventListener('change',e=>{ if(e.target.matches('select,[type=checkbox]')) e.target.dispatchEvent(new Event('input',{bubbles:true})); });
+$('#items').addEventListener('click',e=>{
+  if(!e.target.closest('[data-del]')) return;
+  const id=e.target.closest('.item').dataset.id;const it=S.items.find(x=>x.id===id);
+  if(!confirm('حذف صنف «'+(it?.name||'')+'»؟')) return;
+  S.items=S.items.filter(x=>x.id!==id);save();renderItems();renderTransport();updateAll();
+});
+$('#addItem').onclick=()=>{S.items.push({id:nid(),name:'',cat:S.cats[0].id,price:'',mill:true,tr:'',region:S.regions[0]?.id});save();renderItems();renderTransport();
+  const rows=document.querySelectorAll('.item');rows[rows.length-1]?.querySelector('input')?.focus();};
+
+function updateTotals(){
+  document.querySelectorAll('.item').forEach(row=>{
+    const it=S.items.find(x=>x.id===row.dataset.id);const c=it?itemCost(it):0;
+    row.querySelector('[data-total]').textContent=c?fmt(c)+J:'—';
+  });
+}
+
+/* ---------- calc tab ---------- */
+const amountInp=$('#amount');amountInp.value=S.amount||'';
+amountInp.addEventListener('input',()=>{S.amount=amountInp.value;save();updateCalc();});
+amountInp.addEventListener('blur',()=>{const v=num(amountInp.value);if(v){amountInp.value=fmt(v);S.amount=amountInp.value;save();}});
+
+const lumpAmt=()=>S.trMode==='lump'?num(S.trLump):0;
+/* أكبر عدد شوالات كاملة من صنف واحد */
+function maxAlone(it,A){
+  const u=itemCost(it);if(u<=0)return 0;
+  let n=Math.floor(Math.max(0,A-lumpAmt())/u);
+  while(n>0&&planCost([[n,it]]).total>A+1e-9) n--;
+  return n;
+}
+function renderSimple(A){
+  const list=S.items.filter(it=>itemCost(it)>0);
+  if(!A) return '<div class="empty">أدخل المبلغ أعلاه لتظهر النتائج.</div>';
+  if(!list.length) return '<div class="empty">أدخل أسعار الأصناف أولاً من تبويب «الأسعار والتكاليف».</div>';
+  return '<div class="tiles">'+list.map(it=>{
+    const n=maxAlone(it,A),pc=planCost([[n,it]]);
+    return `<div class="tile ${tagCls(it.cat)}">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:6px"><b>${esc(iname(it))}</b><span class="tag ${tagCls(it.cat)}">${esc(catName(it.cat))}</span></div>
+      <div class="n">${fmt(n)} <small>شوال</small></div>
+      <div class="meta">تكلفة الشوال: ${fmt(itemCost(it))}${J}</div>
+      ${S.trMode!=='perSack'?`<div class="meta">الترحيل: ${fmt(pc.tr)}${J}</div>`:''}
+      <div class="meta">الباقي: ${fmt(A-pc.total)}${J}</div>
+    </div>`;}).join('')+'</div>';
+}
+
+const setsPlan=(ch,k)=>ch.map(x=>[k*x.r,x.it]);
+function maxSets(ch,A){
+  const per=ch.reduce((a,x)=>a+x.r*itemCost(x.it),0);if(per<=0)return 0;
+  let k=Math.floor(Math.max(0,A-lumpAmt())/per);
+  for(;k>0;k--) if(planCost(setsPlan(ch,k)).total<=A+1e-9) break;
+  return k;
+}
+/* إكمال الباقي بشوالات كاملة، مع الحفاظ على النسبة قدر الإمكان */
+function fillRest(ch,k,A){
+  const q=new Map(ch.map(x=>[x.it.id,{it:x.it,q:k*x.r}]));
+  const pool=ch.flatMap(x=>x.items).filter(it=>!ch.some(x=>x.it===it)).sort((a,b)=>itemCost(a)-itemCost(b));
+  const plan=()=>[...q.values()].filter(o=>o.q>0).map(o=>[o.q,o.it]);
+  const added=[];
+  for(let guard=0;guard<5000;guard++){
+    const cnt={};q.forEach(o=>{cnt[o.it.cat]=(cnt[o.it.cat]||0)+o.q;});
+    const order=ch.slice().sort((a,b)=>((cnt[a.c.id]||0)/a.r)-((cnt[b.c.id]||0)/b.r)||itemCost(a.it)-itemCost(b.it)).map(x=>x.it).concat(pool);
+    let ok=false;
+    for(const it of order){
+      const o=q.get(it.id)||{it,q:0};o.q++;q.set(it.id,o);
+      if(planCost(plan()).total<=A+1e-9){added.push(it);ok=true;break;}
+      o.q--;
+    }
+    if(!ok) break;
+  }
+  return {plan:plan(),added};
+}
+function choose(A){
+  const bc=balCats(),R=intRatios(bc.map(x=>num(x.c.ratio)));
+  const ch=bc.map((x,i)=>({c:x.c,r:R[i],items:x.items,it:x.items.reduce((a,b)=>itemCost(a)<=itemCost(b)?a:b)}));
+  ch.forEach(x=>{
+    const s=S.sel[x.c.id],man=s&&s!=='auto'?x.items.find(i=>i.id===s):null;
+    x.rows=x.items.map(it=>{const t=ch.map(y=>y===x?Object.assign({},y,{it}):y);const k=maxSets(t,A);return{it,k,rem:A-planCost(setsPlan(t,k)).total};})
+      .sort((a,b)=>b.k-a.k||a.rem-b.rem);
+    x.best=x.rows[0].it;x.it=man||x.best;x.manual=!!man&&man!==x.best;
+  });
+  return ch;
+}
+const planLine=plan=>plan.filter(p=>p[0]>0).map(([q,it])=>'<b>'+fmt(q)+'</b> '+esc(iname(it))).join(' + ');
+
+let lastOpt=null,lastApproveText='',lastDetailsText='';
+function renderBalance(A){
+  lastOpt=null;DPC={};
+  if(!A) return '<div class="empty">أدخل المبلغ أعلاه لتظهر النتائج.</div>';
+  const bc=balCats();
+  if(!bc.length) return '<div class="empty">حدد نسبة لقسم واحد على الأقل في «الأقسام ونسبة الموازنة».</div>';
+  const miss=bc.filter(x=>!x.items.length);
+  if(miss.length) return '<div class="empty">أدخل سعر صنف واحد على الأقل في: '+miss.map(x=>'«'+esc(x.c.name||'قسم')+'»').join('، ')+'.</div>';
+  const ch=choose(A),k=maxSets(ch,A),ratioPlan=setsPlan(ch,k),full=fillRest(ch,k,A);
+  const O=[],mk=(key,plan)=>{const c=planCost(plan),o={key,plan,c,rem:A-c.total};O.push(o);return o;};
+  const oFull=mk('full',full.plan),oRatio=mk('ratio',ratioPlan);
+  const rtxt=ch.map(x=>x.r+' '+esc(x.c.name||'قسم')).join(' : ');
+  let h='';
+  if(k===0) h+='<div class="warnbox">المبلغ لا يكفي لمجموعة كاملة بالنسبة '+rtxt+'. هذه أقصى كمية ممكنة من الأصناف.</div>';
+  // hero: totals per category (full result)
+  h+='<div class="heroN">'+ch.map(x=>{
+    const its=oFull.plan.filter(p=>p[1].cat===x.c.id),n=its.reduce((a,p)=>a+p[0],0);
+    return `<div class="side ${tagCls(x.c.id)}"><div class="n">${fmt(n)}</div><div class="lbl">شوال ${esc(x.c.name||'')}</div><div class="note">${its.map(p=>fmt(p[0])+' '+esc(iname(p[1]))).join(' + ')||'—'}</div></div>`;}).join('')+'</div>';
+  h+=`<div class="note">النسبة المطلوبة: <b>${rtxt}</b> — تحققت في <b>${fmt(k)}</b> مجموعة${full.added.length?'، ثم أُضيف من الباقي: '+Object.entries(full.added.reduce((m,it)=>(m[iname(it)]=(m[iname(it)]||0)+1,m),{})).map(([n,c])=>'+'+c+' '+esc(n)).join('، '):''}.</div>`;
+  const pc=oFull.c;
+  h+=`<div class="facts">
+    <div class="fact"><span>قيمة الشراء</span><b>${fmt(pc.buy)}</b></div>
+    <div class="fact"><span>الترحيل</span><b>${S.trMode==='perSack'?'ضمن الشراء':fmt(pc.tr)}</b></div>
+    <div class="fact"><span>المصروف</span><b>${fmt(pc.total)}</b></div>
+    <div class="fact rem"><span>الباقي</span><b>${fmt(A-pc.total)}</b></div>
+  </div>`;
+  if(S.trMode==='trips') h+=`<div class="note">طريقة الترحيل: ${esc(trSummary(pc))}</div>`;
+  const noFare=S.trMode==='trips'?pc.tl.filter(x=>x.g.n>0&&!vehOf(x.g.r).length&&!num(x.g.r.ps)):[];
+  if(noFare.length) h+='<div class="warnbox">لم تُدخل أجرة الترحيل لمنطقة: '+noFare.map(x=>'«'+esc(x.g.r.name||'')+'»').join('، ')+'، فالترحيل محسوب صفرا. أدخلها من تبويب «الأسعار والتكاليف».</div>';
+  ch.filter(x=>x.manual).forEach(x=>h+=`<div class="note">اخترت «${esc(iname(x.it))}» يدويا في قسم ${esc(x.c.name)}. الأفضل عددا «${esc(iname(x.best))}». <a href="#" data-auto="${x.c.id}">رجوع للاختيار التلقائي</a></div>`);
+
+  h+='<div class="sec-title">اختر ما تعتمده</div>';
+  h+=`<div class="sug pick mainpick" data-opt="full">النتيجة الكاملة: ${planLine(oFull.plan)} <small>· يبقى ${fmt(oFull.rem)}${J}</small></div>`;
+  if(full.added.length) h+=`<div class="sug pick" data-opt="ratio">النسبة فقط بلا إضافات: ${planLine(oRatio.plan)} <small>· يبقى ${fmt(oRatio.rem)}${J}</small></div>`;
+
+  // الخلط: استبدال جزء من الصنف المختار بصنف آخر من نفس القسم لاستغلال الباقي
+  const mixes=[];
+  if(k>0) ch.filter(x=>x.items.length>1).forEach(x=>{
+    const qa=k*x.r;
+    x.items.filter(b=>b!==x.it).forEach(b=>{
+      let nb=0;
+      const mp=n=>ch.flatMap(y=>y===x?[[qa-n,x.it],[n,b]]:[[k*y.r,y.it]]);
+      while(nb+1<qa&&planCost(mp(nb+1)).total<=A+1e-9) nb++;
+      if(nb>0){const plan=mp(nb).filter(p=>p[0]>0),c=planCost(plan);if(c.total>oRatio.c.total+1e-9)mixes.push({x,b,nb,plan,c});}
+    });
+  });
+  mixes.sort((a,b)=>(A-a.c.total)-(A-b.c.total));
+  if(mixes.length){
+    h+='<div class="sec-title">مقترح خلط نوعين من نفس القسم</div>';
+    mixes.slice(0,6).forEach(m=>{const o=mk('m'+m.x.it.id+'_'+m.b.id,m.plan);
+      h+=`<div class="sug mix pick" data-opt="${o.key}">لو خلطنا: ${planLine(m.plan)} <small>· يبقى ${fmt(o.rem)}${J}</small></div>`;});
+  }
+
+  // جدول المقارنة لكل قسم فيه أكثر من صنف
+  ch.filter(x=>x.items.length>1).forEach(x=>{
+    h+=`<div class="sec-title">مقارنة أصناف ${esc(x.c.name||'')} <small class="note" style="margin:0">(اضغط على صف لاختياره)</small></div><div class="tbl"><table><thead><tr><th>الصنف</th><th>تكلفة الشوال</th><th>عدد المجموعات</th><th>الباقي</th></tr></thead><tbody>`;
+    h+=x.rows.map((r,i)=>`<tr class="click ${r.it===x.it?'sel':''}" data-pick="${x.c.id}|${r.it.id}"><td>${esc(iname(r.it))} ${i===0?'<span class="tag best">الأفضل</span>':''}</td><td>${fmt(itemCost(r.it))}</td><td><b>${fmt(r.k)}</b></td><td>${fmt(r.rem)}</td></tr>`).join('');
+    h+='</tbody></table></div>';
+  });
+  lastOpt=O.find(o=>o.key===S.selOpt)||oFull;
+  h=h.split('data-opt="'+lastOpt.key+'"').join('data-opt="'+lastOpt.key+'" data-chosen');
+  return h;
+}
+function costParts(it){
+  const P=[['سعر الشوال',num(it.price)]];
+  if(it.mill) P.push(['الطحن',cv('mill')]);
+  if(S.trMode==='perSack') P.push(['الترحيل',trOf(it)]);
+  P.push(['التحميل',cv('load')],['السعي',cv('sai')],['أكياس التوزيع',cv('bags')]);
+  (S.extra||[]).forEach(x=>{if(!(x.millOnly&&!it.mill)) P.push([x.name||'تكلفة إضافية',num(x.amt)]);});
+  return P.filter(p=>p[1]>0);
+}
+function renderApprove(A){
+  lastApproveText='';lastDetailsText='';
+  if(!A||!lastOpt){$('#approve').innerHTML=$('#details').innerHTML='<div class="empty">أدخل المبلغ لتظهر النتيجة، ثم اختر ما تعتمده.</div>';return;}
+  const o=lastOpt,pc=o.c,plan=o.plan.filter(p=>p[0]>0);
+  const trLine=S.trMode==='perSack'?'الترحيل: محسوب ضمن تكلفة كل شوال':'الترحيل: '+fmt(pc.tr)+' جنيه'+(S.trMode==='trips'?' ('+trSummary(pc)+')':' (مقطوع)');
+  lastApproveText='السلام عليكم ورحمة الله وبركاته\n\nاعتمد شراء:\n'+plan.map(([q,it])=>'- '+fmt(q)+' شوال '+iname(it)).join('\n')
+    +'\n\nالمبلغ المتاح: '+fmt(A)+' جنيه\nقيمة الشراء: '+fmt(pc.buy)+' جنيه\n'+trLine+'\nإجمالي المصروف: '+fmt(pc.total)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';
+  $('#approve').innerHTML='<div class="msgbox">'+esc(lastApproveText)+'</div>';
+  let t='السلام عليكم ورحمة الله وبركاته\n\nتفاصيل قيمة الشراء:\n';
+  plan.forEach(([q,it])=>{
+    const c=itemCost(it);
+    t+='\n▪ '+iname(it)+': '+fmt(q)+' شوال\n'+costParts(it).map(([l,v])=>'   - '+l+': '+fmt(v)+' جنيه').join('\n')
+      +'\n   = تكلفة الشوال: '+fmt(c)+' جنيه\n   = الإجمالي: '+fmt(q)+' × '+fmt(c)+' = '+fmt(q*c)+' جنيه\n';
+  });
+  t+=trDetails(pc);
+  t+='\nالمبلغ المتاح: '+fmt(A)+' جنيه\nقيمة الشراء: '+fmt(pc.buy)+' جنيه'+(S.trMode==='perSack'?'':'\nالترحيل: '+fmt(pc.tr)+' جنيه')+'\nإجمالي المصروف: '+fmt(pc.total)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';
+  lastDetailsText=t;
+  $('#details').innerHTML='<div class="msgbox">'+esc(t)+'</div>';
+}
+$('#copyApprove').onclick=()=>copy(lastApproveText);
+function shareText(t){
+  if(!t){toast('لا توجد رسالة بعد');return;}
+  if(navigator.share) navigator.share({text:t}).catch(()=>{});
+  else window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');
+}
+$('#shareApprove').onclick=()=>shareText(lastApproveText);
+$('#copyDetails').onclick=()=>copy(lastDetailsText);
+$('#shareDetails').onclick=()=>shareText(lastDetailsText);
+$('#balance').addEventListener('click',e=>{
+  const tr=e.target.closest('[data-pick]');
+  if(tr){const [c,id]=tr.dataset.pick.split('|');S.sel[c]=id;save();updateCalc();return;}
+  const op=e.target.closest('[data-opt]');
+  if(op){S.selOpt=op.dataset.opt;save();updateCalc();toast('تم اختياره لرسالة الاعتماد');return;}
+  const au=e.target.closest('[data-auto]');
+  if(au){e.preventDefault();S.sel[au.dataset.auto]='auto';save();updateCalc();}
+});
+
+function updateCalc(){
+  const A=num(S.amount);DPC={};
+  $('#amountWords').textContent=A?('المبلغ: '+fmt(A)+J):'';
+  $('#balance').innerHTML=renderBalance(A);
+  renderApprove(A);
+  $('#simple').innerHTML=renderSimple(A);
+}
+renderCats();renderTransport();
+
+/* ---------- salary tab ---------- */
+const salInp=$('#salaryAmount');salInp.value=S.salaryAmount||'';
+salInp.addEventListener('input',()=>{S.salaryAmount=salInp.value;save();updateSalary();});
+salInp.addEventListener('blur',()=>{const v=num(salInp.value);if(v){salInp.value=fmt(v);S.salaryAmount=salInp.value;save();}});
+
+function renderPeople(){
+  $('#people').innerHTML=S.people.map(p=>`
+    <div class="person" data-id="${p.id}">
+      <label class="f">الاسم<input type="text" data-f="name" value="${esc(p.name)}"></label>
+      <label class="f">النسبة ٪<input type="text" inputmode="decimal" class="num" data-f="pct" value="${esc(p.pct)}"></label>
+      <button class="btn del" data-del title="حذف">×</button>
+    </div>`).join('');
+  updateSalary();
+}
+$('#people').addEventListener('input',e=>{
+  const row=e.target.closest('.person');const p=S.people.find(x=>x.id===row.dataset.id);
+  p[e.target.dataset.f]=e.target.value;save();updateSalary();
+});
+$('#people').addEventListener('click',e=>{
+  if(!e.target.closest('[data-del]')) return;
+  const id=e.target.closest('.person').dataset.id;const p=S.people.find(x=>x.id===id);
+  if(!confirm('حذف «'+(p?.name||'')+'»؟')) return;
+  S.people=S.people.filter(x=>x.id!==id);save();renderPeople();
+});
+$('#addPerson').onclick=()=>{S.people.push({id:nid(),name:'',pct:''});save();renderPeople();};
+
+let lastSalaryText='';
+function updateSalary(){
+  const A=num(S.salaryAmount);let total=0,pctSum=0;const lines=[],rows=[];
+  S.people.forEach(p=>{
+    const pct=num(p.pct);pctSum+=pct;
+    const v=Math.floor(A*pct/100);total+=v;
+    const frac=pct===25?'ربع':pct===12.5?'ثُمن':pct===50?'نصف':'';
+    rows.push(`<div class="payrow"><div class="pn">${esc(p.name)||'<span class="muted">بلا اسم</span>'}<span class="tag other">${+pct.toFixed(3)}٪${frac?' · '+frac:''}</span></div><div class="pv">${fmt(v)} <small>جنيه</small></div></div>`);
+    lines.push(`${p.name}: ${fmt(v)} جنيه`);
+  });
+  $('#salaryResult').innerHTML=!S.people.length?'<div class="empty">لا يوجد معلمون. أضفهم من «طريقة التقسيم» في الأسفل.</div>'
+    :A?rows.join(''):'<div class="empty">اكتب المبلغ الواصل في الأعلى، فتظهر هنا حصة كل معلم.</div>';
+  const ok=Math.abs(pctSum-100)<1e-9;
+  $('#setupInfo').innerHTML=`${S.people.length} معلمين · مجموع النسب ${+pctSum.toFixed(3)}٪ ${ok?'<span class="okc">✓</span>':'<span class="bad">— يحتاج تصحيحا</span>'}`;
+  if(!ok) $('#salarySetup').open=true;
+  let h='';
+  if(A){
+    h+=`<div class="sum"><span>المجموع الموزّع: ${fmt(total)}${J}</span><span>من أصل: ${fmt(A)}${J}</span></div>`;
+    if(A-total>0&&Math.abs(pctSum-100)<1e-9) h+=`<div class="note">فرق التقريب: ${fmt(A-total)}${J}</div>`;
+  }
+  if(Math.abs(pctSum-100)>1e-9) h+=`<div class="warnbox">مجموع النسب ${+pctSum.toFixed(3)}٪ — يجب أن يكون 100٪.${pctSum<100&&A?' غير موزّع: '+fmt(A-total)+J:''}</div>`;
+  $('#salarySum').innerHTML=h;
+  lastSalaryText=A?`توزيع الرواتب (المبلغ ${fmt(A)} جنيه):\n`+lines.join('\n'):'';
+}
+
+/* ---------- copy ---------- */
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
+function copy(text){
+  if(!text){toast('لا توجد نتيجة للنسخ');return;}
+  const fallback=()=>{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');toast('تم النسخ');}catch(e){toast('تعذّر النسخ');}ta.remove();};
+  if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>toast('تم النسخ'),fallback); else fallback();
+}
+$('#copySalary').onclick=()=>copy(lastSalaryText);
+
+function updateAll(){updateTotals();updateCalc();}
+renderItems();renderPeople();updateCalc();showTab(S.tab||'prices');
+})();
+</script>
+
+</body>
+</html>

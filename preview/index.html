@@ -286,6 +286,7 @@ tr.sel td{background:var(--gold-soft)}
 .msgbtns{display:flex;gap:8px}
 .msgd summary{cursor:pointer;color:var(--primary);font-weight:700;margin-top:10px;min-height:40px;display:flex;align-items:center}
 .msgd[open] summary{margin-bottom:8px}
+.msgd summary::after{content:" ▾";margin-inline-start:6px}.msgd[open] summary::after{content:" ▴"}
 .more summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:50px}
 .more summary::-webkit-details-marker{display:none}
 .more summary b{font-size:1.3rem;color:var(--primary);flex:1}

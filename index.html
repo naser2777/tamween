@@ -6,11 +6,11 @@
 <title>حاسبة التموين والرواتب</title>
 <style>
 :root{
-  --bg:#f6f2e9; --card:#fffdf9; --ink:#17212f; --muted:#495466; --line:#e2d8c6;
+  --bg:#eef2f7; --card:#ffffff; --ink:#16202e; --muted:#4a5568; --line:#d8dfe9;
   --primary:#1d3a5f; --primary-soft:#e6edf6; --primary-ink:#ffffff;
-  --gold:#b8862b; --gold-soft:#f8eed8; --field:#ffffff;
-  --flour:#94600f; --flour-soft:#fbf0d8;
-  --onion:#8c2a3f; --onion-soft:#f9e6e9;
+  --gold:#b8862b; --gold-soft:#f4ecdb; --field:#fbfcfe;
+  --flour:#8a5a12; --flour-soft:#f5eedf;
+  --onion:#7f2a3c; --onion-soft:#f4e8eb;
   --warn:#a8381c; --warn-soft:#fce8e1;
   --hero1:#1d3a5f; --hero2:#2d5687;
   --shadow:0 1px 2px rgba(0,0,0,.05),0 6px 20px rgba(40,50,40,.06);
@@ -269,6 +269,52 @@ tr.sel td{background:var(--gold-soft)}
 .heroN .side .lbl{font-weight:700;font-size:1.1rem}
 .bad{color:var(--warn);font-weight:700}
 @media (max-width:640px){.veh{grid-template-columns:1fr 1fr;background:var(--card);border-radius:12px;padding:10px;border:1px solid var(--line);position:relative;padding-top:48px}.veh .btn.del{position:absolute;top:4px;left:4px}.catrow{grid-template-columns:1fr 1fr auto}}
+/* home tiles + screens */
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.htile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;min-height:170px;aspect-ratio:1/0.85;
+  font:inherit;color:#fff;cursor:pointer;border:0;border-radius:20px;padding:16px;background:linear-gradient(135deg,var(--hero1),var(--hero2));
+  box-shadow:0 8px 22px rgba(29,58,95,.22),inset 0 -5px 0 var(--gold)}
+.htile:hover{filter:brightness(1.08)}
+.htile:active{transform:scale(.98)}
+.htile .hi{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#e9c46a;background:rgba(255,255,255,.08);border:1.5px solid rgba(233,196,106,.55)}
+.htile .hi svg{width:36px;height:36px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.htile b{font-size:1.45rem}
+.htile b{font-size:1.3rem}
+.htile small{font-size:.92rem;color:rgba(255,255,255,.85);line-height:1.5}
+.backbar{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;margin-bottom:16px;position:sticky;top:8px;z-index:5;box-shadow:0 4px 14px rgba(23,33,47,.08)}
+.backbar .scrtitle{margin:0;font-size:1.25rem;color:var(--primary)}
+.btn.back{white-space:nowrap}
+.btn.back:hover{filter:brightness(1.12)}
+.chosenbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--gold-soft);border:1.5px solid var(--gold);border-radius:12px;padding:10px 14px;margin-bottom:12px}
+.scrfoot{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin:6px 0 20px}
+.scrfoot .btn{min-height:54px;flex:1 1 200px}
+#chosenInfo{margin:0 0 10px;padding:10px 12px;background:var(--gold-soft);border-radius:10px;color:var(--ink)}
+#chosenInfo:empty{display:none}
+@media (max-width:560px){.hgrid{grid-template-columns:1fr 1fr;gap:10px}.htile{min-height:150px;aspect-ratio:auto;padding:12px}.htile b{font-size:1.12rem}.htile .hi{width:58px;height:58px}.htile .hi svg{width:30px;height:30px}.htile small{font-size:.82rem}}
+/* calc tab layout: numbered steps + quick jump */
+#tab-calc .card{scroll-margin-top:110px}
+.jump{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 16px}
+.jump a{flex:1 1 140px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;color:var(--primary);font-weight:700;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;min-height:50px}
+.jump a:hover{border-color:var(--gold)}
+.jump a span,.stepno{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--gold-soft);color:var(--flour);font-weight:800;flex:none;border:1.5px solid var(--gold)}
+.stephead{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.stephead h2{margin:0}.stephead h2::before{display:none}
+#balance .facts{margin-top:10px}
+#options .sug{margin-bottom:12px}
+#options .sec-title{margin-top:22px;padding-top:14px;border-top:1px solid var(--line)}
+.msgblock{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px;background:var(--bg)}
+.msghead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.msghead b{font-size:1.08rem;color:var(--primary)}
+.msgbtns{display:flex;gap:8px}
+.msgd summary{cursor:pointer;color:var(--primary);font-weight:700;margin-top:10px;min-height:40px;display:flex;align-items:center}
+.msgd[open] summary{margin-bottom:8px}
+.msgd summary::after{content:" ▾";margin-inline-start:6px}.msgd[open] summary::after{content:" ▴"}
+.more summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:50px}
+.more summary::-webkit-details-marker{display:none}
+.more summary b{font-size:1.3rem;color:var(--primary);flex:1}
+.more .chev::after{content:"عرض ▾"}.more[open] .chev::after{content:"إخفاء ▴"}
+.more[open] summary{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+@media (max-width:560px){.jump a{flex:1 1 45%;font-size:.95rem;padding:8px}}
 /* salary: result separate from settings */
 .reshead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
 .reshead h2{margin:0}
@@ -298,6 +344,42 @@ tr.sel td{background:var(--gold-soft)}
   body{background:#fff}
   .card{box-shadow:none;border:1px solid #ddd}
 }
+
+/* ===== تناسق الألوان: كحلي + رمادي مزرق هادئ + الذهبي لمسة رفيعة فقط ===== */
+body{background:var(--bg)}
+.card{border-color:var(--line);box-shadow:0 1px 2px rgba(22,32,46,.04),0 8px 24px rgba(22,32,46,.06)}
+.btn{background:var(--card);border:1.5px solid #c5d0de;color:var(--primary)}
+.btn:hover{border-color:var(--primary);background:var(--primary-soft)}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 3px 10px rgba(29,58,95,.22)}
+.btn.pri:hover{background:#244a78;border-color:#244a78}
+.btn.back{background:var(--card);border:2px solid var(--primary);color:var(--primary);font-weight:800;box-shadow:none}
+.btn.back:hover{background:var(--primary);color:#fff;filter:none}
+.backbar{border-color:var(--line);border-bottom:3px solid var(--primary)}
+input[type=text]:hover,select:hover{border-color:#aebdd0}
+.big input{border-color:var(--primary)}
+#chosenInfo,.chosenbar{background:var(--primary-soft);border:0;border-inline-start:4px solid var(--primary);color:var(--ink)}
+.msgblock{background:var(--card);border-color:var(--line)}
+.msgbox{background:var(--bg);border-inline-start-color:var(--primary)}
+.sug,.sug.mix{background:var(--card);border:1.5px solid var(--line);border-inline-start:4px solid #9fb2ca}
+.sug.mainpick{border-inline-start-color:#9fb2ca}
+.sug.pick:hover{box-shadow:0 0 0 2px #9fb2ca inset}
+.sug.pick[data-chosen]{background:var(--primary-soft);border-color:var(--primary);box-shadow:0 0 0 2px var(--primary) inset}
+.sum{background:var(--primary-soft);border-color:var(--line)}
+tr.sel td{background:var(--primary-soft)}
+th{background:var(--bg);color:var(--primary)}
+.fact{background:var(--bg);border-color:var(--line)}
+.heroN .side{border-color:var(--line)}
+.region{background:var(--bg);border-color:var(--line)}
+.seg{background:var(--bg);border-color:var(--line)}
+.seg button.on{background:var(--primary);box-shadow:none}
+.tile{border-color:var(--line)}
+.tile.flour,.tile.onion{border-color:var(--line)}
+.empty{background:var(--bg);border-color:#c5d0de}
+.chev{border-color:#c5d0de;color:var(--primary)}
+.htile{box-shadow:0 8px 22px rgba(29,58,95,.20),inset 0 -4px 0 var(--gold)}
+:root[data-theme="dark"] .btn.back:hover{color:var(--bg)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn{border-color:var(--line)}}
+:root[data-theme="dark"] .btn{border-color:var(--line)}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#1d3a5f">
@@ -316,14 +398,21 @@ tr.sel td{background:var(--gold-soft)}
     <button class="btn sm" id="themeBtn" title="تبديل الوضع">◐</button>
   </header>
 
-  <nav class="tabs">
-    <button data-tab="prices">الأسعار والتكاليف</button>
-    <button data-tab="calc">حساب الشوالات</button>
-    <button data-tab="salary">الرواتب</button>
-  </nav>
+  <!-- ============ الشاشة الرئيسية ============ -->
+  <section id="scr-home" class="screen">
+  <div class="hgrid">
+    <button class="htile" data-go="prices"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><b>التكاليف</b><small id="hs-prices">الأقسام والنسبة والترحيل والأصناف</small></button>
+    <button class="htile" data-go="result"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l-1.5 3.5h-3z"/><path d="M10.5 6.5C6 9 4 13 4 16.5 4 19.5 6.5 21 12 21s8-1.5 8-4.5c0-3.5-2-7.5-6.5-10"/><path d="M9.5 13h5M9.5 16.5h5"/></svg></span><b>المبلغ والنتيجة</b><small id="hs-result"></small></button>
+    <button class="htile" data-go="options"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16.5 9.5"/></svg></span><b>المعتمد والخلط</b><small id="hs-options"></small></button>
+    <button class="htile" data-go="messages"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><b>الرسائل</b><small id="hs-messages">اعتماد الشراء والتفاصيل</small></button>
+    <button class="htile" data-go="compare"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"/><rect x="6" y="11" width="3" height="6"/><rect x="10.5" y="6" width="3" height="11"/><rect x="15" y="13" width="3" height="4"/></svg></span><b>المقارنة</b><small id="hs-compare">مقارنة الأصناف</small></button>
+    <button class="htile" data-go="salary"><span class="hi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17" cy="9" r="2.3"/><path d="M15.5 14.2c2.6-.3 5 1.4 5 4.3"/></svg></span><b>الرواتب</b><small id="hs-salary"></small></button>
+  </div>
+  </section>
 
   <!-- ============ الأسعار ============ -->
-  <section id="tab-prices">
+  <section id="scr-prices" class="screen hidden">
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">التكاليف</h2></div>
     <div class="card">
       <h2>الأقسام ونسبة الموازنة</h2>
       <p class="sub">لكل قسم نسبة. مثلا: طحين 1 وبصل 3 تعني أن كل شوال طحين يقابله 3 شوالات بصل. اكتب 0 لقسم لا يدخل في الموازنة.</p>
@@ -381,48 +470,78 @@ tr.sel td{background:var(--gold-soft)}
         <button class="btn pri" id="addItem">+ إضافة صنف</button>
       </div>
     </div>
+    <div class="scrfoot"><button class="btn pri" data-go="result">المبلغ والنتيجة ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
   </section>
 
-  <!-- ============ الحساب ============ -->
-  <section id="tab-calc" class="hidden">
+  <!-- ============ حساب الشوالات ============ -->
+  <section id="scr-result" class="screen hidden">
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">المبلغ والنتيجة</h2></div>
     <div class="card">
       <h2>المبلغ المتاح للتموين</h2>
       <label class="f big"><input type="text" inputmode="decimal" class="num" id="amount" placeholder="مثال: 1,000,000"></label>
       <div id="amountWords" class="note"></div>
     </div>
-
     <div class="card">
-      <h2>الموازنة بين الأقسام</h2>
-      <p class="sub">أكبر عدد من الشوالات الكاملة بالنسبة التي حددتها، مع حجز الترحيل. ثم يُكمَل الباقي بشوالات كاملة حتى لا يبقى ما يكفي لشوال.</p>
+      <h2>نتيجة الموازنة</h2>
       <div id="balance"></div>
     </div>
+    <div class="scrfoot"><button class="btn pri" data-go="options">المعتمد والخلط ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
+  </section>
 
+  <!-- ============ الاختيار ============ -->
+  <section id="scr-options" class="screen hidden">
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">المعتمد والخلط</h2></div>
+    <div class="card">
+      <h2>اختر ما تعتمده</h2>
+      <p class="sub">اضغط على ما تريد اعتماده، فتتغير النتيجة والرسائل بحسبه مباشرة.</p>
+      <div id="options"></div>
+    </div>
+    <div class="card">
+      <h2>أو اخلط نوعين من نفس القسم</h2>
+      <p class="sub">خلط نوعين ليُستغل الباقي. اضغط على المقترح لتعتمده.</p>
+      <div id="mixes2"></div>
+    </div>
+    <div id="mixes" hidden></div>
+    <div class="scrfoot"><button class="btn pri" data-go="messages">الرسائل ←</button><button class="btn back" data-go="home">→ الرئيسية</button></div>
+  </section>
+
+  <!-- ============ الرسائل ============ -->
+  <section id="scr-messages" class="screen hidden">
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">الرسائل</h2></div>
     <div class="card" id="approveCard">
-      <h2>رسالة اعتماد الشراء</h2>
-      <p class="sub">اختر ما تعتمده بالضغط عليه في الأعلى: النتيجة الكاملة، أو النسبة فقط، أو أحد مقترحات الخلط. ثم انسخ الرسالة وأرسلها.</p>
-      <h3 class="xh">الرسالة الأولى: اعتماد الشراء</h3>
-      <div id="approve"></div>
-      <div class="row-actions">
-        <button class="btn pri" id="copyApprove">نسخ الرسالة الأولى</button>
-        <button class="btn" id="shareApprove">إرسال</button>
+      <div id="chosenInfo" class="note"></div>
+      <p class="sub">انسخ الرسالة أو أرسلها مباشرة. اضغط «عرض نص الرسالة» لتقرأها قبل الإرسال.</p>
+      <div class="msgblock">
+        <div class="msghead"><b>الرسالة الأولى: اعتماد الشراء</b>
+          <div class="msgbtns"><button class="btn pri" id="copyApprove">نسخ</button><button class="btn" id="shareApprove">إرسال</button></div></div>
+        <details class="msgd"><summary>عرض نص الرسالة</summary><div id="approve"></div></details>
       </div>
-      <h3 class="xh">الرسالة الثانية: تفاصيل الشراء والتكاليف</h3>
-      <div id="details"></div>
-      <div class="row-actions">
-        <button class="btn pri" id="copyDetails">نسخ الرسالة الثانية</button>
-        <button class="btn" id="shareDetails">إرسال</button>
+      <div class="msgblock">
+        <div class="msghead"><b>الرسالة الثانية: تفاصيل الشراء والتكاليف</b>
+          <div class="msgbtns"><button class="btn pri" id="copyDetails">نسخ</button><button class="btn" id="shareDetails">إرسال</button></div></div>
+        <details class="msgd"><summary>عرض نص الرسالة</summary><div id="details"></div></details>
       </div>
     </div>
+    <div class="scrfoot"><button class="btn back" data-go="home">→ الرئيسية</button></div>
+  </section>
 
+  <!-- ============ المقارنات ============ -->
+  <section id="scr-compare" class="screen hidden">
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">المقارنة</h2></div>
+    <div class="card">
+      <div id="compare"></div>
+    </div>
     <div class="card">
       <h2>لو صُرف المبلغ على صنف واحد</h2>
       <p class="sub">للمقارنة فقط: أقصى عدد شوالات من كل صنف وحده، مع حجز ترحيله.</p>
       <div id="simple"></div>
     </div>
+    <div class="scrfoot"><button class="btn back" data-go="home">→ الرئيسية</button></div>
   </section>
 
-<!-- ============ الرواتب ============ -->
-  <section id="tab-salary" class="hidden">
+  <!-- ============ رواتب الحلقات ============ -->
+  <section id="scr-salary" class="screen hidden">
+    <div class="backbar"><button class="btn back" data-go="home">→ الرئيسية</button><h2 class="scrtitle">الرواتب</h2></div>
     <div class="card">
       <h2>المبلغ الواصل للرواتب</h2>
       <label class="f big"><input type="text" inputmode="decimal" class="num" id="salaryAmount" placeholder="مثال: 400,000"></label>
@@ -438,6 +557,7 @@ tr.sel td{background:var(--gold-soft)}
       <div id="people"></div>
       <div class="row-actions"><button class="btn pri" id="addPerson">+ إضافة معلم</button></div>
     </details>
+    <div class="scrfoot"><button class="btn back" data-go="home">→ الرئيسية</button></div>
   </section>
 </div>
 <div class="toast" id="toast"></div>
@@ -504,12 +624,14 @@ $('#themeBtn').onclick=()=>{
 };
 
 /* ---------- tabs ---------- */
+const SCREENS=['home','prices','result','options','messages','compare','salary'];
 function showTab(t){
+  if(!SCREENS.includes(t)) t='home';
   S.tab=t;save();
-  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  ['prices','calc','salary'].forEach(x=>$('#tab-'+x).classList.toggle('hidden',x!==t));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('hidden',s.id!=='scr-'+t));
+  window.scrollTo(0,0);
 }
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g){e.preventDefault();showTab(g.dataset.go);}});
 
 /* ---------- cost model ---------- */
 /* تكلفة موحّدة محذوفة = لا تُحسب */
@@ -846,26 +968,12 @@ function renderBalance(A){
   const rtxt=ch.map(x=>x.r+' '+esc(x.c.name||'قسم')).join(' : ');
   let h='';
   if(k===0) h+='<div class="warnbox">المبلغ لا يكفي لمجموعة كاملة بالنسبة '+rtxt+'. هذه أقصى كمية ممكنة من الأصناف.</div>';
-  // hero: totals per category (full result)
-  h+='<div class="heroN">'+ch.map(x=>{
-    const its=oFull.plan.filter(p=>p[1].cat===x.c.id),n=its.reduce((a,p)=>a+p[0],0);
-    return `<div class="side ${tagCls(x.c.id)}"><div class="n">${fmtN(n)}</div><div class="lbl">شوال ${esc(x.c.name||'')} كامل</div><div class="note">${its.map(p=>fmtN(p[0])+' '+esc(iname(p[1]))).join(' + ')||'—'}</div></div>`;}).join('')+'</div>';
-  h+=`<div class="note">النسبة المطلوبة: <b>${rtxt}</b> — تحققت في <b>${fmtN(k)}</b> مجموعة${full.added.length?'، ثم أُضيف من الباقي: '+Object.entries(full.added.reduce((m,it)=>(m[iname(it)]=(m[iname(it)]||0)+1,m),{})).map(([n,c])=>'+'+c+' '+esc(n)).join('، '):''}.</div>`;
-  const pc=oFull.c;
-  h+=`<div class="facts">
-    <div class="fact"><span>قيمة الشراء</span><b>${fmt(pc.buy)}</b></div>
-    <div class="fact"><span>الترحيل</span><b>${S.trMode==='perSack'?'ضمن الشراء':fmt(pc.tr)}</b></div>
-    <div class="fact"><span>المصروف</span><b>${fmt(pc.total)}</b></div>
-    <div class="fact rem"><span>الباقي</span><b>${fmt(A-pc.total)}</b></div>
-  </div>`;
-  if(S.trMode==='trips') h+=`<div class="note">طريقة الترحيل: ${esc(trSummary(pc))}</div>`;
-  const noFare=S.trMode==='trips'?pc.tl.filter(x=>x.g.n>0&&!vehOf(x.g.r).length&&!num(x.g.r.ps)):[];
-  if(noFare.length) h+='<div class="warnbox">لم تُدخل أجرة الترحيل لمنطقة: '+noFare.map(x=>'«'+esc(x.g.r.name||'')+'»').join('، ')+'، فالترحيل محسوب صفرا. أدخلها من تبويب «الأسعار والتكاليف».</div>';
+  h+='<!--HERO-->';
   ch.filter(x=>x.manual).forEach(x=>h+=`<div class="note">اخترت «${esc(iname(x.it))}» يدويا في قسم ${esc(x.c.name)}. الأفضل عددا «${esc(iname(x.best))}». <a href="#" data-auto="${x.c.id}">رجوع للاختيار التلقائي</a></div>`);
 
-  h+='<div class="sec-title">اختر ما تعتمده</div>';
-  h+=`<div class="sug pick mainpick" data-opt="full"><span><b>الخيار الأول — صرف المبلغ كله:</b> ${planLine(oFull.plan)} <small>· يبقى ${fmt(oFull.rem)}${J}</small><br><small>بالنسبة ${rtxt}، ثم يُشترى بالباقي شوالات زيادة حتى لا يبقى ما يكفي لشوال.</small></span></div>`;
-  if(full.added.length) h+=`<div class="sug pick" data-opt="ratio"><span><b>الخيار الثاني — النسبة بالضبط:</b> ${planLine(oRatio.plan)} <small>· يبقى ${fmt(oRatio.rem)}${J}</small><br><small>كل شوال ${esc(ch[0].c.name||'')} يقابله بالضبط ما حددته من الأقسام الأخرى، ولا يُشترى بالباقي شيء.</small></span></div>`;
+  h+='<!--OPT-->';
+  h+=`<div class="sug pick mainpick" data-opt="full"><span><b>صرف المبلغ كله:</b> ${planLine(oFull.plan)} <small>· يبقى ${fmt(oFull.rem)}${J}</small><br><small>بالنسبة ${rtxt}، ثم يُشترى بالباقي شوالات زيادة حتى لا يبقى ما يكفي لشوال.</small></span></div>`;
+  if(full.added.length) h+=`<div class="sug pick" data-opt="ratio"><span><b>النسبة بالضبط:</b> ${planLine(oRatio.plan)} <small>· يبقى ${fmt(oRatio.rem)}${J}</small><br><small>كل شوال ${esc(ch[0].c.name||'')} يقابله بالضبط ما حددته من الأقسام الأخرى، ولا يُشترى بالباقي شيء.</small></span></div>`;
 
   // الخلط: استبدال جزء من الصنف المختار بصنف آخر من نفس القسم لاستغلال الباقي
   const mixes=[];
@@ -880,7 +988,7 @@ function renderBalance(A){
   });
   mixes.sort((a,b)=>(A-a.c.total)-(A-b.c.total));
   if(mixes.length){
-    h+='<div class="sec-title">مقترح خلط نوعين من نفس القسم</div>';
+    h+='<!--MIX-->';
     mixes.slice(0,6).forEach(m=>{const o=mk('m'+m.x.it.id+'_'+m.b.id,m.plan);
       const inX=m.plan.filter(p=>p[1].cat===m.x.c.id),tot=inX.reduce((a,p)=>a+p[0],0),others=m.plan.filter(p=>p[1].cat!==m.x.c.id);
       const ml='لو خلطنا '+inX.map(([q,it])=>'<b>'+fmtN(q)+'</b> '+esc(iname(it))).join(' + ')+' = (<b>'+fmtN(tot)+'</b> شوال '+esc(m.x.c.name||'')+')'
@@ -888,6 +996,7 @@ function renderBalance(A){
       h+=`<div class="sug mix pick" data-opt="${o.key}">${ml} <small>· يبقى ${fmt(o.rem)}${J}</small></div>`;});
   }
 
+  h+='<!--CMP-->';
   // جدول المقارنة لكل قسم فيه أكثر من صنف
   ch.filter(x=>x.items.length>1).forEach(x=>{
     h+=`<div class="sec-title">مقارنة أصناف ${esc(x.c.name||'')} <small class="note" style="margin:0">(اضغط على صف لاختياره)</small></div><div class="tbl"><table><thead><tr><th>الصنف</th><th>تكلفة الشوال</th><th>عدد المجموعات</th><th>الباقي</th></tr></thead><tbody>`;
@@ -895,6 +1004,27 @@ function renderBalance(A){
     h+='</tbody></table></div>';
   });
   lastOpt=O.find(o=>o.key===S.selOpt)||oFull;
+  /* النتيجة تُعرض بحسب ما اعتمدته */
+  const heroOf=o=>{
+    const pc=o.c,lab=o.key==='full'?'صرف المبلغ كله':o.key==='ratio'?'النسبة بالضبط':'خلط نوعين';
+    let x=`<div class="chosenbar"><span>المعتمد الآن: <b>${lab}</b></span><button class="btn sm" data-go="options">تغيير ←</button></div>`;
+    x+='<div class="heroN">'+ch.map(c=>{
+      const its=o.plan.filter(p=>p[1].cat===c.c.id&&p[0]>0),n=its.reduce((a,p)=>a+p[0],0);
+      return `<div class="side ${tagCls(c.c.id)}"><div class="n">${fmtN(n)}</div><div class="lbl">شوال ${esc(c.c.name||'')} كامل</div><div class="note">${its.map(p=>fmtN(p[0])+' '+esc(iname(p[1]))).join(' + ')||'—'}</div></div>`;}).join('')+'</div>';
+    if(o.key==='full') x+=`<div class="note">النسبة المطلوبة: <b>${rtxt}</b> — تحققت في <b>${fmtN(k)}</b> مجموعة${full.added.length?'، ثم أُضيف من الباقي: '+Object.entries(full.added.reduce((m,it)=>(m[iname(it)]=(m[iname(it)]||0)+1,m),{})).map(([n,c])=>'+'+c+' '+esc(n)).join('، '):''}.</div>`;
+    else x+=`<div class="note">النسبة المطلوبة: <b>${rtxt}</b> — بالضبط في <b>${fmtN(k)}</b> مجموعة.</div>`;
+    x+=`<div class="facts">
+      <div class="fact"><span>قيمة الشراء</span><b>${fmt(pc.buy)}</b></div>
+      <div class="fact"><span>الترحيل</span><b>${S.trMode==='perSack'?'ضمن الشراء':fmt(pc.tr)}</b></div>
+      <div class="fact"><span>المصروف</span><b>${fmt(pc.total)}</b></div>
+      <div class="fact rem"><span>الباقي</span><b>${fmt(A-pc.total)}</b></div>
+    </div>`;
+    if(S.trMode==='trips') x+=`<div class="note">طريقة الترحيل: ${esc(trSummary(pc))}</div>`;
+    const noFare=S.trMode==='trips'?pc.tl.filter(t=>t.g.n>0&&!vehOf(t.g.r).length&&!num(t.g.r.ps)):[];
+    if(noFare.length) x+='<div class="warnbox">لم تُدخل أجرة الترحيل لمنطقة: '+noFare.map(t=>'«'+esc(t.g.r.name||'')+'»').join('، ')+'، فالترحيل محسوب صفرا. أدخلها من «التكاليف».</div>';
+    return x;
+  };
+  h=h.split('<!--HERO-->').join(heroOf(lastOpt));
   h=h.split('data-opt="'+lastOpt.key+'"').join('data-opt="'+lastOpt.key+'" data-chosen');
   return h;
 }
@@ -967,7 +1097,7 @@ function shareText(t){
 $('#shareApprove').onclick=()=>shareText(lastApproveText);
 $('#copyDetails').onclick=()=>copy(lastDetailsText);
 $('#shareDetails').onclick=()=>shareText(lastDetailsText);
-$('#balance').addEventListener('click',e=>{
+document.querySelector('.wrap').addEventListener('click',e=>{
   const tr=e.target.closest('[data-pick]');
   if(tr){const [c,id]=tr.dataset.pick.split('|');S.sel[c]=id;save();updateCalc();return;}
   const op=e.target.closest('[data-opt]');
@@ -976,10 +1106,24 @@ $('#balance').addEventListener('click',e=>{
   if(au){e.preventDefault();S.sel[au.dataset.auto]='auto';save();updateCalc();}
 });
 
+function homeInfo(A){
+  const mixN=document.querySelectorAll('#mixes [data-opt]').length;
+  const lbl=!lastOpt?'':lastOpt.key==='full'?'صرف المبلغ كله':lastOpt.key==='ratio'?'النسبة بالضبط':'خلط';
+  const line=lastOpt?lastOpt.plan.filter(p=>p[0]>0).map(([q,it])=>fmtN(q)+' '+iname(it)).join(' + '):'';
+  $('#hs-result').textContent=A?(line||'أدخل الأسعار أولا'):'اكتب المبلغ المتاح';
+  $('#hs-options').textContent=lbl?'المعتمد: '+lbl+(mixN?' · '+mixN+' مقترحات خلط':''):'—';
+  $('#chosenInfo').innerHTML=lastOpt?'الرسائل مكتوبة بحسب: <b>'+esc(lbl)+'</b> ('+esc(line)+')':'';
+}
 function updateCalc(){
   const A=num(S.amount);DPC={};
   $('#amountWords').textContent=A?('المبلغ: '+fmt(A)+J):'';
-  $('#balance').innerHTML=renderBalance(A);
+  const parts=renderBalance(A).split('<!--OPT-->'),p2=(parts[1]||'').split('<!--CMP-->'),p3=p2[0].split('<!--MIX-->');
+  $('#balance').innerHTML=parts[0];
+  $('#options').innerHTML=parts.length>1?p3[0]:'<div class="empty">أدخل المبلغ في «حساب الشوالات» لتظهر الخيارات.</div>';
+  $('#mixes').innerHTML=(p3[1]||'').trim()||'<div class="empty">'+(parts.length>1?'لا يوجد خلط يستغل الباقي بالأسعار الحالية.':'أدخل المبلغ في «حساب الشوالات» لتظهر المقترحات.')+'</div>';
+  $('#mixes2').innerHTML=$('#mixes').innerHTML;
+  $('#compare').innerHTML=(p2[1]||'').trim()||'<div class="empty">لا توجد أقسام فيها أكثر من صنف للمقارنة.</div>';
+  homeInfo(A);
   renderApprove(A);
   $('#simple').innerHTML=renderSimple(A);
 }
@@ -1033,6 +1177,7 @@ function updateSalary(){
   }
   if(Math.abs(pctSum-100)>1e-9) h+=`<div class="warnbox">مجموع النسب ${+pctSum.toFixed(3)}٪ — يجب أن يكون 100٪.${pctSum<100&&A?' غير موزّع: '+fmt(A-total)+J:''}</div>`;
   $('#salarySum').innerHTML=h;
+  $('#hs-salary').textContent=A?'المبلغ: '+fmt(A)+J:'رواتب الحلقات';
   lastSalaryText=A?`توزيع الرواتب (المبلغ ${fmt(A)} جنيه):\n`+lines.join('\n'):'';
 }
 
@@ -1047,7 +1192,7 @@ function copy(text){
 $('#copySalary').onclick=()=>copy(lastSalaryText);
 
 function updateAll(){updateTotals();updateCalc();}
-renderItems();renderPeople();updateCalc();showTab(S.tab||'prices');
+renderItems();renderPeople();updateCalc();showTab('home');
 })();
 </script>
 <script>if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));</script>

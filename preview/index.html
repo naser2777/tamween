@@ -830,7 +830,7 @@ function choose(A){
   });
   return ch;
 }
-const planLine=plan=>plan.filter(p=>p[0]>0).map(([q,it])=>'<b>'+fmtN(q)+'</b> '+esc(iname(it))).join(' + ');
+const planLine=plan=>plan.filter(p=>p[0]>0).map(([q,it])=>'<b>'+fmtN(q)+'</b> شوال '+esc(iname(it))).join(' + ');
 
 let lastOpt=null,lastApproveText='',lastDetailsText='';
 function renderBalance(A){
@@ -864,8 +864,8 @@ function renderBalance(A){
   ch.filter(x=>x.manual).forEach(x=>h+=`<div class="note">اخترت «${esc(iname(x.it))}» يدويا في قسم ${esc(x.c.name)}. الأفضل عددا «${esc(iname(x.best))}». <a href="#" data-auto="${x.c.id}">رجوع للاختيار التلقائي</a></div>`);
 
   h+='<div class="sec-title">اختر ما تعتمده</div>';
-  h+=`<div class="sug pick mainpick" data-opt="full">النتيجة الكاملة: ${planLine(oFull.plan)} <small>· يبقى ${fmt(oFull.rem)}${J}</small></div>`;
-  if(full.added.length) h+=`<div class="sug pick" data-opt="ratio">النسبة فقط بلا إضافات: ${planLine(oRatio.plan)} <small>· يبقى ${fmt(oRatio.rem)}${J}</small></div>`;
+  h+=`<div class="sug pick mainpick" data-opt="full"><span><b>الخيار الأول — صرف المبلغ كله:</b> ${planLine(oFull.plan)} <small>· يبقى ${fmt(oFull.rem)}${J}</small><br><small>بالنسبة ${rtxt}، ثم يُشترى بالباقي شوالات زيادة حتى لا يبقى ما يكفي لشوال.</small></span></div>`;
+  if(full.added.length) h+=`<div class="sug pick" data-opt="ratio"><span><b>الخيار الثاني — النسبة بالضبط:</b> ${planLine(oRatio.plan)} <small>· يبقى ${fmt(oRatio.rem)}${J}</small><br><small>كل شوال ${esc(ch[0].c.name||'')} يقابله بالضبط ما حددته من الأقسام الأخرى، ولا يُشترى بالباقي شيء.</small></span></div>`;
 
   // الخلط: استبدال جزء من الصنف المختار بصنف آخر من نفس القسم لاستغلال الباقي
   const mixes=[];

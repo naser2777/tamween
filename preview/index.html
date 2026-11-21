@@ -882,7 +882,10 @@ function renderBalance(A){
   if(mixes.length){
     h+='<div class="sec-title">مقترح خلط نوعين من نفس القسم</div>';
     mixes.slice(0,6).forEach(m=>{const o=mk('m'+m.x.it.id+'_'+m.b.id,m.plan);
-      h+=`<div class="sug mix pick" data-opt="${o.key}">لو خلطنا: ${planLine(m.plan)} <small>· يبقى ${fmt(o.rem)}${J}</small></div>`;});
+      const inX=m.plan.filter(p=>p[1].cat===m.x.c.id),tot=inX.reduce((a,p)=>a+p[0],0),others=m.plan.filter(p=>p[1].cat!==m.x.c.id);
+      const ml='لو خلطنا '+inX.map(([q,it])=>'<b>'+fmtN(q)+'</b> '+esc(iname(it))).join(' + ')+' = (<b>'+fmtN(tot)+'</b> شوال '+esc(m.x.c.name||'')+')'
+        +others.map(([q,it])=>' + <b>'+fmtN(q)+'</b> شوال '+esc(iname(it))).join('');
+      h+=`<div class="sug mix pick" data-opt="${o.key}">${ml} <small>· يبقى ${fmt(o.rem)}${J}</small></div>`;});
   }
 
   // جدول المقارنة لكل قسم فيه أكثر من صنف
@@ -909,7 +912,7 @@ function renderApprove(A){
   const o=lastOpt,pc=o.c,plan=o.plan.filter(p=>p[0]>0);
   const trLine=S.trMode==='perSack'?'الترحيل: محسوب ضمن تكلفة كل شوال':'الترحيل: '+fmt(pc.tr)+' جنيه'+(S.trMode==='trips'?' ('+trSummary(pc)+')':' (مقطوع)');
   lastApproveText='السلام عليكم ورحمة الله وبركاته\n\nاعتمد شراء:\n'+plan.map(([q,it])=>'- '+fmtN(q)+' شوال '+iname(it)).join('\n')
-    +'\n\nالمبلغ المتاح: '+fmt(A)+' جنيه\nقيمة الشراء: '+fmt(pc.buy)+' جنيه\n'+trLine+'\nإجمالي المصروف: '+fmt(pc.total)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';
+    +'\n\nالمبلغ المتاح: '+fmt(A)+' جنيه\nالشراء مع التكاليف على الشوال: '+fmt(pc.buy)+' جنيه\n'+trLine+'\nإجمالي المصروف: '+fmt(pc.total)+' جنيه\nالباقي: '+fmt(A-pc.total)+' جنيه';
   $('#approve').innerHTML='<div class="msgbox">'+esc(lastApproveText)+'</div>';
   const AR=['١','٢','٣','٤','٥','٦','٧','٨','٩','١٠','١١','١٢','١٣','١٤','١٥'];let sec=0;const H=s=>'\n'+AR[sec++]+') '+s+'\n';
   const SUM=[];
